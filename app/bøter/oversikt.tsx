@@ -1,5 +1,4 @@
-import {hentSpillere, oppdaterSpiller, Spiller} from "@/app/lib/spillereService";
-import {useEffect, useState} from "react";
+import {oppdaterSpiller, Spiller} from "@/app/lib/spillereService";
 
 interface OversiktProps {
     setError: (err: string) => void,
