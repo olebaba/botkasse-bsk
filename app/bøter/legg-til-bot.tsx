@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 
 type Spiller = {
     draktnummer: number;
@@ -22,13 +22,12 @@ export default function LeggTilBot({ spillere }: { spillere: Spiller[] }) {
         }
 
         try {
-            const response = await fetch('/api/boter', {
+            const response = await fetch('/api/boter/' + draktnummer, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    draktnummer,
                     beløp: parseFloat(beløp),
                     dato,
                     type,
