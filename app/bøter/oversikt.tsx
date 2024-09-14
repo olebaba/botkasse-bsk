@@ -29,7 +29,7 @@ export default function Oversikt({setError, spillere, setSpillere, setAlleNavn, 
 
     return (
         <>
-            <h1 className="text-3xl font-bold text-center mb-6">Lagkasseoversikt</h1>
+            <h1 className="text-3xl font-bold text-center mb-6">Bøter i Bækkelaget</h1>
             <table className="min-w-full bg-white border border-gray-200 shadow-lg">
                 <thead className="bg-gray-50">
                 <tr>
@@ -68,7 +68,7 @@ export default function Oversikt({setError, spillere, setSpillere, setAlleNavn, 
                                 onClick={() => markerBetalt(spiller.draktnummer)}
                                 className={`px-3 py-1 rounded ${
                                     spiller.betalt_alle
-                                        ? 'bg-yellow-500 text-white'
+                                        ? 'bg-red-500 text-white'
                                         : 'bg-green-500 text-white'
                                 } hover:bg-opacity-80`}
                             >
