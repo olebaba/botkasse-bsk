@@ -14,7 +14,7 @@ export default function Forside() {
         <div className="container mx-auto p-4">
             <BotTabell setError={setError} spillere={spillere} setSpillere={setSpillere}
                       setAlleNavn={setAlleNavn} alleNavn={alleNavn} />
-            <LeggTilBot spillere={spillere}/>
+            <LeggTilBot spillere={spillere} setSpillere={setSpillere}/>
         </div>
     );
 }

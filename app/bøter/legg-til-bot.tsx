@@ -1,18 +1,25 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, {useState} from 'react';
+import {Spiller} from "@/app/lib/spillereService";
 
-type Spiller = {
-    draktnummer: number;
-    navn?: string;
-};
-
-export default function LeggTilBot({ spillere }: { spillere: Spiller[] }) {
+export default function LeggTilBot({spillere, setSpillere}: {
+    spillere: Spiller[],
+    setSpillere: (value: (Spiller[])) => void
+}) {
     const [draktnummer, setDraktnummer] = useState<number | undefined>(undefined);
     const [beløp, setBeløp] = useState('');
     const [dato, setDato] = useState('');
     const [type, setType] = useState('');
     const [melding, setMelding] = useState<string | null>(null);
+
+    const oppdaterSpillerSummer = (draktnummer: number, ekstraBeløp: number) => {
+        setSpillere(spillere.map((spiller) =>
+            spiller.draktnummer === draktnummer
+                ? {...spiller, totalSum: (+spiller.totalSum + +ekstraBeløp)}
+                : spiller
+        ))
+    };
 
     const handleLeggTilBot = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -37,6 +44,8 @@ export default function LeggTilBot({ spillere }: { spillere: Spiller[] }) {
             if (!response.ok) {
                 throw new Error('Kunne ikke legge til bot.');
             }
+
+            oppdaterSpillerSummer(draktnummer, parseFloat(beløp))
 
             setMelding('Bot lagt til!');
             setDraktnummer(undefined);
