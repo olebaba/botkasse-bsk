@@ -1,5 +1,6 @@
 import {useState} from 'react';
 import {oppdaterSpiller, Spiller} from "@/app/lib/spillereService";
+import TabellData from "@/app/bøter/TabellData";
 
 interface Props {
     setError: (err: string) => void,
@@ -10,6 +11,7 @@ interface Props {
 }
 
 export default function BotTabell({setError, spillere, setSpillere, setAlleNavn, alleNavn}: Props) {
+    console.log(spillere);
     const oppdaterNavn = (draktnummer: number, navn: string) => {
         const oppdaterteNavn = {navn, [draktnummer]: navn};
         setAlleNavn(oppdaterteNavn);
@@ -63,8 +65,6 @@ export default function BotTabell({setError, spillere, setSpillere, setAlleNavn,
     return (
         <>
             <h1 className="text-3xl font-bold text-center mb-6">Bøter i Bækkelaget</h1>
-
-            {/* Toggle-knapper for kolonnevisning */}
             <div className="mb-4">
                 {kolonner.map((kolonne) => (
                     <button
@@ -98,9 +98,7 @@ export default function BotTabell({setError, spillere, setSpillere, setAlleNavn,
                 <tbody>
                 {spillere.map((spiller) => (
                     <tr key={spiller.draktnummer} className="hover:bg-gray-100">
-                        {visKolonner.draktnummer && (
-                            <td className="py-2 px-4 border-b">{spiller.draktnummer}</td>
-                        )}
+                        <TabellData verdi={spiller.draktnummer} erNok={false}/>
                         {visKolonner.navn && (
                             <td className="py-2 px-4 border-b">
                                 <input
@@ -112,27 +110,19 @@ export default function BotTabell({setError, spillere, setSpillere, setAlleNavn,
                                 />
                             </td>
                         )}
-                        {visKolonner.totalSum && (
-                            <td className="py-2 px-4 border-b">{spiller.totalSum} NOK</td>
-                        )}
-                        {visKolonner.betaltSesong && (
-                            <td className="py-2 px-4 border-b">{spiller.betaltSesong} NOK</td>
-                        )}
-                        {visKolonner.betaltMaaned && (
-                            <td className="py-2 px-4 border-b">{spiller.betaltMaaned} NOK </td>
-                        )}
-                        {visKolonner.utestaaende && (
-                            <td className="py-2 px-4 border-b">{spiller.totalSum} NOK</td>
-                        )}
+                        <TabellData verdi={spiller.totalSum} erNok={true}/>
+                        <TabellData verdi={spiller.betaltSesong} erNok={true}/>
+                        <TabellData verdi={spiller.betaltMaaned} erNok={true}/>
+                        <TabellData verdi={spiller.totalSum} erNok={true}/>
                         {visKolonner.status && (
                             <td className="py-2 px-4 border-b">
-                  <span
-                      className={`${
-                          spiller.betaltAlle ? 'text-green-600' : 'text-red-600'
-                      } font-semibold`}
-                  >
-                    {spiller.betaltAlle ? 'Betalt' : 'Ikke betalt'}
-                  </span>
+                                  <span
+                                      className={`${
+                                          spiller.betaltAlle ? 'text-green-600' : 'text-red-600'
+                                      } font-semibold`}
+                                  >
+                                    {spiller.betaltAlle ? 'Betalt' : 'Ikke betalt'}
+                                  </span>
                             </td>
                         )}
                         {visKolonner.handling && (

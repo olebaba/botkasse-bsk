@@ -34,7 +34,7 @@ export async function oppdaterSpiller(draktnummer: number, totalSum: number, erB
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ draktnummer, totalSum, erBetalt }),
+            body: JSON.stringify({draktnummer, totalSum, erBetalt}),
         });
 
         if (!res.ok) {
@@ -45,5 +45,25 @@ export async function oppdaterSpiller(draktnummer: number, totalSum: number, erB
     } catch (error) {
         console.error(error);
         throw new Error('Kunne ikke oppdatere spiller');
+    }
+}
+
+interface SummerForSpiller {
+    sumSisteMaaned: number,
+    sumSesong: number,
+    utestaaendeSum: number,
+}
+
+export async function hentSummerForSpiller(draktnummer: number): Promise<SummerForSpiller | null> {
+    try {
+        const res = await fetch('/api/boter/' + draktnummer);
+        if (!res.ok) {
+            console.log(res)
+            throw new Error('Feil ved henting av spillere');
+        }
+        return await res.json();
+    } catch (error) {
+        console.error(error);
+        throw new Error(`Kunne ikke hente sum for spller med draktnummer ${draktnummer}`);
     }
 }
