@@ -1,10 +1,10 @@
-// lib/spillereService.ts
-
 export type Spiller = {
     draktnummer: number;
-    total_sum: number;
-    betalt_alle: boolean;
+    totalSum: number;
+    betaltAlle: boolean;
     navn?: string
+    betaltSesong?: string
+    betaltMaaned?: string
 };
 
 /**
@@ -25,16 +25,16 @@ export async function hentSpillere(): Promise<Spiller[]> {
 }
 
 /**
- * Oppdaterer en spillers total_sum og betalingsstatus.
+ * Oppdaterer en spillers totalSum og betalingsstatus.
  */
-export async function oppdaterSpiller(draktnummer: number, total_sum: number, er_betalt: boolean): Promise<Spiller> {
+export async function oppdaterSpiller(draktnummer: number, totalSum: number, erBetalt: boolean): Promise<Spiller> {
     try {
         const res = await fetch('/api/spillere', {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ draktnummer, total_sum, er_betalt }),
+            body: JSON.stringify({ draktnummer, totalSum, erBetalt }),
         });
 
         if (!res.ok) {

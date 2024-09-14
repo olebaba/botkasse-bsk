@@ -12,8 +12,10 @@ export function useSpillereOgNavn() {
             // Hent spillernavn fra lokal JSON-fil
             const navnResponse = await fetch('/spillernavn.json');
             const navnData = await navnResponse.json();
-            const navnMap = navnData.reduce((acc: { [key: number]: string }, spiller: { draktnummer: number; navn: string }) => {
-                acc[spiller.draktnummer] = spiller.navn;
+            const navnMap = navnData.reduce((acc: { [key: number]: string }, spiller: Spiller) => {
+                if (spiller.navn) {
+                    acc[spiller.draktnummer] = spiller.navn;
+                }
                 return acc;
             }, {});
             setAlleNavn(navnMap);
