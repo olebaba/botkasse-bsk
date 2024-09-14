@@ -1,6 +1,11 @@
 import Laster from "@/app/ikoner/spinner";
 
-export default function TabellData({verdi, erNok}: { verdi: number | string | undefined; erNok: boolean }) {
+export default function TabellData({verdi, erNok, skalVises}: {
+    verdi: number | string | undefined,
+    erNok: boolean,
+    skalVises?: boolean
+}) {
+    if (!skalVises) return null;
     if (verdi === undefined) {
         return <td><Laster/></td>
     }

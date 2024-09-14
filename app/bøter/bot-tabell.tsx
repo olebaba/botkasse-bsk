@@ -98,7 +98,7 @@ export default function BotTabell({setError, spillere, setSpillere, setAlleNavn,
                 <tbody>
                 {spillere.map((spiller) => (
                     <tr key={spiller.draktnummer} className="hover:bg-gray-100">
-                        <TabellData verdi={spiller.draktnummer} erNok={false}/>
+                        <TabellData skalVises={visKolonner.draktnummer} verdi={spiller.draktnummer} erNok={false}/>
                         {visKolonner.navn && (
                             <td className="py-2 px-4 border-b">
                                 <input
@@ -110,10 +110,10 @@ export default function BotTabell({setError, spillere, setSpillere, setAlleNavn,
                                 />
                             </td>
                         )}
-                        <TabellData verdi={spiller.totalSum} erNok={true}/>
-                        <TabellData verdi={spiller.betaltSesong} erNok={true}/>
-                        <TabellData verdi={spiller.betaltMaaned} erNok={true}/>
-                        <TabellData verdi={spiller.totalSum} erNok={true}/>
+                        <TabellData skalVises={visKolonner.totalSum} verdi={spiller.totalSum} erNok={true}/>
+                        <TabellData skalVises={visKolonner.betaltSesong} verdi={spiller.betaltSesong} erNok={true}/>
+                        <TabellData skalVises={visKolonner.betaltMaaned} verdi={spiller.betaltMaaned} erNok={true}/>
+                        <TabellData skalVises={visKolonner.utestaaende} verdi={spiller.totalSum} erNok={true}/>
                         {visKolonner.status && (
                             <td className="py-2 px-4 border-b">
                                   <span
