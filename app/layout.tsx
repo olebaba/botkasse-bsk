@@ -22,15 +22,16 @@ export const metadata: Metadata = {
     openGraph: {
         title: "Bækkelaget botkasse",
         description: "Oversikt over bøter for spillere i bsk sitt A-lag",
-        images: "https://5bxxn0af98q9ysmf.public.blob.vercel-storage.com/ikoner/bsk-logo-stor-pR1XCVaymjIVxWskLzQM44RFqCikxQ",
+        images: "https://5bxxn0af98q9ysmf.public.blob.vercel-storage.com/ikoner/bsk-logo-full-stor-icgelOv4C6VMPTJ76EXCsDVhOhWCXo",
         type: "website",
         url: "https://botkasse-bsk.vercel.app/",
+        siteName: "Bækkelaget botkasse",
     },
     twitter: {
         site: "https://botkasse-bsk.vercel.app/",
         card: "summary_large_image",
         title: "Bækkelaget botkasse",
-        images: ["https://5bxxn0af98q9ysmf.public.blob.vercel-storage.com/ikoner/bsk-logo-stor-pR1XCVaymjIVxWskLzQM44RFqCikxQ"],
+        images: ["https://5bxxn0af98q9ysmf.public.blob.vercel-storage.com/ikoner/bsk-logo-full-stor-icgelOv4C6VMPTJ76EXCsDVhOhWCXo"],
         description: "Oversikt over bøter for spillere i bsk sitt A-lag"
     },
 };
