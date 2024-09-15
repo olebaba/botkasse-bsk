@@ -39,7 +39,7 @@ export default function Page() {
     if (error) return <p>{error}</p>;
 
     return (
-        <div className="container mx-auto p-4">
+        <div className="container mx-auto p-4 mt-28">
             <h1 className="text-3xl font-bold mb-6">Oversikt bøter</h1>
             <p>
                 <b>Bøtesatser for sesongen 2024/2025</b>: Gjelder alle spillere med kontrakt.

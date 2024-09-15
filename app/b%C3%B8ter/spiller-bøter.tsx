@@ -61,10 +61,13 @@ export default function SpillerBøter({setError, spillere, setSpillere, setAlleN
         }));
     };
 
+    const [visFilter, setVisFilter] = useState(false)
+
     return (
         <>
             <h1 className="text-3xl font-bold text-center mb-6">Spilleres bøter i BSK</h1>
-            <div className="mb-4">
+            <button onClick={() => setVisFilter(!visFilter)}>Vis filter</button>
+            {visFilter && (<div className="mb-4">
                 {kolonner.map((kolonne) => (
                     <button
                         key={kolonne.id}
@@ -76,7 +79,7 @@ export default function SpillerBøter({setError, spillere, setSpillere, setAlleN
                         {visKolonner[kolonne.id] ? `Skjul ${kolonne.navn}` : `Vis ${kolonne.navn}`}
                     </button>
                 ))}
-            </div>
+            </div>)}
 
             <table className="min-w-full bg-white border border-gray-200 shadow-lg">
                 <thead className="bg-gray-50">

@@ -10,7 +10,7 @@ export default function Forside() {
     if (error) return <p>{error}</p>;
 
     return (
-        <div className="container mx-auto p-4">
+        <div className="container mx-auto p-4 mt-28 overflow-scroll">
             <SpillerBøter setError={setError} spillere={spillere} setSpillere={setSpillere}
                           setAlleNavn={setAlleNavn} alleNavn={alleNavn}/>
         </div>

@@ -12,7 +12,7 @@ export default function Navbar() {
     };
 
     return (
-        <nav className="bg-yellow-300 border-b border-gray-200 relative z-10">
+        <nav className="bg-yellow-300 border-b border-gray-200 fixed top-0 w-full z-10">
             <div className="max-w-screen-xl flex justify-between items-center mx-auto p-4">
                 <Link href="/" className="flex items-center space-x-3">
                     <Logo />

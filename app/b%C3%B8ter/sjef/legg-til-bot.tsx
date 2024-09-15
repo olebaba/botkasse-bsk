@@ -69,7 +69,7 @@ export default function LeggTilBot({spillere, setSpillere}: {
     };
 
     return (
-        <div className="container mx-auto p-4">
+        <div className="container mx-auto p-4 mt-28">
             <h2 className="text-2xl font-bold mb-4">Legg til bot for en spiller</h2>
             {melding && <p className="mb-4 text-red-600">{melding}</p>}
             <form onSubmit={handleLeggTilBot}>
