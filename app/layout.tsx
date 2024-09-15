@@ -37,15 +37,23 @@ export default function RootLayout({
             <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#767676"/>
             <meta name="msapplication-TileColor" content="#ffc40d"/>
             <meta name="theme-color" content="#ffffff"/>
-            <meta property="og:title" content="Bækkelaget botkasse"/>
-            <meta property="og:description" content="Oversikt over bøter for spillere i bsk innebandy sitt A-lag"/>
+
             <meta property="og:url" content="https://botkasse-bsk.vercel.app/"/>
-            <meta property="og:image" content="https://5bxxn0af98q9ysmf.public.blob.vercel-storage.com/ikoner/bsk-logo-stor-qO1GlLdSZIxFqVpkvwXyfrI8PR0xWT"/>
+            <meta property="og:type" content="website"/>
+            <meta property="og:title" content="Bækkelaget botkasse"/>
+            <meta property="og:description" content="Oversikt over bøter for spillere i bsk sitt A-lag"/>
+            <meta property="og:image"
+                  content="https://opengraph.b-cdn.net/production/images/e46b9d01-061c-4428-acf7-114b2c738f27.png?token=q3amFkIagwqwwzRB4n66XLaPnwKp8bgR-0chHKA-u_w&height=814&width=800&expires=33262404377"/>
 
             <meta name="twitter:card" content="summary_large_image"/>
+            <meta property="twitter:domain" content="botkasse-bsk.vercel.app"/>
+            <meta property="twitter:url" content="https://botkasse-bsk.vercel.app/"/>
             <meta name="twitter:title" content="Bækkelaget botkasse"/>
-            <meta name="twitter:description" content="Oversikt over bøter for spillere i bsk innebandy sitt A-lag"/>
-            <meta name="twitter:image" content="https://5bxxn0af98q9ysmf.public.blob.vercel-storage.com/ikoner/bsk-logo-stor-qO1GlLdSZIxFqVpkvwXyfrI8PR0xWT"/>
+            <meta name="twitter:description"
+                  content="Oversikt over bøter for spillere i bsk sitt A-lag"/>
+            <meta name="twitter:image"
+                  content="https://opengraph.b-cdn.net/production/images/e46b9d01-061c-4428-acf7-114b2c738f27.png?token=q3amFkIagwqwwzRB4n66XLaPnwKp8bgR-0chHKA-u_w&height=814&width=800&expires=33262404377"/>
+
         </Head>
         <body
             className={`${geistSans.variable} ${geistMono.variable} antialiased`}
