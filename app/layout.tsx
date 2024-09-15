@@ -43,7 +43,9 @@ export default function RootLayout({
             <meta property="og:title" content="Bækkelaget botkasse"/>
             <meta property="og:description" content="Oversikt over bøter for spillere i bsk sitt A-lag"/>
             <meta property="og:image"
-                  content="https://opengraph.b-cdn.net/production/images/e46b9d01-061c-4428-acf7-114b2c738f27.png?token=q3amFkIagwqwwzRB4n66XLaPnwKp8bgR-0chHKA-u_w&height=814&width=800&expires=33262404377"/>
+                  content="https://5bxxn0af98q9ysmf.public.blob.vercel-storage.com/ikoner/bsk-logo-stor-pR1XCVaymjIVxWskLzQM44RFqCikxQ"/>
+            <meta property="og:image:width" content="2796"/>
+            <meta property="og:image:height" content="1087"/>
 
             <meta name="twitter:card" content="summary_large_image"/>
             <meta property="twitter:domain" content="botkasse-bsk.vercel.app"/>
@@ -52,7 +54,7 @@ export default function RootLayout({
             <meta name="twitter:description"
                   content="Oversikt over bøter for spillere i bsk sitt A-lag"/>
             <meta name="twitter:image"
-                  content="https://opengraph.b-cdn.net/production/images/e46b9d01-061c-4428-acf7-114b2c738f27.png?token=q3amFkIagwqwwzRB4n66XLaPnwKp8bgR-0chHKA-u_w&height=814&width=800&expires=33262404377"/>
+                  content="https://5bxxn0af98q9ysmf.public.blob.vercel-storage.com/ikoner/bsk-logo-stor-pR1XCVaymjIVxWskLzQM44RFqCikxQ"/>
 
         </Head>
         <body
