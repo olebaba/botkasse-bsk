@@ -48,6 +48,7 @@ export default function Navbar() {
                         <Link
                             href="/"
                             className="text-gray-800 bg-white rounded px-5 py-3 hover:bg-blue-600 hover:text-white"
+                            onClick={() => setIsMenuOpen(false)}
                         >
                             Spilleres bøter
                         </Link>
@@ -56,6 +57,7 @@ export default function Navbar() {
                         <Link
                             href={'/' + encodeURIComponent('bøter')}
                             className="text-gray-800 bg-white rounded px-5 py-3 hover:bg-blue-600 hover:text-white"
+                            onClick={() => setIsMenuOpen(false)}
                         >
                             Oversikt typer bøter
                         </Link>
