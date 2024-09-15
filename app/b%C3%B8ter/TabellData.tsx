@@ -10,6 +10,6 @@ export default function TabellData({verdi, erNok, skalVises}: {
         return <td><Laster/></td>
     }
     return (
-        <td className="py-2 px-4 border-b">{verdi} {erNok ? 'NOK' : ''}</td>
+        <td className="py-2 px-4 border-b text-center">{verdi} {erNok ? 'kroner' : ''}</td>
     )
 }

@@ -10,7 +10,7 @@ interface Props {
     alleNavn: { [key: number]: string }
 }
 
-export default function BotTabell({setError, spillere, setSpillere, setAlleNavn, alleNavn}: Props) {
+export default function SpillerBøter({setError, spillere, setSpillere, setAlleNavn, alleNavn}: Props) {
     const oppdaterNavn = (draktnummer: number, navn: string) => {
         const oppdaterteNavn = {navn, [draktnummer]: navn};
         setAlleNavn(oppdaterteNavn);
@@ -44,13 +44,13 @@ export default function BotTabell({setError, spillere, setSpillere, setAlleNavn,
     // Tilstand for å holde styr på hvilke kolonner som vises
     const [visKolonner, setVisKolonner] = useState<{ [index: string]: boolean }>({
         draktnummer: true,
-        navn: true,
-        totalSum: true,
-        betaltSesong: true,
+        navn: false,
+        totalSum: false,
+        betaltSesong: false,
         betaltMaaned: true,
         utestaaende: true,
         status: true,
-        handling: true,
+        handling: false,
     });
 
     // Funksjon for å toggle kolonnevisning
@@ -63,7 +63,7 @@ export default function BotTabell({setError, spillere, setSpillere, setAlleNavn,
 
     return (
         <>
-            <h1 className="text-3xl font-bold text-center mb-6">Bøter i Bækkelaget</h1>
+            <h1 className="text-3xl font-bold text-center mb-6">Spilleres bøter i BSK</h1>
             <div className="mb-4">
                 {kolonner.map((kolonne) => (
                     <button
@@ -86,7 +86,7 @@ export default function BotTabell({setError, spillere, setSpillere, setAlleNavn,
                             visKolonner[kolonne.id] && (
                                 <th
                                     key={kolonne.id}
-                                    className="py-2 px-4 text-left font-semibold text-gray-700 border-b"
+                                    className="py-2 px-4 left font-semibold text-gray-700 border-b text-center"
                                 >
                                     {kolonne.navn}
                                 </th>
@@ -114,7 +114,7 @@ export default function BotTabell({setError, spillere, setSpillere, setAlleNavn,
                         <TabellData skalVises={visKolonner.betaltMaaned} verdi={spiller.betaltMaaned} erNok={true}/>
                         <TabellData skalVises={visKolonner.utestaaende} verdi={spiller.totalSum} erNok={true}/>
                         {visKolonner.status && (
-                            <td className="py-2 px-4 border-b">
+                            <td className="py-2 px-4 border-b text-center">
                                   <span
                                       className={`${
                                           spiller.betaltAlle ? 'text-green-600' : 'text-red-600'
