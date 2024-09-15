@@ -41,8 +41,11 @@ export default function Page() {
     return (
         <div className="container mx-auto p-4">
             <h1 className="text-3xl font-bold mb-6">Oversikt bøter</h1>
-            <p>Bøtesatser for sesongen 24/25. Beløpet dobles på kampdager.
-                Ved uenighet blir det rettssak, der botsjef bestemmer. Junior-spillere betaler halv pris 👶</p>
+            <p>
+                <b>Bøtesatser for sesongen 2024/2025</b>: Gjelder alle spillere med kontrakt.
+                Beløpene dobles på kampdager, og ved uenigheter avgjøres saken i en rettssak der botsjefen har det siste ordet.
+                Bøtene betales via Vipps til botsjefen innen utgangen av hver måned.
+            </p>
             <h2 className="text-2xl my-4">Kontaktinfo</h2>
             <p>Trener: Bjørn Aasmund Fredsted, mob: 48 35 68 55</p>
             <p>Botsjef: Ole Bastian Løchen, mob: 97 51 30 23</p>
