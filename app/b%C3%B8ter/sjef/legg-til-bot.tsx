@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
-import {Spiller} from "@/app/lib/spillereService";
 import {useBotTyper} from "@/app/hooks/useBotTyper";
+import {Spiller} from "@/app/lib/spillereService";
 
 export default function LeggTilBot({spillere, setSpillere}: {
     spillere: Spiller[],
