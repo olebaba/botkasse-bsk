@@ -38,7 +38,7 @@ export default function SpillerBøter({setError, spillere, setSpillere, setAlleN
         {id: 'betaltMaaned', navn: 'Betalt denne måneden'},
         {id: 'utestaaende', navn: 'Utestående beløp'},
         {id: 'status', navn: 'Status'},
-        {id: 'handling', navn: 'Handling'}
+        // {id: 'handling', navn: 'Handling'}
     ];
 
     // Tilstand for å holde styr på hvilke kolonner som vises
@@ -50,7 +50,7 @@ export default function SpillerBøter({setError, spillere, setSpillere, setAlleN
         betaltMaaned: true,
         utestaaende: true,
         status: true,
-        handling: false,
+        // handling: false,
     });
 
     // Funksjon for å toggle kolonnevisning
