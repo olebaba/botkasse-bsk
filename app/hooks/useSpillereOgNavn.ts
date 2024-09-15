@@ -10,7 +10,7 @@ export function useSpillereOgNavn() {
 
     // Først, hent spillere og navn
     useEffect(() => {
-        const fetchSpillereOgNavn = async () => {
+        const setTestData = async () => {
             const navnResponse = await fetch('/spillernavn.json');
             const navnData = await navnResponse.json();
             const navnMap = navnData.reduce((acc: { [key: number]: string }, spiller: Spiller) => {
@@ -20,7 +20,12 @@ export function useSpillereOgNavn() {
                 return acc;
             }, {});
             setAlleNavn(navnMap);
+        }
 
+        const fetchSpillereOgNavn = async () => {
+            setTestData().catch((error) => {
+                console.warn('Fant ikke testdata', error);
+            })
             // Hent spillere fra API
             const spillere = await hentSpillere();
             setSpillere(spillere);
