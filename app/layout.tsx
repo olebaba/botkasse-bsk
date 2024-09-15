@@ -19,6 +19,20 @@ const geistMono = localFont({
 export const metadata: Metadata = {
     title: "Bækkelaget botkasse",
     description: "Oversikt over bøter for spillere i bsk sitt A-lag",
+    openGraph: {
+        title: "Bækkelaget botkasse",
+        description: "Oversikt over bøter for spillere i bsk sitt A-lag",
+        images: "https://5bxxn0af98q9ysmf.public.blob.vercel-storage.com/ikoner/bsk-logo-stor-pR1XCVaymjIVxWskLzQM44RFqCikxQ",
+        type: "website",
+        url: "https://botkasse-bsk.vercel.app/",
+    },
+    twitter: {
+        site: "https://botkasse-bsk.vercel.app/",
+        card: "summary_large_image",
+        title: "Bækkelaget botkasse",
+        images: ["https://5bxxn0af98q9ysmf.public.blob.vercel-storage.com/ikoner/bsk-logo-stor-pR1XCVaymjIVxWskLzQM44RFqCikxQ"],
+        description: "Oversikt over bøter for spillere i bsk sitt A-lag"
+    },
 };
 
 export default function RootLayout({
@@ -37,25 +51,6 @@ export default function RootLayout({
             <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#767676"/>
             <meta name="msapplication-TileColor" content="#ffc40d"/>
             <meta name="theme-color" content="#ffffff"/>
-
-            <meta property="og:url" content="https://botkasse-bsk.vercel.app/"/>
-            <meta property="og:type" content="website"/>
-            <meta property="og:title" content="Bækkelaget botkasse"/>
-            <meta property="og:description" content="Oversikt over bøter for spillere i bsk sitt A-lag"/>
-            <meta property="og:image"
-                  content="https://5bxxn0af98q9ysmf.public.blob.vercel-storage.com/ikoner/bsk-logo-stor-pR1XCVaymjIVxWskLzQM44RFqCikxQ"/>
-            <meta property="og:image:width" content="2796"/>
-            <meta property="og:image:height" content="1087"/>
-
-            <meta name="twitter:card" content="summary_large_image"/>
-            <meta property="twitter:domain" content="botkasse-bsk.vercel.app"/>
-            <meta property="twitter:url" content="https://botkasse-bsk.vercel.app/"/>
-            <meta name="twitter:title" content="Bækkelaget botkasse"/>
-            <meta name="twitter:description"
-                  content="Oversikt over bøter for spillere i bsk sitt A-lag"/>
-            <meta name="twitter:image"
-                  content="https://5bxxn0af98q9ysmf.public.blob.vercel-storage.com/ikoner/bsk-logo-stor-pR1XCVaymjIVxWskLzQM44RFqCikxQ"/>
-
         </Head>
         <body
             className={`${geistSans.variable} ${geistMono.variable} antialiased`}
