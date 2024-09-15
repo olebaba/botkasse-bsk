@@ -2,6 +2,7 @@
 
 import React, {useEffect, useState} from 'react';
 import {Table} from "@/app/komponenter/table";
+import Telefonnummer from "@/app/komponenter/Telefonnummer";
 
 export type BotType = {
     id: number;
@@ -43,12 +44,17 @@ export default function Page() {
             <h1 className="text-3xl font-bold mb-6">Oversikt bøter</h1>
             <p>
                 <b>Bøtesatser for sesongen 2024/2025</b>: Gjelder alle spillere med kontrakt.
-                Beløpene dobles på kampdager, og ved uenigheter avgjøres saken i en rettssak der botsjefen har det siste ordet.
+                Beløpene dobles på kampdager, og ved uenigheter avgjøres saken i en rettssak der botsjefen har det siste
+                ordet.
                 Bøtene betales via Vipps til botsjefen innen utgangen av hver måned.
             </p>
             <h2 className="text-2xl my-4">Kontaktinfo</h2>
-            <p>Trener: Bjørn Aasmund Fredsted, mob: 48 35 68 55</p>
-            <p>Botsjef: Ole Bastian Løchen, mob: 97 51 30 23</p>
+            <p>
+                Trener: Bjørn Aasmund Fredsted,<Telefonnummer nummer="48 35 68 55"/>
+            </p>
+            <p>
+                Botsjef: Ole Bastian Løchen, <Telefonnummer nummer="97 51 30 23"/>
+            </p>
             <Table botTyper={botTyper}/>
         </div>
     );
