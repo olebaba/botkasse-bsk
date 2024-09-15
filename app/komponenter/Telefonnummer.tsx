@@ -15,9 +15,9 @@ export default function Telefonnummer({nummer}: { nummer: string }) {
     };
 
     return (
-        <div>
+        <div className="flex justify-start">
             <p>mob: {nummer}</p>
-            <button onClick={copyToClipboard} className="text-blue-600">
+            <button onClick={copyToClipboard} className="text-blue-600 ml-1">
                 {copied ? 'Kopiert!' : 'Kopier nummer'}
             </button>
         </div>
