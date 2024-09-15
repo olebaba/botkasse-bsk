@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {Table} from "@/app/komponenter/table";
 
 export type BotType = {
@@ -41,7 +41,10 @@ export default function Page() {
     return (
         <div className="container mx-auto p-4">
             <h1 className="text-3xl font-bold mb-6">Oversikt bøter</h1>
-            <Table botTyper={botTyper} />
+            <p>Bøtesatser for sesongen 24/25. Beløpet dobles på kampdager.</p>
+            <p>Ved uenighet blir det rettssak, der botsjef bestemmer.</p>
+            <p>Junior-spillere betaler halv pris 👶</p>
+            <Table botTyper={botTyper}/>
         </div>
     );
 }
