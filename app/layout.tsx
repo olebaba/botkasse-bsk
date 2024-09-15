@@ -40,14 +40,12 @@ export default function RootLayout({
             <meta property="og:title" content="Bækkelaget botkasse"/>
             <meta property="og:description" content="Oversikt over bøter for spillere i bsk innebandy sitt A-lag"/>
             <meta property="og:url" content="https://botkasse-bsk.vercel.app/"/>
-            <meta property="og:image" content="https://www.bekkelagets.no/kunde/grafikk/bekkelagets-sk-logo.svg"/>
-            <meta property="og:image:width" content="1193"/>
-            <meta property="og:image:height" content="1279"/>
+            <meta property="og:image" content="https://5bxxn0af98q9ysmf.public.blob.vercel-storage.com/ikoner/bsk-logo-LMlQwuDwPdEBIRPSKCgDNc5uOc4ZuS.png"/>
 
             <meta name="twitter:card" content="summary_large_image"/>
             <meta name="twitter:title" content="Bækkelaget botkasse"/>
             <meta name="twitter:description" content="Oversikt over bøter for spillere i bsk innebandy sitt A-lag"/>
-            <meta name="twitter:image" content="https://www.bekkelagets.no/kunde/grafikk/bekkelagets-sk-logo.svg"/>
+            <meta name="twitter:image" content="https://5bxxn0af98q9ysmf.public.blob.vercel-storage.com/ikoner/bsk-logo-LMlQwuDwPdEBIRPSKCgDNc5uOc4ZuS.png"/>
         </Head>
         <body
             className={`${geistSans.variable} ${geistMono.variable} antialiased`}
