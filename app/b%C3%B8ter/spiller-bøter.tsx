@@ -81,43 +81,44 @@ export default function SpillerBøter({setError, spillere, setSpillere, setAlleN
                 ))}
             </div>)}
 
-            <table className="min-w-full bg-white border border-gray-200 shadow-lg">
-                <thead className="bg-gray-50">
-                <tr>
-                    {kolonner.map(
-                        (kolonne) =>
-                            visKolonner[kolonne.id] && (
-                                <th
-                                    key={kolonne.id}
-                                    className="py-2 px-4 left font-semibold text-gray-700 border-b text-center"
-                                >
-                                    {kolonne.navn}
-                                </th>
-                            )
-                    )}
-                </tr>
-                </thead>
-                <tbody>
-                {spillere.map((spiller) => (
-                    <tr key={spiller.draktnummer} className="hover:bg-gray-100">
-                        <TabellData skalVises={visKolonner.draktnummer} verdi={spiller.draktnummer} erNok={false}/>
-                        {visKolonner.navn && (
-                            <td className="py-2 px-4 border-b">
-                                <input
-                                    type="text"
-                                    value={alleNavn[spiller.draktnummer] || ''}
-                                    placeholder="Legg til navn"
-                                    onChange={(e) => oppdaterNavn(spiller.draktnummer, e.target.value)}
-                                    className="border rounded px-2 py-1 w-full"
-                                />
-                            </td>
+            <div className="overflow-scroll">
+                <table className="min-w-full bg-white border border-gray-200 shadow-lg">
+                    <thead className="bg-gray-50">
+                    <tr>
+                        {kolonner.map(
+                            (kolonne) =>
+                                visKolonner[kolonne.id] && (
+                                    <th
+                                        key={kolonne.id}
+                                        className="py-2 px-4 left font-semibold text-gray-700 border-b text-center"
+                                    >
+                                        {kolonne.navn}
+                                    </th>
+                                )
                         )}
-                        <TabellData skalVises={visKolonner.totalSum} verdi={spiller.totalSum} erNok={true}/>
-                        <TabellData skalVises={visKolonner.betaltSesong} verdi={spiller.betaltSesong} erNok={true}/>
-                        <TabellData skalVises={visKolonner.betaltMaaned} verdi={spiller.betaltMaaned} erNok={true}/>
-                        <TabellData skalVises={visKolonner.utestaaende} verdi={spiller.totalSum} erNok={true}/>
-                        {visKolonner.status && (
-                            <td className="py-2 px-4 border-b text-center">
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {spillere.map((spiller) => (
+                        <tr key={spiller.draktnummer} className="hover:bg-gray-100">
+                            <TabellData skalVises={visKolonner.draktnummer} verdi={spiller.draktnummer} erNok={false}/>
+                            {visKolonner.navn && (
+                                <td className="py-2 px-4 border-b">
+                                    <input
+                                        type="text"
+                                        value={alleNavn[spiller.draktnummer] || ''}
+                                        placeholder="Legg til navn"
+                                        onChange={(e) => oppdaterNavn(spiller.draktnummer, e.target.value)}
+                                        className="border rounded px-2 py-1 w-full"
+                                    />
+                                </td>
+                            )}
+                            <TabellData skalVises={visKolonner.totalSum} verdi={spiller.totalSum} erNok={true}/>
+                            <TabellData skalVises={visKolonner.betaltSesong} verdi={spiller.betaltSesong} erNok={true}/>
+                            <TabellData skalVises={visKolonner.betaltMaaned} verdi={spiller.betaltMaaned} erNok={true}/>
+                            <TabellData skalVises={visKolonner.utestaaende} verdi={spiller.totalSum} erNok={true}/>
+                            {visKolonner.status && (
+                                <td className="py-2 px-4 border-b text-center">
                                   <span
                                       className={`${
                                           spiller.betaltAlle ? 'text-green-600' : 'text-red-600'
@@ -125,24 +126,25 @@ export default function SpillerBøter({setError, spillere, setSpillere, setAlleN
                                   >
                                     {spiller.betaltAlle ? 'Betalt' : 'Ikke betalt'}
                                   </span>
-                            </td>
-                        )}
-                        {visKolonner.handling && (
-                            <td className="py-2 px-4 border-b">
-                                <button
-                                    onClick={() => markerBetalt(spiller.draktnummer)}
-                                    className={`px-3 py-1 rounded ${
-                                        spiller.betaltAlle ? 'bg-red-500 text-white' : 'bg-green-500 text-white'
-                                    } hover:bg-opacity-80`}
-                                >
-                                    {spiller.betaltAlle ? 'Marker som ikke betalt' : 'Marker som betalt'}
-                                </button>
-                            </td>
-                        )}
-                    </tr>
-                ))}
-                </tbody>
-            </table>
+                                </td>
+                            )}
+                            {visKolonner.handling && (
+                                <td className="py-2 px-4 border-b">
+                                    <button
+                                        onClick={() => markerBetalt(spiller.draktnummer)}
+                                        className={`px-3 py-1 rounded ${
+                                            spiller.betaltAlle ? 'bg-red-500 text-white' : 'bg-green-500 text-white'
+                                        } hover:bg-opacity-80`}
+                                    >
+                                        {spiller.betaltAlle ? 'Marker som ikke betalt' : 'Marker som betalt'}
+                                    </button>
+                                </td>
+                            )}
+                        </tr>
+                    ))}
+                    </tbody>
+                </table>
+            </div>
         </>
     );
 }

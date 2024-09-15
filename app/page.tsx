@@ -11,7 +11,7 @@ export default function Forside() {
     if (error) return <p>{error}</p>;
 
     return (
-        <div className="container mx-auto p-4 mt-24 overflow-scroll">
+        <div className="container mx-auto p-4 mt-24">
             <h3 className="text-xl mt-2">Hvilke bøter kan man få?</h3>
             <Link href={encodeURIComponent("bøter")} className="text-blue-600">Sjekk oversikt her</Link>
             <SpillerBøter setError={setError} spillere={spillere} setSpillere={setSpillere}
