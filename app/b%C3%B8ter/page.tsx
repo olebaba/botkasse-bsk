@@ -46,7 +46,10 @@ export default function Page() {
                 <b>Bøtesatser for sesongen 2024/2025</b>: Gjelder alle spillere med kontrakt.
                 Beløpene dobles på kampdager, og ved uenigheter avgjøres saken i en rettssak der botsjefen har det siste
                 ordet.
-                Bøtene betales via Vipps til botsjefen innen utgangen av hver måned.
+                Bøtene betales via Vipps til botsjefen innen utgangen av hver måned 🗓️
+            </p>
+            <p className="mt-2">
+                Bøtene går til lagfester, så alle bidrag går kun tilbake til laget 🍻
             </p>
             <h2 className="text-2xl my-4">Kontaktinfo</h2>
             <p>
