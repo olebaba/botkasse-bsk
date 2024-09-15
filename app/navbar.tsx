@@ -21,7 +21,7 @@ export default function Navbar() {
                         </li>
                         <li>
                             <Link
-                                href={encodeURIComponent('bøter')}
+                                href={'/' + encodeURIComponent('bøter')}
                                 className="text-gray-800 bg-white rounded px-3 py-2 hover:bg-blue-600 hover:text-white"
                             >
                                 Oversikt typer bøter
@@ -29,7 +29,7 @@ export default function Navbar() {
                         </li>
                         <li>
                             <Link
-                                href={encodeURIComponent('bøter') + '/sjef'}
+                                href={'/' + encodeURIComponent('bøter') + '/sjef'}
                                 className="text-gray-800 bg-white rounded px-3 py-2 hover:bg-blue-600 hover:text-white"
                             >
                                 Botsjef 🔒
