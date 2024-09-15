@@ -30,7 +30,6 @@ export default function RootLayout({
         <html lang="no">
         <Head>
             <meta charSet="utf-8"/>
-            <meta lang="no-nb"/>
             <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"/>
             <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"/>
             <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"/>
@@ -41,7 +40,14 @@ export default function RootLayout({
             <meta property="og:title" content="Bækkelaget botkasse"/>
             <meta property="og:description" content="Oversikt over bøter for spillere i bsk innebandy sitt A-lag"/>
             <meta property="og:url" content="https://botkasse-bsk.vercel.app/"/>
-            <meta property="og:image" content="https://www.bekkelagets.no/kunde/grafikk/bekkelagets-sk-logo.svg"/>
+            <meta property="og:image" content="https://www.bekkelagets.no/kunde/grafikk/bekkelagets-sk-logo.png"/>
+            <meta property="og:image:width" content="1200"/>
+            <meta property="og:image:height" content="630"/>
+
+            <meta name="twitter:card" content="summary_large_image"/>
+            <meta name="twitter:title" content="Bækkelaget botkasse"/>
+            <meta name="twitter:description" content="Oversikt over bøter for spillere i bsk innebandy sitt A-lag"/>
+            <meta name="twitter:image" content="https://www.bekkelagets.no/kunde/grafikk/bekkelagets-sk-logo.png"/>
         </Head>
         <body
             className={`${geistSans.variable} ${geistMono.variable} antialiased`}
