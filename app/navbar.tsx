@@ -27,14 +27,14 @@ export default function Navbar() {
                                 Oversikt typer bøter
                             </Link>
                         </li>
-                        <li>
-                            <Link
-                                href={'/' + encodeURIComponent('bøter') + '/sjef'}
-                                className="text-gray-800 bg-white rounded px-3 py-2 hover:bg-blue-600 hover:text-white"
-                            >
-                                Botsjef 🔒
-                            </Link>
-                        </li>
+                        {/*<li>*/}
+                        {/*    <Link*/}
+                        {/*        href={'/' + encodeURIComponent('bøter') + '/sjef'}*/}
+                        {/*        className="text-gray-800 bg-white rounded px-3 py-2 hover:bg-blue-600 hover:text-white"*/}
+                        {/*    >*/}
+                        {/*        Botsjef 🔒*/}
+                        {/*    </Link>*/}
+                        {/*</li>*/}
                     </ul>
                 </div>
             </div>
