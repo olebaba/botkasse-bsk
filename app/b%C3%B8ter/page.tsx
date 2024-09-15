@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 
-type BotType = {
+export type BotType = {
     id: number;
     navn: string;
     beløp: number;

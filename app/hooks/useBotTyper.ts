@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import {BotType} from "@/app/b%C3%B8ter/page";
 
 // Custom hook for å hente og håndtere bot-typer
 export function useBotTyper() {
@@ -14,7 +15,8 @@ export function useBotTyper() {
                 throw new Error('Feil ved henting av bot-typer');
             }
             const data = await response.json();
-            setBotTyper(data);
+            console.log(data)
+            setBotTyper(data.map((botType: BotType) => botType.navn));
         };
 
         fetchBotTyper()
