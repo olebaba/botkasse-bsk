@@ -4,8 +4,9 @@ import React, { useEffect, useState } from 'react';
 
 type BotType = {
     id: number;
-    type: string;
-    standard_belop: number;
+    navn: string;
+    beløp: number;
+    beskrivelse: string;
 };
 
 export default function Page() {
@@ -38,19 +39,21 @@ export default function Page() {
 
     return (
         <div className="container mx-auto p-4">
-            <h1 className="text-3xl font-bold mb-6">Oversikt over bøtetyper</h1>
+            <h1 className="text-3xl font-bold mb-6">Oversikt bøter</h1>
             <table className="min-w-full bg-white border border-gray-200 shadow-lg">
                 <thead className="bg-gray-50">
                 <tr>
                     <th className="py-2 px-4 text-left font-semibold text-gray-700 border-b">Forseelse</th>
                     <th className="py-2 px-4 text-left font-semibold text-gray-700 border-b">Standard Beløp (NOK)</th>
+                    <th className="py-2 px-4 text-left font-semibold text-gray-700 border-b">Beskrivelse</th>
                 </tr>
                 </thead>
                 <tbody>
                 {botTyper.map((botType) => (
                     <tr key={botType.id} className="hover:bg-gray-100">
-                        <td className="py-2 px-4 border-b">{botType.type}</td>
-                        <td className="py-2 px-4 border-b">{botType.standard_belop} NOK</td>
+                        <td className="py-2 px-4 border-b">{botType.navn}</td>
+                        <td className="py-2 px-4 border-b">{botType.beløp} NOK</td>
+                        <td className="py-2 px-4 border-b">{botType.beskrivelse}</td>
                     </tr>
                 ))}
                 </tbody>
