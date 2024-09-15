@@ -35,11 +35,7 @@ export function useSpillereOgNavn() {
         const oppdaterSpillereMedBoter = async (spillere: Spiller[]) => {
             const spillereMedSummer = await Promise.all(
                 spillere.map(async (spiller) => {
-                    // Hent summer for hver spiller
                     const summerForSpiller = await hentSummerForSpiller(spiller.draktnummer)
-                    console.log(summerForSpiller);
-
-                    // Returner spilleren med de nye summerte verdiene
                     return {
                         ...spiller,
                         ...summerForSpiller,

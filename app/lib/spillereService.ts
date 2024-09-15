@@ -58,7 +58,6 @@ export async function hentSummerForSpiller(draktnummer: number): Promise<SummerF
     try {
         const res = await fetch('/api/boter/' + draktnummer);
         if (!res.ok) {
-            console.log(res)
             throw new Error('Feil ved henting av spillere');
         }
         return await res.json();

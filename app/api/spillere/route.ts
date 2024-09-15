@@ -20,7 +20,7 @@ export async function GET() {
             spillere: typedSpillere
         }, {status: 200});
     } catch (error) {
-        console.log(error);
+        console.error(error);
         return NextResponse.json({error: 'Feil ved henting av spillere'}, {status: 500});
     }
 }

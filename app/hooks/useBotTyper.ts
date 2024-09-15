@@ -15,7 +15,6 @@ export function useBotTyper() {
                 throw new Error('Feil ved henting av bot-typer');
             }
             const data = await response.json();
-            console.log(data)
             setBotTyper(data.map((botType: BotType) => botType.navn));
         };
 

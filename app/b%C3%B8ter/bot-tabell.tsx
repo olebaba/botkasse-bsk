@@ -11,7 +11,6 @@ interface Props {
 }
 
 export default function BotTabell({setError, spillere, setSpillere, setAlleNavn, alleNavn}: Props) {
-    console.log(spillere);
     const oppdaterNavn = (draktnummer: number, navn: string) => {
         const oppdaterteNavn = {navn, [draktnummer]: navn};
         setAlleNavn(oppdaterteNavn);
