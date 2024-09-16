@@ -52,12 +52,8 @@ export default function Page() {
                 Bøtene går til lagfester, så alle bidrag går kun tilbake til laget 🍻
             </p>
             <h2 className="text-2xl my-4">Kontaktinfo</h2>
-            <p>
-                Trener: Bjørn Aasmund Fredsted,<Telefonnummer nummer="48 35 68 55"/>
-            </p>
-            <p>
-                Botsjef: Ole Bastian Løchen, <Telefonnummer nummer="97 51 30 23"/>
-            </p>
+            Trener: Bjørn Aasmund Fredsted,<Telefonnummer nummer="48 35 68 55"/>
+            Botsjef: Ole Bastian Løchen, <Telefonnummer nummer="97 51 30 23"/>
             <Table botTyper={botTyper}/>
         </div>
     );
