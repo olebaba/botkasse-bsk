@@ -1,4 +1,4 @@
-import React from "react";
+import React, {type ReactElement} from "react";
 import type {Forseelse} from "@/app/b%C3%B8ter/page";
 
 interface TableProps {
@@ -11,9 +11,9 @@ export const Table: React.FC<TableProps> = ({botTyper}) => {
         <table className="w-full mt-4 bg-white border border-gray-200 shadow-lg">
             <thead className="bg-gray-50">
             <tr>
-                <TableHeaderCell>Forseelse</TableHeaderCell>
-                <TableHeaderCell>Standard Beløp</TableHeaderCell>
-                <TableHeaderCell>Beskrivelse</TableHeaderCell>
+                <TableHeaderCell tekst="Forseelse" />
+                <TableHeaderCell tekst="Standard Beløp" />
+                <TableHeaderCell tekst="Beskrivelse" />
             </tr>
             </thead>
             <tbody>
@@ -33,21 +33,21 @@ interface TableRowProps {
 const TableRow: React.FC<TableRowProps> = ({botType, isEven}) => {
     return (
         <tr className={`${isEven ? 'bg-gray-50' : 'bg-white'} hover:bg-yellow-100`}>
-            <TableCell>{botType.navn}</TableCell>
-            <TableCell>{botType.beløp} kroner</TableCell>
-            <TableCell>{botType.beskrivelse}</TableCell>
+            <TableCell tekst={botType.navn} />
+            <TableCell tekst={botType.beløp + 'kroner'} />
+            <TableCell tekst={botType.beskrivelse} />
         </tr>
     );
 };
 
-const TableCell = ({children}: any) => {
-    return <td className="py-3 px-4 border-b text-gray-700">{children}</td>;
+const TableCell = ({tekst}: { tekst: string }): ReactElement => {
+    return <td className="py-3 px-4 border-b text-gray-700">{tekst}</td>;
 };
 
-const TableHeaderCell = ({children}: any) => {
+const TableHeaderCell = ({tekst}: { tekst: string }) => {
     return (
         <th className="py-3 px-4 text-left font-semibold text-gray-700 border-b">
-            {children}
+            {tekst}
         </th>
     );
 };

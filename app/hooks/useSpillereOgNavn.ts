@@ -61,7 +61,7 @@ export function useSpillereOgNavn() {
             .finally(() => {
                 setLoading(false);
             })
-    }, []);
+    }, [hentetSummer]);
 
 
     return {spillere, setSpillere, alleNavn, setAlleNavn, loading, error, setError};
