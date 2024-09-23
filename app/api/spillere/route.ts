@@ -43,6 +43,7 @@ export async function PATCH(request: Request) {
 
         return NextResponse.json({spiller: oppdatertSpiller.rows[0]}, {status: 200});
     } catch (error) {
+        console.error(error);
         return NextResponse.json({error: 'Feil ved oppdatering av spiller'}, {status: 500});
     }
 }

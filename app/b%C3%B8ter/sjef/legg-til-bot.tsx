@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {useForseelser} from "@/app/hooks/useForseelser";
 import {Spiller} from "@/app/lib/spillereService";
-import {number} from "prop-types";
+import dayjs from "dayjs";
 
 export default function LeggTilBot({spillere, setSpillere}: {
     spillere: Spiller[],
@@ -10,7 +10,7 @@ export default function LeggTilBot({spillere, setSpillere}: {
     const {forseelser} = useForseelser(); // Custom hook for bot-typer
     const [draktnummer, setDraktnummer] = useState<number | undefined>(undefined);
     const [beløp, setBeløp] = useState(0);
-    const [dato, setDato] = useState('');
+    const [dato, setDato] = useState(dayjs().format('YYYY-MM-DD'));
     const [forseelsesId, setForseelsesId] = useState('');
     const [melding, setMelding] = useState<string | null>(null);
     const [erKampdag, setErKampdag] = useState(false);
