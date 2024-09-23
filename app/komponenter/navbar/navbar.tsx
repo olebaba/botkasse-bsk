@@ -9,6 +9,7 @@ interface NavbarProps {
     children?: React.ReactNode
     onClick?: () => void
 }
+
 const NavItem = ({href, children, onClick}: NavbarProps) => (
     <Link
         href={href}
@@ -34,6 +35,7 @@ interface MobilMenyProps {
     erAapen: boolean;
     lukkMeny: () => void;
 }
+
 const MobilMeny = ({lenker, erAapen, lukkMeny}: MobilMenyProps) => (
     <div
         className={`${erAapen ? 'block' : 'hidden'} sm:hidden bg-yellow-300 w-full absolute p-8 z-20`}
@@ -69,6 +71,7 @@ export default function Navbar() {
     const sideLenker = [
         {href: "/", label: "Spilleres bøter"},
         {href: `/${encodeURIComponent('bøter')}`, label: "Oversikt typer bøter"},
+        {href: `/${encodeURIComponent('bøter')}/sjef`, label: "Botsjef 🔐"},
     ];
 
     return (
