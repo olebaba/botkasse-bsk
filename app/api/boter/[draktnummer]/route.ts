@@ -68,8 +68,8 @@ async function hentSumForSesong(draktnummer: number): Promise<number | null> {
         SELECT SUM(beløp) AS total_sum_sesong
         FROM bøter
         WHERE draktnummer = ${draktnummer}
-          AND dato >= '2024-09-01' -- Tilpass sesongens startdato
-          AND er_betalt = false
+          AND dato >= '2024-09-01' -- Sesongstart
+          AND er_betalt = true
     `;
     return rows[0]?.total_sum_sesong || 0;
 }
