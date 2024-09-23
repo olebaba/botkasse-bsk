@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {useForseelser} from "@/app/hooks/useForseelser";
 import {Spiller} from "@/app/lib/spillereService";
+import {number} from "prop-types";
 
 export default function LeggTilBot({spillere, setSpillere}: {
     spillere: Spiller[],
@@ -8,7 +9,7 @@ export default function LeggTilBot({spillere, setSpillere}: {
 }) {
     const {forseelser} = useForseelser(); // Custom hook for bot-typer
     const [draktnummer, setDraktnummer] = useState<number | undefined>(undefined);
-    const [beløp, setBeløp] = useState('');
+    const [beløp, setBeløp] = useState(0);
     const [dato, setDato] = useState('');
     const [forseelsesId, setForseelsesId] = useState('');
     const [melding, setMelding] = useState<string | null>(null);
@@ -36,7 +37,7 @@ export default function LeggTilBot({spillere, setSpillere}: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    beløp: parseFloat(beløp),
+                    beløp,
                     dato,
                     forseelsesId,
                 }),
@@ -47,11 +48,11 @@ export default function LeggTilBot({spillere, setSpillere}: {
             }
 
             // Oppdater spillernes summer lokalt
-            oppdaterSpillerSummer(draktnummer, parseFloat(beløp));
+            oppdaterSpillerSummer(draktnummer, beløp);
 
             setMelding('Bot lagt til!');
             setDraktnummer(undefined);
-            setBeløp('');
+            setBeløp(0);
             setDato('');
             setForseelsesId('');
         } catch (error) {
@@ -85,14 +86,38 @@ export default function LeggTilBot({spillere, setSpillere}: {
                 </div>
 
                 <div className="mb-4">
+                    <label className="block text-gray-700 font-bold mb-2" htmlFor="type">
+                        Type forseelse
+                    </label>
+                    <select
+                        id="forseelse"
+                        value={forseelsesId}
+                        onChange={(e) => {
+                            setForseelsesId(e.target.value);
+                            setBeløp(forseelser.find((forseelse) => forseelse.id.toString() == e.target.value)?.beløp || 0)
+                        }}
+                        className="border rounded px-3 py-2 w-full"
+                    >
+                        <option value="" disabled>Velg en forseelse</option>
+                        {forseelser.map((forseelse, index) => (
+                            <option key={index} value={forseelse.id}>
+                                {forseelse.navn}
+                            </option>
+                        ))}
+                        <option value="Annet">Annet</option>
+                    </select>
+                </div>
+
+                <div className="mb-4">
                     <label className="block text-gray-700 font-bold mb-2" htmlFor="beløp">
                         Beløp (NOK)
                     </label>
                     <input
                         type="number"
                         id="beløp"
+                        typeof="number"
                         value={beløp}
-                        onChange={(e) => setBeløp(e.target.value)}
+                        onChange={(e) => setBeløp(Number.parseFloat(e.target.value))}
                         className="border rounded px-3 py-2 w-full"
                         placeholder="F.eks. 100.00"
                     />
@@ -109,28 +134,6 @@ export default function LeggTilBot({spillere, setSpillere}: {
                         onChange={(e) => setDato(e.target.value)}
                         className="border rounded px-3 py-2 w-full"
                     />
-                </div>
-
-                <div className="mb-4">
-                    <label className="block text-gray-700 font-bold mb-2" htmlFor="type">
-                        Type forseelse
-                    </label>
-                    <select
-                        id="forseelse"
-                        value={forseelsesId}
-                        onChange={(e) => {
-                            setForseelsesId(e.target.value);
-                        }}
-                        className="border rounded px-3 py-2 w-full"
-                    >
-                        <option value="" disabled>Velg en forseelse</option>
-                        {forseelser.map((forseelse, index) => (
-                            <option key={index} value={forseelse.id}>
-                                {forseelse.navn}
-                            </option>
-                        ))}
-                        <option value="Annet">Annet</option>
-                    </select>
                 </div>
 
                 <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">
