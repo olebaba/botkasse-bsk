@@ -1,7 +1,7 @@
 import type {Metadata} from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import Navbar from "@/app/navbar";
+import Navbar from "@/app/komponenter/navbar/navbar.tsx";
 import Head from "next/head";
 import React from "react";
 import {SpeedInsights} from "@vercel/speed-insights/react";
