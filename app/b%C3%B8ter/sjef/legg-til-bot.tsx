@@ -7,7 +7,6 @@ export default function LeggTilBot({spillere, setSpillere}: {
     setSpillere: (value: (Spiller[])) => void
 }) {
     const {forseelser} = useForseelser(); // Custom hook for bot-typer
-    console.log(forseelser)
     const [draktnummer, setDraktnummer] = useState<number | undefined>(undefined);
     const [beløp, setBeløp] = useState('');
     const [dato, setDato] = useState('');
