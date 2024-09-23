@@ -13,6 +13,7 @@ export default function LeggTilBot({spillere, setSpillere}: {
     const [dato, setDato] = useState('');
     const [forseelsesId, setForseelsesId] = useState('');
     const [melding, setMelding] = useState<string | null>(null);
+    const [erKampdag, setErKampdag] = useState(false);
 
     const oppdaterSpillerSummer = (draktnummer: number, ekstraBeløp: number) => {
         setSpillere(spillere.map((spiller) =>
@@ -109,14 +110,27 @@ export default function LeggTilBot({spillere, setSpillere}: {
                 </div>
 
                 <div className="mb-4">
+                    <label className="block text-gray-700 font-bold mb-2" htmlFor="kampdag">
+                        Er kampdag (x2 beløp)
+                    </label>
+                    <input
+                        type="checkbox"
+                        id="kampdag"
+                        checked={erKampdag}
+                        onChange={(e) => setErKampdag(e.target.checked)}
+                        className="border rounded px-3 py-2 left h-full"
+                        placeholder="F.eks. 100.00"
+                    />
+                </div>
+
+                <div className="mb-4">
                     <label className="block text-gray-700 font-bold mb-2" htmlFor="beløp">
                         Beløp (NOK)
                     </label>
                     <input
                         type="number"
                         id="beløp"
-                        typeof="number"
-                        value={beløp}
+                        value={beløp * (erKampdag ? 2 : 1)}
                         onChange={(e) => setBeløp(Number.parseFloat(e.target.value))}
                         className="border rounded px-3 py-2 w-full"
                         placeholder="F.eks. 100.00"
