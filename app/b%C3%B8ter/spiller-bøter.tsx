@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {oppdaterSpiller, Spiller} from "@/app/lib/spillereService";
+import {oppdaterSpiller, type Spiller} from "@/app/lib/spillereService";
 import TabellData from "@/app/b%C3%B8ter/TabellData";
 
 interface Props {

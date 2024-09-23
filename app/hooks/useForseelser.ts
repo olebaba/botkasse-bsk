@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {Forseelse} from "@/app/b%C3%B8ter/page";
+import type {Forseelse} from "@/app/b%C3%B8ter/page";
 
 export function useForseelser() {
     const [forseelser, setForseelser] = useState<Forseelse[]>([]);
