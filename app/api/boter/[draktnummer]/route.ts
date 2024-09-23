@@ -6,17 +6,17 @@ type Params = {
 }
 
 export async function POST(request: Request, {params}: { params: Params }) {
-    const { beløp, dato, type } = await request.json();
+    const { beløp, dato, forseelsesId } = await request.json();
     const draktnummer = parseInt(params.draktnummer, 10);
 
-    if (!draktnummer || !beløp || !dato || !type) {
+    if (!draktnummer || !beløp || !dato || !forseelsesId) {
         return NextResponse.json({ error: 'Alle felter må fylles ut.' }, { status: 400 });
     }
 
     try {
         await sql`
-      INSERT INTO bøter (draktnummer, beløp, dato, type, er_betalt)
-      VALUES (${draktnummer}, ${beløp}, ${dato}, ${type}, false)
+      INSERT INTO bøter (draktnummer, beløp, dato, forseelse_id, er_betalt)
+      VALUES (${draktnummer}, ${beløp}, ${dato}, ${forseelsesId}, false)
     `;
         return NextResponse.json({ message: 'Bot lagt til' }, { status: 200 });
     } catch (error) {

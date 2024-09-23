@@ -1,8 +1,8 @@
 import React from "react";
-import {BotType} from "@/app/b%C3%B8ter/page";
+import {Forseelse} from "@/app/b%C3%B8ter/page";
 
 interface TableProps {
-    botTyper: BotType[];
+    botTyper: Forseelse[];
 }
 
 export const Table: React.FC<TableProps> = ({botTyper}) => {
@@ -26,7 +26,7 @@ export const Table: React.FC<TableProps> = ({botTyper}) => {
 };
 
 interface TableRowProps {
-    botType: BotType;
+    botType: Forseelse;
     isEven: boolean;
 }
 

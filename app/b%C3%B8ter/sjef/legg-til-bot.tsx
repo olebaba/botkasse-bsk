@@ -1,18 +1,17 @@
 import React, {useState} from 'react';
-import {useBotTyper} from "@/app/hooks/useBotTyper";
+import {useForseelser} from "@/app/hooks/useForseelser";
 import {Spiller} from "@/app/lib/spillereService";
 
 export default function LeggTilBot({spillere, setSpillere}: {
     spillere: Spiller[],
     setSpillere: (value: (Spiller[])) => void
 }) {
-    const {botTyper, leggTilNyBotType} = useBotTyper(); // Custom hook for bot-typer
+    const {forseelser} = useForseelser(); // Custom hook for bot-typer
+    console.log(forseelser)
     const [draktnummer, setDraktnummer] = useState<number | undefined>(undefined);
     const [beløp, setBeløp] = useState('');
     const [dato, setDato] = useState('');
-    const [selectedType, setSelectedType] = useState('');
-    const [nyType, setNyType] = useState(''); // For ny type hvis "Annet" er valgt
-    const [erNyBotType, setErNyBotType] = useState(false); // Sjekk om brukeren legger inn ny type
+    const [forseelsesId, setForseelsesId] = useState('');
     const [melding, setMelding] = useState<string | null>(null);
 
     const oppdaterSpillerSummer = (draktnummer: number, ekstraBeløp: number) => {
@@ -25,9 +24,8 @@ export default function LeggTilBot({spillere, setSpillere}: {
 
     const handleLeggTilBot = async (e: React.FormEvent) => {
         e.preventDefault();
-        const type = erNyBotType ? nyType : selectedType;
 
-        if (!draktnummer || !beløp || !dato || !type) {
+        if (!draktnummer || !beløp || !dato || !forseelsesId) {
             setMelding('Alle felter må fylles ut.');
             return;
         }
@@ -41,7 +39,7 @@ export default function LeggTilBot({spillere, setSpillere}: {
                 body: JSON.stringify({
                     beløp: parseFloat(beløp),
                     dato,
-                    type,
+                    forseelsesId,
                 }),
             });
 
@@ -52,16 +50,11 @@ export default function LeggTilBot({spillere, setSpillere}: {
             // Oppdater spillernes summer lokalt
             oppdaterSpillerSummer(draktnummer, parseFloat(beløp));
 
-            if (erNyBotType) {
-                leggTilNyBotType(nyType); // Legg til den nye typen i hooken for fremtidige valg
-                setNyType(''); // Nullstill input for ny type
-            }
-
             setMelding('Bot lagt til!');
             setDraktnummer(undefined);
             setBeløp('');
             setDato('');
-            setSelectedType('');
+            setForseelsesId('');
         } catch (error) {
             console.error(error);
             setMelding('Noe gikk galt, prøv igjen senere.');
@@ -124,42 +117,21 @@ export default function LeggTilBot({spillere, setSpillere}: {
                         Type forseelse
                     </label>
                     <select
-                        id="type"
-                        value={selectedType}
+                        id="forseelse"
+                        value={forseelsesId}
                         onChange={(e) => {
-                            if (e.target.value === 'Annet') {
-                                setErNyBotType(true);
-                            } else {
-                                setErNyBotType(false);
-                                setSelectedType(e.target.value);
-                            }
+                            setForseelsesId(e.target.value);
                         }}
                         className="border rounded px-3 py-2 w-full"
                     >
                         <option value="" disabled>Velg en forseelse</option>
-                        {botTyper.map((type, index) => (
-                            <option key={index} value={type}>
-                                {type}
+                        {forseelser.map((forseelse, index) => (
+                            <option key={index} value={forseelse.id}>
+                                {forseelse.navn}
                             </option>
                         ))}
                         <option value="Annet">Annet</option>
                     </select>
-
-                    {erNyBotType && (
-                        <div className="mt-4">
-                            <label className="block text-gray-700 font-bold mb-2" htmlFor="nyType">
-                                Ny type forseelse
-                            </label>
-                            <input
-                                type="text"
-                                id="nyType"
-                                value={nyType}
-                                onChange={(e) => setNyType(e.target.value)}
-                                className="border rounded px-3 py-2 w-full"
-                                placeholder="Skriv inn ny type"
-                            />
-                        </div>
-                    )}
                 </div>
 
                 <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">

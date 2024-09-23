@@ -4,7 +4,7 @@ import React, {useEffect, useState} from 'react';
 import {Table} from "@/app/komponenter/table";
 import Telefonnummer from "@/app/komponenter/Telefonnummer";
 
-export type BotType = {
+export type Forseelse = {
     id: number;
     navn: string;
     beløp: number;
@@ -12,7 +12,7 @@ export type BotType = {
 };
 
 export default function Page() {
-    const [botTyper, setBotTyper] = useState<BotType[]>([]);
+    const [botTyper, setBotTyper] = useState<Forseelse[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
