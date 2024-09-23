@@ -57,7 +57,7 @@ async function hentSumForSisteMaaned(draktnummer: number): Promise<number | null
         FROM bøter
         WHERE draktnummer = ${draktnummer}
           AND dato >= (CURRENT_DATE - INTERVAL '1 month')
-          AND er_betalt = false
+          AND er_betalt = true
     `;
     return rows[0]?.total_sum_måned || 0;
 }

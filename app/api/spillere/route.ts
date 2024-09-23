@@ -5,9 +5,9 @@ import {Spiller} from "@/app/lib/spillereService";
 // Håndter GET-forespørsler
 export async function GET() {
     try {
-        // Hent alle spillere og deres data fra databasen
-        const spillere = await sql`SELECT *
-                                   FROM spillere;`;
+        const spillere = await sql`
+            SELECT *
+            FROM spillere;`;
         const typedSpillere: Spiller[] = spillere.rows.map(row => ({
             draktnummer: row.draktnummer,
             totalSum: row.total_sum,
@@ -16,9 +16,7 @@ export async function GET() {
             utestaaende: row.utestaaende,
             betaltAlle: row.betalt_alle,
         }))
-        return NextResponse.json({
-            spillere: typedSpillere
-        }, {status: 200});
+        return NextResponse.json({spillere: typedSpillere}, {status: 200});
     } catch (error) {
         console.error(error);
         return NextResponse.json({error: 'Feil ved henting av spillere'}, {status: 500});
