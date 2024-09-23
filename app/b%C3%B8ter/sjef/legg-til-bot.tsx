@@ -1,12 +1,11 @@
+'use client'
 import React, {useState} from 'react';
 import {useForseelser} from "@/app/hooks/useForseelser";
-import {Spiller} from "@/app/lib/spillereService";
 import dayjs from "dayjs";
+import {useSpillereOgNavn} from "@/app/hooks/useSpillereOgNavn.ts";
 
-export default function LeggTilBot({spillere, setSpillere}: {
-    spillere: Spiller[],
-    setSpillere: (value: (Spiller[])) => void
-}) {
+export default function LeggTilBot() {
+    const {spillere, setSpillere} = useSpillereOgNavn();
     const {forseelser} = useForseelser(); // Custom hook for bot-typer
     const [draktnummer, setDraktnummer] = useState<number | undefined>(undefined);
     const [beløp, setBeløp] = useState(0);

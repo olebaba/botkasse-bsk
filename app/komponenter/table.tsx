@@ -1,5 +1,5 @@
 import React from "react";
-import {Forseelse} from "@/app/b%C3%B8ter/page";
+import type {Forseelse} from "@/app/b%C3%B8ter/page";
 
 interface TableProps {
     botTyper: Forseelse[];

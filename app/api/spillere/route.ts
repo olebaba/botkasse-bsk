@@ -1,6 +1,6 @@
 import {sql} from '@vercel/postgres';
 import {NextResponse} from 'next/server';
-import {Spiller} from "@/app/lib/spillereService";
+import type {Spiller} from "@/app/lib/spillereService";
 
 // Håndter GET-forespørsler
 export async function GET() {

@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {Spiller, hentSpillere, hentSummerForSpiller} from '../lib/spillereService';
+import {type Spiller, hentSpillere, hentSummerForSpiller} from '../lib/spillereService';
 
 export function useSpillereOgNavn() {
     const [spillere, setSpillere] = useState<Spiller[]>([]);

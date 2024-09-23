@@ -1,11 +1,14 @@
-'use client'
 import LeggTilBot from "@/app/b%C3%B8ter/sjef/legg-til-bot";
-import {useSpillereOgNavn} from "@/app/hooks/useSpillereOgNavn";
+import { redirect } from "next/navigation";
+import {validateRequest} from "@/app/lib/auth.ts";
 
-export default function Page() {
-    const {spillere, setSpillere} = useSpillereOgNavn();
+export default async function Page() {
+    const {user} = await validateRequest();
+    if (!user) {
+        return redirect("/login");
+    }
 
     return (
-        <LeggTilBot spillere={spillere} setSpillere={setSpillere} />
+        <LeggTilBot/>
     )
 }
