@@ -3,9 +3,10 @@ import dayjs from "dayjs";
 import type {Spiller} from "@/app/lib/spillereService.ts";
 import React, {useState} from "react";
 import type {Forseelse} from "@/app/b%C3%B8ter/page.tsx";
+import {lagBot} from "@/app/lib/forseelseService.ts";
 
 export default function LeggTilBot({spillere, forseelser}: { spillere: Spiller[]; forseelser: Forseelse[] }) {
-    const [draktnummer, setDraktnummer] = useState<number | undefined>(undefined);
+    const [draktnummer, setDraktnummer] = useState<string | undefined>(undefined);
     const [beløp, setBeløp] = useState(0);
     const [dato, setDato] = useState(dayjs().format('YYYY-MM-DD'));
     const [forseelsesId, setForseelsesId] = useState('');
@@ -22,21 +23,7 @@ export default function LeggTilBot({spillere, forseelser}: { spillere: Spiller[]
         }
 
         try {
-            const response = await fetch('/api/boter/' + draktnummer, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    beløp,
-                    dato,
-                    forseelsesId,
-                }),
-            });
-
-            if (!response.ok) {
-                throw new Error('Kunne ikke legge til bot.');
-            }
+            await lagBot(draktnummer, beløp, dato, forseelsesId)
 
             setMelding('Bot lagt til!');
             setDraktnummer(undefined);
@@ -61,7 +48,7 @@ export default function LeggTilBot({spillere, forseelser}: { spillere: Spiller[]
                     <select
                         id="draktnummer"
                         value={draktnummer || ''}
-                        onChange={(e) => setDraktnummer(parseInt(e.target.value))}
+                        onChange={(e) => setDraktnummer(e.target.value)}
                         className="border rounded px-3 py-2 w-full"
                     >
                         <option value="" disabled>Velg en spiller</option>
