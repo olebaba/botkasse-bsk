@@ -1,12 +1,10 @@
 'use client'
-import React, {useState} from 'react';
-import {useForseelser} from "@/app/hooks/useForseelser";
 import dayjs from "dayjs";
-import {useSpillereOgNavn} from "@/app/hooks/useSpillereOgNavn.ts";
+import type {Spiller} from "@/app/lib/spillereService.ts";
+import React, {useState} from "react";
+import type {Forseelse} from "@/app/b%C3%B8ter/page.tsx";
 
-export default function LeggTilBot() {
-    const {spillere, setSpillere} = useSpillereOgNavn();
-    const {forseelser} = useForseelser(); // Custom hook for bot-typer
+export default function LeggTilBot({spillere, forseelser}: { spillere: Spiller[]; forseelser: Forseelse[] }) {
     const [draktnummer, setDraktnummer] = useState<number | undefined>(undefined);
     const [beløp, setBeløp] = useState(0);
     const [dato, setDato] = useState(dayjs().format('YYYY-MM-DD'));
@@ -14,13 +12,6 @@ export default function LeggTilBot() {
     const [melding, setMelding] = useState<string | null>(null);
     const [erKampdag, setErKampdag] = useState(false);
 
-    const oppdaterSpillerSummer = (draktnummer: number, ekstraBeløp: number) => {
-        setSpillere(spillere.map((spiller) =>
-            spiller.draktnummer === draktnummer
-                ? {...spiller, totalSum: (+spiller.totalSum + +ekstraBeløp)}
-                : spiller
-        ));
-    };
 
     const handleLeggTilBot = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -46,9 +37,6 @@ export default function LeggTilBot() {
             if (!response.ok) {
                 throw new Error('Kunne ikke legge til bot.');
             }
-
-            // Oppdater spillernes summer lokalt
-            oppdaterSpillerSummer(draktnummer, beløp);
 
             setMelding('Bot lagt til!');
             setDraktnummer(undefined);
