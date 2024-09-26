@@ -1,4 +1,4 @@
-import Laster from "@/app/ikoner/spinner";
+import Laster from "@/app/ikoner/laster.tsx";
 
 export default function TabellData({verdi, erNok, skalVises}: {
     verdi: number | string | undefined,
