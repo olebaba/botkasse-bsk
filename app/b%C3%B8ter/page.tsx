@@ -1,6 +1,3 @@
-'use client';
-
-import React, {useEffect, useState} from 'react';
 import {Table} from "@/app/komponenter/table";
 import Telefonnummer from "@/app/komponenter/Telefonnummer";
 
@@ -11,33 +8,15 @@ export type Forseelse = {
     beskrivelse: string;
 };
 
-export default function Page() {
-    const [botTyper, setBotTyper] = useState<Forseelse[]>([]);
-    const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
-
-    useEffect(() => {
-        const fetchBotTyper = async () => {
-            const response = await fetch('/api/boter/typer');
-            if (!response.ok) {
-                throw new Error('Feil ved henting av bøtetyper');
-            }
-            const data = await response.json();
-            setBotTyper(data);
-        };
-
-        fetchBotTyper()
-            .catch((error) => {
-                console.error(error);
-                setError(error.message || 'Ukjent feil oppstod');
-            })
-            .finally(() => {
-                setLoading(false);
-            });
-    }, []);
-
-    if (loading) return <p>Laster oversikt over alle typer bøter...</p>;
-    if (error) return <p>{error}</p>;
+export default async function Page() {
+    const fetchBotTyper = async () => {
+        const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL + '/api/boter/typer');
+        if (!response.ok) {
+            throw new Error('Feil ved henting av bøtetyper');
+        }
+        return await response.json();
+    }
+    const botTyper = await fetchBotTyper()
 
     return (
         <div className="container mx-auto p-4 mt-28">
