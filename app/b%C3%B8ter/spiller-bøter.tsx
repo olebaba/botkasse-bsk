@@ -1,56 +1,27 @@
-import {useState} from 'react';
-import {oppdaterSpiller, type Spiller} from "@/app/lib/spillereService";
+'use client'
 import TabellData from "@/app/b%C3%B8ter/TabellData";
+import {useState} from "react";
+import {type Spiller} from "@/app/lib/spillereService.ts";
 
-interface Props {
-    setError: (err: string) => void,
-    spillere: Spiller[],
-    setSpillere: (spillere: Spiller[]) => void,
-    setAlleNavn: (value: { [p: number]: string }) => void
-    alleNavn: { [key: number]: string }
-}
-
-export default function SpillerBøter({setError, spillere, setSpillere, setAlleNavn, alleNavn}: Props) {
-    const oppdaterNavn = (draktnummer: number, navn: string) => {
-        const oppdaterteNavn = {navn, [draktnummer]: navn};
-        setAlleNavn(oppdaterteNavn);
-        localStorage.setItem('spillernavn', JSON.stringify(oppdaterteNavn));
-    };
-
-    const markerBetalt = async (draktnummer: number) => {
-        try {
-            const spiller = spillere.find(s => s.draktnummer === draktnummer);
-            if (spiller) {
-                const oppdatertSpiller = await oppdaterSpiller(draktnummer, spiller.totalSum, !spiller.betaltAlle);
-                setSpillere(spillere.map(spiller => (spiller.draktnummer === draktnummer ? oppdatertSpiller : spiller)));
-            }
-        } catch (error) {
-            setError('Kunne ikke oppdatere spiller');
-        }
-    };
-
+export default function SpillerBøter({spillere}: {spillere: Spiller[]}) {
     // Definer kolonner og visningstilstanden
     const kolonner = [
         {id: 'draktnummer', navn: 'Draktnummer'},
-        {id: 'navn', navn: 'Navn'},
         {id: 'totalSum', navn: 'Total sum bøter'},
         {id: 'betaltSesong', navn: 'Betalt denne sesongen'},
         {id: 'betaltMaaned', navn: 'Betalt denne måneden'},
         {id: 'utestaaende', navn: 'Utestående beløp'},
         {id: 'status', navn: 'Status'},
-        // {id: 'handling', navn: 'Handling'}
     ];
 
     // Tilstand for å holde styr på hvilke kolonner som vises
     const [visKolonner, setVisKolonner] = useState<{ [index: string]: boolean }>({
         draktnummer: true,
-        navn: false,
         totalSum: false,
         betaltSesong: false,
         betaltMaaned: true,
         utestaaende: true,
         status: true,
-        // handling: false,
     });
 
     // Funksjon for å toggle kolonnevisning
@@ -62,6 +33,8 @@ export default function SpillerBøter({setError, spillere, setSpillere, setAlleN
     };
 
     const [visFilter, setVisFilter] = useState(false)
+
+    if (!spillere) return null;
 
     return (
         <>
@@ -102,17 +75,6 @@ export default function SpillerBøter({setError, spillere, setSpillere, setAlleN
                     {spillere.map((spiller) => (
                         <tr key={spiller.draktnummer} className="hover:bg-gray-100">
                             <TabellData skalVises={visKolonner.draktnummer} verdi={spiller.draktnummer} erNok={false}/>
-                            {visKolonner.navn && (
-                                <td className="py-2 px-4 border-b">
-                                    <input
-                                        type="text"
-                                        value={alleNavn[spiller.draktnummer] || ''}
-                                        placeholder="Legg til navn"
-                                        onChange={(e) => oppdaterNavn(spiller.draktnummer, e.target.value)}
-                                        className="border rounded px-2 py-1 w-full"
-                                    />
-                                </td>
-                            )}
                             <TabellData skalVises={visKolonner.totalSum} verdi={spiller.totalSum} erNok={true}/>
                             <TabellData skalVises={visKolonner.betaltSesong} verdi={spiller.betaltSesong} erNok={true}/>
                             <TabellData skalVises={visKolonner.betaltMaaned} verdi={spiller.betaltMaaned} erNok={true}/>
@@ -126,18 +88,6 @@ export default function SpillerBøter({setError, spillere, setSpillere, setAlleN
                                   >
                                     {spiller.betaltAlle ? 'Betalt' : 'Ikke betalt'}
                                   </span>
-                                </td>
-                            )}
-                            {visKolonner.handling && (
-                                <td className="py-2 px-4 border-b">
-                                    <button
-                                        onClick={() => markerBetalt(spiller.draktnummer)}
-                                        className={`px-3 py-1 rounded ${
-                                            spiller.betaltAlle ? 'bg-red-500 text-white' : 'bg-green-500 text-white'
-                                        } hover:bg-opacity-80`}
-                                    >
-                                        {spiller.betaltAlle ? 'Marker som ikke betalt' : 'Marker som betalt'}
-                                    </button>
                                 </td>
                             )}
                         </tr>

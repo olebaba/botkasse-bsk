@@ -8,7 +8,9 @@ export function useForseelser() {
 
     useEffect(() => {
         const fetchForseelser = async () => {
-            const response = await fetch('/api/boter/typer');
+            const response = await fetch('/api/boter/typer', {
+                next: {revalidate: 60}
+            });
             if (!response.ok) {
                 throw new Error('Feil ved henting av forseelser');
             }

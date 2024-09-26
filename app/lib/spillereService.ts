@@ -3,8 +3,8 @@ export type Spiller = {
     totalSum: number;
     betaltAlle: boolean;
     navn?: string
-    betaltSesong?: string
-    betaltMaaned?: string
+    betaltSesong?: number
+    betaltMaaned?: number
 };
 
 /**
@@ -12,7 +12,7 @@ export type Spiller = {
  */
 export async function hentSpillere(): Promise<Spiller[]> {
     try {
-        const res = await fetch('/api/spillere');
+        const res = await fetch(process.env.NEXT_PUBLIC_BASE_URL + '/api/spillere');
         if (!res.ok) {
             throw new Error('Feil ved henting av spillere');
         }
@@ -29,7 +29,7 @@ export async function hentSpillere(): Promise<Spiller[]> {
  */
 export async function oppdaterSpiller(draktnummer: number, totalSum: number, erBetalt: boolean): Promise<Spiller> {
     try {
-        const res = await fetch('/api/spillere', {
+        const res = await fetch(process.env.NEXT_PUBLIC_BASE_URL + '/api/spillere', {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -49,20 +49,32 @@ export async function oppdaterSpiller(draktnummer: number, totalSum: number, erB
 }
 
 interface SummerForSpiller {
-    sumSisteMaaned: number,
-    sumSesong: number,
-    utestaaendeSum: number,
+    betaltMaaned: number,
+    betaltSesong: number,
+    totalSum: number,
 }
 
 export async function hentSummerForSpiller(draktnummer: number): Promise<SummerForSpiller | null> {
     try {
-        const res = await fetch('/api/boter/' + draktnummer);
+        const res = await fetch(process.env.NEXT_PUBLIC_BASE_URL + '/api/boter/' + draktnummer);
         if (!res.ok) {
             throw new Error('Feil ved henting av spillere');
         }
         return await res.json();
     } catch (error) {
         console.error(error);
-        throw new Error(`Kunne ikke hente sum for spller med draktnummer ${draktnummer}`);
+        throw new Error(`Kunne ikke hente sum for spiller med draktnummer ${draktnummer}`);
     }
+}
+
+export async function hentSummerForAlleSpillere(spillere: Spiller[]): Promise<Spiller[]> {
+    return await Promise.all(
+        spillere.map(async (spiller: Spiller) => {
+            const summer = await hentSummerForSpiller(spiller.draktnummer);
+            return {
+                ...spiller,
+                ...summer
+            };
+        })
+    );
 }
