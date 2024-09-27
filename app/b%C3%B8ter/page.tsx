@@ -1,5 +1,6 @@
 import {Table} from "@/app/komponenter/table";
 import Telefonnummer from "@/app/komponenter/Telefonnummer";
+import {fetchForseelser} from "@/app/lib/forseelseService.ts";
 
 export type Forseelse = {
     id: number;
@@ -8,15 +9,10 @@ export type Forseelse = {
     beskrivelse: string;
 };
 
+export const dynamic = 'force-dynamic'
+
 export default async function Page() {
-    const fetchBotTyper = async () => {
-        const response = await fetch(process.env.NEXT_PUBLIC_BASE_URL + '/api/boter/typer');
-        if (!response.ok) {
-            throw new Error('Feil ved henting av bøtetyper');
-        }
-        return await response.json();
-    }
-    const botTyper = await fetchBotTyper()
+    const botTyper = await fetchForseelser()
 
     return (
         <div className="container mx-auto p-4 mt-28">

@@ -4,6 +4,8 @@ import {validateRequest} from "@/app/lib/auth.ts";
 import {hentSpillere} from "@/app/lib/spillereService.ts";
 import {fetchForseelser} from "@/app/lib/forseelseService.ts";
 
+export const dynamic = 'force-dynamic';
+
 export default async function Page() {
     const {user} = await validateRequest();
     if (!user) {
