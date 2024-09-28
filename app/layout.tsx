@@ -36,9 +36,6 @@ export const metadata: Metadata = {
         description: "Oversikt over bøter for spillere i bsk sitt A-lag"
     },
     icons: [
-        { url: "/favicon-32x32.png"},
-        { url: "/android-chrome-192x192.png" },
-        { url: "/android-chrome-512x512.png", },
         { rel: "apple-touch-icon", url: "/apple-touch-icon.png" },
     ],
     manifest: "/site.webmanifest",
