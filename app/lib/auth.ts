@@ -47,7 +47,7 @@ interface DatabaseUserAttributes {
     username: string;
 }
 
-export async function login(formData: FormData): Promise<ActionResult> {
+export async function login(formData: FormData): Promise<void> {
     "use server";
     try {
         const brukernavn = formData.get("brukernavn");
@@ -57,13 +57,13 @@ export async function login(formData: FormData): Promise<ActionResult> {
             brukernavn.length > 31 ||
             !/^[a-z0-9_-]+$/.test(brukernavn)
         ) {
-            return {
+            throw {
                 error: "Invalid username"
             };
         }
         const passord = formData.get("passord");
         if (typeof passord !== "string" || passord.length < 6 || passord.length > 255) {
-            return {
+            throw {
                 error: "Invalid password"
             };
         }
@@ -73,7 +73,7 @@ export async function login(formData: FormData): Promise<ActionResult> {
                                            WHERE brukernavn = ${brukernavn}`;
 
         if (!existingUser.rows.length) {
-            return {
+            throw {
                 error: "Incorrect username or password"
             };
         }
@@ -81,13 +81,13 @@ export async function login(formData: FormData): Promise<ActionResult> {
         const typedBruker: Bruker = existingUser.rows[0]
 
         if (!typedBruker) {
-            return {
+            throw {
                 error: "Incorrect username or password"
             };
         }
         const validPassword = await verify(typedBruker.passord, passord);
         if (!validPassword) {
-            return {
+            throw {
                 error: "Incorrect username or password"
             };
         }
@@ -101,14 +101,9 @@ export async function login(formData: FormData): Promise<ActionResult> {
         ) as Partial<VercelPostgresError>;
 
         console.error(maybeVercelPostgresError)
-        return {error: `feil i databasen: ${maybeVercelPostgresError}`}
     } finally {
         redirect(encodeURIComponent('bøter') + '/sjef');
     }
-}
-
-interface ActionResult {
-    error: string;
 }
 
 interface Bruker {
