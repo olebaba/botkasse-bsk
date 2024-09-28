@@ -35,16 +35,11 @@ export const metadata: Metadata = {
         images: ["https://5bxxn0af98q9ysmf.public.blob.vercel-storage.com/ikoner/bsk-logo-full-stor-icgelOv4C6VMPTJ76EXCsDVhOhWCXo"],
         description: "Oversikt over bøter for spillere i bsk sitt A-lag"
     },
-    icons: {
-        apple: "/apple-touch-icon.png", // For iOS devices
-        icon: [
-            { url: "/android-chrome-192x192.png", type: "image/png", sizes: "192x192" },
-            { url: "/android-chrome-512x512.png", type: "image/png", sizes: "512x512" },
-            { url: "/favicon-32x32.png", type: "image/png", sizes: "32x32" }
-        ],
-        shortcut: "/favicon-16x16.png",
-    },
-
+    icons: [
+        { url: "/android-chrome-192x192.png", type: "image/png", sizes: "192x192" },
+        { url: "/android-chrome-512x512.png", type: "image/png", sizes: "512x512" },
+        { url: "/favicon-32x32.png", type: "image/png", sizes: "32x32" },
+    ],
     manifest: "/site.webmanifest",
 };
 
