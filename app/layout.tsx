@@ -5,6 +5,7 @@ import Navbar from "@/app/komponenter/navbar/navbar.tsx";
 import React from "react";
 import {SpeedInsights} from "@vercel/speed-insights/react";
 import {Analytics} from "@vercel/analytics/react"
+import manifest from "@/app/manifest.ts";
 
 const geistSans = localFont({
     src: "./fonts/GeistVF.woff",
@@ -38,7 +39,7 @@ export const metadata: Metadata = {
     icons: [
         { rel: "apple-touch-icon", url: "/apple-touch-icon.png" },
     ],
-    manifest: "/site.webmanifest",
+    manifest: JSON.stringify(manifest()),
 };
 
 export default function RootLayout({children,}: Readonly<{ children: React.ReactNode }>) {
