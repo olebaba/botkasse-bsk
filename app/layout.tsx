@@ -2,10 +2,9 @@ import type {Metadata} from "next";
 import localFont from "next/font/local";
 import "./globals.css";
 import Navbar from "@/app/komponenter/navbar/navbar.tsx";
-import Head from "next/head";
 import React from "react";
 import {SpeedInsights} from "@vercel/speed-insights/react";
-import { Analytics } from "@vercel/analytics/react"
+import {Analytics} from "@vercel/analytics/react"
 
 const geistSans = localFont({
     src: "./fonts/GeistVF.woff",
@@ -36,6 +35,12 @@ export const metadata: Metadata = {
         images: ["https://5bxxn0af98q9ysmf.public.blob.vercel-storage.com/ikoner/bsk-logo-full-stor-icgelOv4C6VMPTJ76EXCsDVhOhWCXo"],
         description: "Oversikt over bøter for spillere i bsk sitt A-lag"
     },
+    icons: {
+        apple: "/apple-touch-icon.png",
+        icon: ["android-chrome-512x512.png", "android-chrome-192x192.png", "/favicon-32x32.png"],
+        shortcut: "/favicon-16x16.png",
+    },
+    manifest: "/site.webmanifest",
 };
 
 export default function RootLayout({
@@ -45,23 +50,13 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="no">
-        <Head>
-            <meta charSet="utf-8"/>
-            <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png"/>
-            <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png"/>
-            <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png"/>
-            <link rel="manifest" href="/site.webmanifest"/>
-            <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#767676"/>
-            <meta name="msapplication-TileColor" content="#ffc40d"/>
-            <meta name="theme-color" content="#ffffff"/>
-        </Head>
         <body
             className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
         <Navbar/>
         {children}
-        <SpeedInsights />
-        <Analytics />
+        <SpeedInsights/>
+        <Analytics/>
         </body>
         </html>
     );
