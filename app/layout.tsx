@@ -36,23 +36,22 @@ export const metadata: Metadata = {
         description: "Oversikt over bøter for spillere i bsk sitt A-lag"
     },
     icons: {
-        apple: "/apple-touch-icon.png",
-        icon: ["android-chrome-512x512.png", "android-chrome-192x192.png", "/favicon-32x32.png"],
+        apple: "/apple-touch-icon.png", // For iOS devices
+        icon: [
+            { url: "/android-chrome-192x192.png", type: "image/png", sizes: "192x192" },
+            { url: "/android-chrome-512x512.png", type: "image/png", sizes: "512x512" },
+            { url: "/favicon-32x32.png", type: "image/png", sizes: "32x32" }
+        ],
         shortcut: "/favicon-16x16.png",
     },
+
     manifest: "/site.webmanifest",
 };
 
-export default function RootLayout({
-                                       children,
-                                   }: Readonly<{
-    children: React.ReactNode;
-}>) {
+export default function RootLayout({children,}: Readonly<{ children: React.ReactNode }>) {
     return (
         <html lang="no">
-        <body
-            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
+        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <Navbar/>
         {children}
         <SpeedInsights/>
