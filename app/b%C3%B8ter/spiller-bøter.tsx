@@ -1,9 +1,13 @@
 'use client'
-import TabellData from "@/app/b%C3%B8ter/TabellData";
+import TabellData from "@/app/komponenter/TabellData.tsx";
 import {useState} from "react";
 import {type Spiller} from "@/app/lib/spillereService.ts";
+import {generateVippsUrl} from "@/app/lib/vipps.ts";
+import {useRouter} from "next/navigation";
+import dayjs from "@/app/lib/dayjs.ts";
 
-export default function SpillerBøter({spillere}: {spillere: Spiller[]}) {
+export default function SpillerBøter({spillere}: { spillere: Spiller[] }) {
+    const router = useRouter()
     // Definer kolonner og visningstilstanden
     const kolonner = [
         {id: 'draktnummer', navn: 'Draktnummer'},
@@ -35,6 +39,15 @@ export default function SpillerBøter({spillere}: {spillere: Spiller[]}) {
     const [visFilter, setVisFilter] = useState(false)
 
     if (!spillere) return null;
+
+    const betalIVipps = (spiller: Spiller) => {
+        const vilBetale = confirm(`Betal i vipps?`)
+        if (vilBetale) {
+            const maaned = dayjs().format('MMMM');
+            const belopOre = (spiller.betaltMaaned ?? 0) * 100;
+            router.push(generateVippsUrl('97513023', belopOre, `---Bøter for måneden ${maaned}`))
+        }
+    }
 
     return (
         <>
@@ -73,7 +86,8 @@ export default function SpillerBøter({spillere}: {spillere: Spiller[]}) {
                     </thead>
                     <tbody>
                     {spillere.map((spiller) => (
-                        <tr key={spiller.draktnummer} className="hover:bg-gray-100">
+                        <tr key={spiller.draktnummer} className="hover:bg-gray-100"
+                            onClick={() => betalIVipps(spiller)}>
                             <TabellData skalVises={visKolonner.draktnummer} verdi={spiller.draktnummer} erNok={false}/>
                             <TabellData skalVises={visKolonner.totalSum} verdi={spiller.totalSum} erNok={true}/>
                             <TabellData skalVises={visKolonner.betaltSesong} verdi={spiller.betaltSesong} erNok={true}/>
