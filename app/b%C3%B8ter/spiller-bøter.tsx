@@ -44,8 +44,9 @@ export default function SpillerBøter({spillere}: { spillere: Spiller[] }) {
         const vilBetale = confirm(`Betal i vipps?`)
         if (vilBetale) {
             const maaned = dayjs().format('MMMM');
-            const belopOre = (spiller.betaltMaaned ?? 0) * 100;
-            router.push(generateVippsUrl('97513023', belopOre, `---Bøter for måneden ${maaned}`))
+            const belopOre = (spiller.totalSum ?? 0) * 100;
+            const vippsUrl = generateVippsUrl('97513023', belopOre, `---Bøter for måneden ${maaned}`)
+            router.push(vippsUrl)
         }
     }
 
