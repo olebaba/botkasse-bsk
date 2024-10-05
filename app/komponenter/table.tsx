@@ -34,7 +34,7 @@ const TableRow: React.FC<TableRowProps> = ({botType, isEven}) => {
     return (
         <tr className={`${isEven ? 'bg-gray-50' : 'bg-white'} hover:bg-yellow-100`}>
             <TableCell tekst={botType.navn} />
-            <TableCell tekst={botType.beløp + 'kroner'} />
+            <TableCell tekst={botType.beløp + ' kroner'} />
             <TableCell tekst={botType.beskrivelse} />
         </tr>
     );
