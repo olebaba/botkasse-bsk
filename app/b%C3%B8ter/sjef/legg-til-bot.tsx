@@ -1,11 +1,13 @@
 'use client'
 import dayjs from "dayjs";
-import type {Spiller} from "@/app/lib/spillereService.ts";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
+import {fetchForseelser, lagBot} from "@/app/lib/forseelseService.ts";
+import {useSpillere} from "@/app/hooks/useSpillere.ts";
 import type {Forseelse} from "@/app/b%C3%B8ter/page.tsx";
-import {lagBot} from "@/app/lib/forseelseService.ts";
 
-export default function LeggTilBot({spillere, forseelser}: { spillere: Spiller[]; forseelser: Forseelse[] }) {
+export default function LeggTilBot() {
+    const {spillereMedBoter: spillere} = useSpillere()
+    const [forseelser, setForseelser] = useState<Forseelse[]>([])
     const [draktnummer, setDraktnummer] = useState<string | undefined>(undefined);
     const [beløp, setBeløp] = useState(0);
     const [dato, setDato] = useState(dayjs().format('YYYY-MM-DD'));
@@ -13,6 +15,14 @@ export default function LeggTilBot({spillere, forseelser}: { spillere: Spiller[]
     const [melding, setMelding] = useState<string | null>(null);
     const [erKampdag, setErKampdag] = useState(false);
 
+    useEffect(() => {
+        const hentForseelser = async () => {
+            const forseelser = await fetchForseelser()
+            setForseelser(forseelser)
+        }
+
+        hentForseelser().then()
+    }, []);
 
     const handleLeggTilBot = async (e: React.FormEvent) => {
         e.preventDefault();

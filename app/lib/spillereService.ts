@@ -1,7 +1,3 @@
-import {baseUrl} from "@/app/utils.ts";
-
-const url = baseUrl()
-
 export type Spiller = {
     draktnummer: number;
     totalSum: number;
@@ -16,7 +12,9 @@ export type Spiller = {
  */
 export async function hentSpillere(): Promise<Spiller[]> {
     try {
-        const res = await fetch(url + '/api/spillere');
+        const res = await fetch('/api/spillere', {
+            next: {revalidate: 60}
+        });
         if (!res.ok) {
             throw new Error('Feil ved henting av spillere');
         }
@@ -33,7 +31,7 @@ export async function hentSpillere(): Promise<Spiller[]> {
  */
 export async function oppdaterSpiller(draktnummer: number, totalSum: number, erBetalt: boolean): Promise<Spiller> {
     try {
-        const res = await fetch(url + '/api/spillere', {
+        const res = await fetch('/api/spillere', {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
@@ -60,7 +58,9 @@ interface SummerForSpiller {
 
 export async function hentSummerForSpiller(draktnummer: number): Promise<SummerForSpiller | null> {
     try {
-        const res = await fetch(url + '/api/boter/' + draktnummer);
+        const res = await fetch('/api/boter/' + draktnummer, {
+            next: {revalidate: 60}
+        });
         if (!res.ok) {
             throw new Error('Feil ved henting av spillere');
         }

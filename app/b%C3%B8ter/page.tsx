@@ -1,6 +1,8 @@
+'use client'
 import {Table} from "@/app/komponenter/table";
 import Telefonnummer from "@/app/komponenter/Telefonnummer";
 import {fetchForseelser} from "@/app/lib/forseelseService.ts";
+import {useEffect, useState} from "react";
 
 export type Forseelse = {
     id: number;
@@ -9,10 +11,16 @@ export type Forseelse = {
     beskrivelse: string;
 };
 
-export const dynamic = 'force-dynamic'
+export default function Page() {
+    const [forseelser, setForseelser] = useState<Forseelse[]>([])
+    useEffect(() => {
+        const hentForseelser = async () => {
+            const forseelser = await fetchForseelser()
+            setForseelser(forseelser)
+        }
 
-export default async function Page() {
-    const botTyper = await fetchForseelser()
+        hentForseelser().then()
+    }, []);
 
     return (
         <div className="container mx-auto p-4 mt-28">
@@ -29,7 +37,7 @@ export default async function Page() {
             <h2 className="text-2xl my-4">Kontaktinfo</h2>
             Trener: Bjørn Aasmund Fredsted,<Telefonnummer nummer="48 35 68 55"/>
             Botsjef: Ole Bastian Løchen, <Telefonnummer nummer="97 51 30 23"/>
-            <Table botTyper={botTyper}/>
+            <Table botTyper={forseelser}/>
         </div>
     );
 }
