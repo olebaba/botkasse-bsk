@@ -1,8 +1,8 @@
 'use client'
 import {Table} from "@/app/komponenter/table";
-import Telefonnummer from "@/app/komponenter/Telefonnummer";
 import {fetchForseelser} from "@/app/lib/forseelseService.ts";
 import {useEffect, useState} from "react";
+import {Kontakter} from "@/app/komponenter/Kontakter.tsx";
 
 export type Forseelse = {
     id: number;
@@ -34,9 +34,7 @@ export default function Page() {
             <p className="mt-2">
                 Bøtene går til lagfester, så alle bidrag går kun tilbake til laget 🍻
             </p>
-            <h2 className="text-2xl my-4">Kontaktinfo</h2>
-            Trener: Bjørn Aasmund Fredsted,<Telefonnummer nummer="48 35 68 55"/>
-            Botsjef: Ole Bastian Løchen, <Telefonnummer nummer="97 51 30 23"/>
+            <Kontakter />
             <Table botTyper={forseelser}/>
         </div>
     );
