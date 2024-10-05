@@ -29,7 +29,7 @@ const VippsDialog = ({tittel, spiller, setSpiller, innhold}: DialogProps) => {
     if (!spiller) return null
 
     const betalIVipps = (spiller: Spiller) => {
-        const maaned = dayjs().format('MMMM');
+        const maaned = dayjs().add(-1, "month").format('MMMM');
         const belopOre = (spiller.totalSum ?? 0) * 100;
         const vippsUrl = generateVippsUrl('97513023', belopOre, `Bøter for måneden ${maaned}`)
         router.push(vippsUrl)

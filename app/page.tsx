@@ -10,7 +10,7 @@ export default function Forside() {
     return (
         <div className="container mx-auto p-4 mt-24">
             <AlertBanner
-                message="Trykk på raden med ditt draknummer for å betale i Vipps!"
+                message="Trykk på raden med ditt draknummer for å betale i Vipps! (Kun i Safari og Chrome)"
                 type="info"
             />
             <h3 className="text-xl mt-2">Hvilke bøter kan man få?</h3>
