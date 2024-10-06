@@ -1,5 +1,6 @@
 import {NextResponse} from "next/server";
 import {sql} from "@vercel/postgres";
+import dayjs from "@/app/lib/dayjs.ts";
 
 type Params = {
     draktnummer: string,
@@ -21,7 +22,8 @@ export async function POST(request: Request, {params}: { params: Params }) {
 
         await sql`
             UPDATE spillere
-            SET betalt_alle = false, total_sum = total_sum + ${beløp}
+            SET betalt_alle = false,
+                total_sum   = total_sum + ${beløp}
             WHERE draktnummer = ${draktnummer};
         `
         return NextResponse.json({message: 'Bot lagt til'}, {status: 200});
@@ -38,49 +40,67 @@ export async function GET(_request: Request, {params}: { params: Params }) {
         return new Response('Invalid draktnummer', {status: 400});
     }
 
-    // Hent summer
-    const betaltMaaned = await hentSumForSisteMaaned(draktnummer);
-    const betaltSesong = await hentSumForSesong(draktnummer);
-    const totalSum = await hentUtestaaendeSum(draktnummer);
+    const boter = await hentBoterForDraktnummer(draktnummer)
+
+    // Beregn summer
+    const betaltMaaned = beregnSumForSisteMaaned(boter);
+    const betaltSesong = beregnSumForSesong(boter);
+    const totalSum = beregnUtestaaendeSum(boter);
 
     return NextResponse.json({
+        boter,
         betaltMaaned,
         betaltSesong,
         totalSum
     });
 }
 
-// Henter total bøtesum for den siste måneden
-async function hentSumForSisteMaaned(draktnummer: number): Promise<number | null> {
-    const {rows} = await sql`
-        SELECT SUM(beløp) AS total_sum_måned
-        FROM bøter
-        WHERE draktnummer = ${draktnummer}
-          AND dato >= (CURRENT_DATE - INTERVAL '1 month')
-          AND er_betalt = true
-    `;
-    return rows[0]?.total_sum_måned || 0;
+export interface Bot {
+    id: string
+    draktnummer: string
+    belop: number
+    dato: string
+    forseelseId: string
+    erBetalt: boolean
 }
 
-// Henter total bøtesum for hele sesongen
-async function hentSumForSesong(draktnummer: number): Promise<number | null> {
+async function hentBoterForDraktnummer(draktnummer: number): Promise<Bot[]> {
     const {rows} = await sql`
-        SELECT SUM(beløp) AS total_sum_sesong
+        SELECT id, bøter.draktnummer, beløp, dato, forseelse_id, er_betalt
         FROM bøter
         WHERE draktnummer = ${draktnummer}
-          AND dato >= '2024-09-01' -- Sesongstart
-          AND er_betalt = true
     `;
-    return rows[0]?.total_sum_sesong || 0;
+    return rows.map((row) => ({
+        id: row.id,
+        draktnummer: row.draktnummer,
+        belop: row.beløp,
+        dato: row.dato,
+        forseelseId: row.forseelse_id,
+        erBetalt: row.er_betalt
+    }));
 }
 
-// Henter utestående bøter (ikke betalt)
-async function hentUtestaaendeSum(draktnummer: number): Promise<number | null> {
-    const {rows} = await sql`
-        SELECT SUM(beløp) AS utestaaende_sum
-        FROM bøter
-        WHERE draktnummer = ${draktnummer}
-          AND er_betalt = false
-    `;
-    return rows[0]?.utestaaende_sum || 0;
+// Beregner total bøtesum for siste måned
+function beregnSumForSisteMaaned(boter: Bot[]): number {
+    const oneMonthAgo = dayjs().subtract(1, "month")
+
+    return boter
+        .filter(bot => bot.erBetalt && dayjs(bot.dato).isAfter(oneMonthAgo))
+        .reduce((sum, bot) => sum + Number(bot.belop), 0);
+}
+
+// Beregner total bøtesum for hele sesongen
+function beregnSumForSesong(boter: Bot[]): number {
+    const sesongStart = dayjs('2024-09-01');
+
+    return boter
+        .filter(bot => bot.erBetalt && dayjs(bot.dato).isAfter(sesongStart))
+        .reduce((sum, bot) => sum + Number(bot.belop), 0);
+}
+
+// Beregner utestående bøtesum (ikke betalt)
+function beregnUtestaaendeSum(boter: Bot[]): number {
+    return boter
+        .filter(bot => !bot.erBetalt)
+        .reduce((sum, bot) => sum + Number(bot.belop), 0);
 }
