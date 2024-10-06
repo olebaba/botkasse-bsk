@@ -22,8 +22,7 @@ export async function POST(request: Request, {params}: { params: Params }) {
 
         await sql`
             UPDATE spillere
-            SET betalt_alle = false,
-                total_sum   = total_sum + ${beløp}
+            SET total_sum = total_sum + ${beløp}
             WHERE draktnummer = ${draktnummer};
         `
         return NextResponse.json({message: 'Bot lagt til'}, {status: 200});
@@ -46,12 +45,14 @@ export async function GET(_request: Request, {params}: { params: Params }) {
     const betaltMaaned = beregnSumForSisteMaaned(boter);
     const betaltSesong = beregnSumForSesong(boter);
     const totalSum = beregnUtestaaendeSum(boter);
+    const betaltAlle = boter.every(bot => bot.erBetalt)
 
     return NextResponse.json({
         boter,
         betaltMaaned,
         betaltSesong,
-        totalSum
+        totalSum,
+        betaltAlle
     });
 }
 

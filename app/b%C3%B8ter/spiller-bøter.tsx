@@ -2,11 +2,9 @@
 import TabellData from "@/app/komponenter/TabellData.tsx";
 import React, {useState} from "react";
 import {type Spiller} from "@/app/lib/spillereService.ts";
-import {useRouter} from "next/navigation";
 import VippsDialog from "@/app/komponenter/vippsDialog.tsx";
 
 export default function SpillerBøter({spillere}: { spillere: Spiller[] }) {
-    useRouter();
     const [spillerVipps, setSpillerVipps] = useState<Spiller | undefined>(undefined)
     // Definer kolonner og visningstilstanden
     const kolonner = [
