@@ -1,13 +1,14 @@
 'use client'
 import dayjs from "dayjs";
-import React, {useEffect, useState} from "react";
-import {fetchForseelser, lagBot} from "@/app/lib/forseelseService.ts";
+import React, {useState} from "react";
+import {lagBot} from "@/app/lib/forseelseService.ts";
 import {useSpillere} from "@/app/hooks/useSpillere.ts";
-import type {Forseelse} from "@/app/b%C3%B8ter/page.tsx";
+import {useForseelser} from "@/app/hooks/useForseelser.ts";
+import {Dropdown} from "@/app/komponenter/Dropdown.tsx";
 
 export default function LeggTilBot() {
     const {spillereMedBoter: spillere} = useSpillere()
-    const [forseelser, setForseelser] = useState<Forseelse[]>([])
+    const {forseelser} = useForseelser()
     const [draktnummer, setDraktnummer] = useState<string | undefined>(undefined);
     const [beløp, setBeløp] = useState(0);
     const [dato, setDato] = useState(dayjs().format('YYYY-MM-DD'));
@@ -15,14 +16,6 @@ export default function LeggTilBot() {
     const [melding, setMelding] = useState<string | null>(null);
     const [erKampdag, setErKampdag] = useState(false);
 
-    useEffect(() => {
-        const hentForseelser = async () => {
-            const forseelser = await fetchForseelser()
-            setForseelser(forseelser)
-        }
-
-        hentForseelser().then()
-    }, []);
 
     const handleLeggTilBot = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -51,48 +44,24 @@ export default function LeggTilBot() {
             <h2 className="text-2xl font-bold mb-4">Legg til bot for en spiller</h2>
             {melding && <p className="mb-4 text-red-600">{melding}</p>}
             <form onSubmit={handleLeggTilBot}>
-                <div className="mb-4">
-                    <label className="block text-gray-700 font-bold mb-2" htmlFor="draktnummer">
-                        Draktnummer
-                    </label>
-                    <select
-                        id="draktnummer"
-                        value={draktnummer || ''}
-                        onChange={(e) => setDraktnummer(e.target.value)}
-                        className="border rounded px-3 py-2 w-full"
-                    >
-                        <option value="" disabled>Velg en spiller</option>
-                        {spillere.map((spiller) => (
-                            <option key={spiller.draktnummer} value={spiller.draktnummer}>
-                                {spiller.draktnummer} - {spiller.navn}
-                            </option>
-                        ))}
-                    </select>
-                </div>
-
-                <div className="mb-4">
-                    <label className="block text-gray-700 font-bold mb-2" htmlFor="type">
-                        Type forseelse
-                    </label>
-                    <select
-                        id="forseelse"
-                        value={forseelsesId}
-                        onChange={(e) => {
-                            setForseelsesId(e.target.value);
-                            setBeløp(forseelser.find((forseelse) => forseelse.id.toString() == e.target.value)?.beløp || 0)
-                        }}
-                        className="border rounded px-3 py-2 w-full"
-                    >
-                        <option value="" disabled>Velg en forseelse</option>
-                        {forseelser.map((forseelse, index) => (
-                            <option key={index} value={forseelse.id}>
-                                {forseelse.navn}
-                            </option>
-                        ))}
-                        <option value="Annet">Annet</option>
-                    </select>
-                </div>
-
+                <Dropdown
+                    id={"draktnummer"}
+                    label={"Draktnummer"}
+                    options={spillere}
+                    idKey={"draktnummer"}
+                    placeholder={"Velg en spiller"}
+                    onChange={(e) => setDraktnummer(e.target.value)}
+                />
+                <Dropdown
+                    options={forseelser}
+                    label="Type forseelse"
+                    placeholder="Velg en forseelse"
+                    id="forseelse"
+                    onChange={(e) => {
+                        setForseelsesId(e.target.value);
+                        setBeløp(forseelser.find((forseelse) => forseelse.id.toString() == e.target.value)?.beløp || 0)
+                    }}
+                />
                 <div className="mb-4">
                     <label className="block text-gray-700 font-bold mb-2" htmlFor="kampdag">
                         Er kampdag (x2 beløp)
