@@ -1,3 +1,5 @@
+import type {Bot} from "@/app/api/boter/[draktnummer]/route.ts";
+
 export type Spiller = {
     draktnummer: number;
     totalSum: number;
@@ -5,6 +7,7 @@ export type Spiller = {
     navn?: string
     betaltSesong?: number
     betaltMaaned?: number
+    boter?: Bot[]
 };
 
 /**
@@ -50,13 +53,14 @@ export async function oppdaterSpiller(draktnummer: number, totalSum: number, erB
     }
 }
 
-interface SummerForSpiller {
+interface BoterForSpiller {
+    boter: Bot[],
     betaltMaaned: number,
     betaltSesong: number,
     totalSum: number,
 }
 
-export async function hentSummerForSpiller(draktnummer: number): Promise<SummerForSpiller | null> {
+export async function hentBoterForSpiller(draktnummer: number): Promise<BoterForSpiller | null> {
     try {
         const res = await fetch('/api/boter/' + draktnummer, {
             next: {revalidate: 60}
@@ -71,13 +75,13 @@ export async function hentSummerForSpiller(draktnummer: number): Promise<SummerF
     }
 }
 
-export async function hentSummerForAlleSpillere(spillere: Spiller[]): Promise<Spiller[]> {
+export async function hentBoterForAlleSpillere(spillere: Spiller[]): Promise<Spiller[]> {
     return await Promise.all(
         spillere.map(async (spiller: Spiller) => {
-            const summer = await hentSummerForSpiller(spiller.draktnummer);
+            const boterForSpiller = await hentBoterForSpiller(spiller.draktnummer);
             return {
                 ...spiller,
-                ...summer
+                ...boterForSpiller
             };
         })
     );

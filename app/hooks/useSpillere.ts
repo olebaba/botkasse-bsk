@@ -1,5 +1,5 @@
 import {useEffect, useState} from 'react';
-import {type Spiller, hentSpillere, hentSummerForAlleSpillere} from '../lib/spillereService';
+import {type Spiller, hentSpillere, hentBoterForAlleSpillere} from '../lib/spillereService';
 
 export function useSpillere() {
     const [spillereMedBoter, setSpillereMedBoter] = useState<Spiller[]>([]);
@@ -11,7 +11,7 @@ export function useSpillere() {
         const fetchSpillere = async () => {
             if (!hentetSummer) {
                 const spillere = await hentSpillere();
-                const oppdaterteSpillere = await hentSummerForAlleSpillere(spillere);
+                const oppdaterteSpillere = await hentBoterForAlleSpillere(spillere);
                 setSpillereMedBoter(oppdaterteSpillere)
                 setHentetSummer(true);
             }
