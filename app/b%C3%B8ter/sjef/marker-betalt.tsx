@@ -24,7 +24,12 @@ export const MarkerBetalt = () => {
                     setValgspiller(spiller)
                 }}
             />
-            {valgtSpiller && <ListBoter key={valgtSpiller.draktnummer} spiller={valgtSpiller}/> }
+            {valgtSpiller && (
+                <>
+                    <Header size={"small"} text={`Bøter for spiller ${valgtSpiller.draktnummer}`}/>
+                    <ListBoter key={valgtSpiller.draktnummer} spiller={valgtSpiller} erBotsjef={true}/>
+                </>
+            )}
         </div>
     )
 }
