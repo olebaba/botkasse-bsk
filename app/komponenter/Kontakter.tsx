@@ -1,4 +1,5 @@
 import Telefonnummer from "@/app/komponenter/Telefonnummer.tsx";
+import Header from "@/app/komponenter/Header.tsx";
 
 export const Kontakter = () => {
     const personer = [
@@ -8,7 +9,7 @@ export const Kontakter = () => {
 
     return (
         <div className="mx-auto mt-4">
-            <h2 className="text-xl font-bold mb-4">Kontaktinfo</h2>
+            <Header size="medium" text="Kontaktinfo" />
             <div className="overflow-x-auto">
                 <table className="min-w-full bg-white border border-gray-300">
                     <tbody>

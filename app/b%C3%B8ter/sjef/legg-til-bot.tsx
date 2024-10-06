@@ -5,6 +5,7 @@ import {lagBot} from "@/app/lib/forseelseService.ts";
 import {useSpillere} from "@/app/hooks/useSpillere.ts";
 import {useForseelser} from "@/app/hooks/useForseelser.ts";
 import {Dropdown} from "@/app/komponenter/Dropdown.tsx";
+import Header from "@/app/komponenter/Header.tsx";
 
 export default function LeggTilBot() {
     const {spillereMedBoter: spillere} = useSpillere()
@@ -41,7 +42,7 @@ export default function LeggTilBot() {
 
     return (
         <div className="container mx-auto p-4 mt-28">
-            <h2 className="text-2xl font-bold mb-4">Legg til bot for en spiller</h2>
+            <Header size="medium" text="Legg til bot for en spiller" />
             {melding && <p className="mb-4 text-red-600">{melding}</p>}
             <form onSubmit={handleLeggTilBot}>
                 <Dropdown
