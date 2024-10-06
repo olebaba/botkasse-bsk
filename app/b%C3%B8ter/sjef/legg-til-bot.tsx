@@ -6,6 +6,7 @@ import {useSpillere} from "@/app/hooks/useSpillere.ts";
 import {useForseelser} from "@/app/hooks/useForseelser.ts";
 import {Dropdown} from "@/app/komponenter/Dropdown.tsx";
 import Header from "@/app/komponenter/Header.tsx";
+import {Knapp} from "@/app/komponenter/Knapp.tsx";
 
 export default function LeggTilBot() {
     const {spillereMedBoter: spillere} = useSpillere()
@@ -76,7 +77,6 @@ export default function LeggTilBot() {
                         placeholder="F.eks. 100.00"
                     />
                 </div>
-
                 <div className="mb-4">
                     <label className="block text-gray-700 font-bold mb-2" htmlFor="beløp">
                         Beløp (NOK)
@@ -90,7 +90,6 @@ export default function LeggTilBot() {
                         placeholder="F.eks. 100.00"
                     />
                 </div>
-
                 <div className="mb-4">
                     <label className="block text-gray-700 font-bold mb-2" htmlFor="dato">
                         Dato
@@ -103,10 +102,7 @@ export default function LeggTilBot() {
                         className="border rounded px-3 py-2 w-full"
                     />
                 </div>
-
-                <button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">
-                    Legg til bot
-                </button>
+                <Knapp tekst="Legg til bot" />
             </form>
         </div>
     );
