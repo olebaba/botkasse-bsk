@@ -14,7 +14,7 @@ export const Kontakter = () => {
                 <table className="min-w-full bg-white border border-gray-300">
                     <tbody>
                     {personer.map((person, index) => (
-                        <tr key={index} className="border-b hover:bg-gray-50">
+                        <tr key={index} className="border-b">
                             <td className="font-bold text-gray-800">{person.rolle}</td>
                             <td className="p-2">{person.navn}</td>
                             <td className="p-2">

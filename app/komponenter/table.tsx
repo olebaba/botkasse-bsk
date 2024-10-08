@@ -10,7 +10,7 @@ export const Table: React.FC<TableProps> = ({botTyper}) => {
     return (
         <table className="w-full mt-4 bg-white border border-gray-200 shadow-lg">
             <thead className="bg-gray-50">
-            <tr>
+            <tr className="hover:bg-gray-50">
                 <TableHeaderCell tekst="Forseelse" />
                 <TableHeaderCell tekst="Standard Beløp" />
                 <TableHeaderCell tekst="Beskrivelse" />
@@ -32,7 +32,7 @@ interface TableRowProps {
 
 const TableRow: React.FC<TableRowProps> = ({botType, isEven}) => {
     return (
-        <tr className={`${isEven ? 'bg-gray-50' : 'bg-white'} hover:bg-yellow-100`}>
+        <tr className={`${isEven ? 'bg-gray-50' : 'bg-white'}`}>
             <TableCell tekst={botType.navn} />
             <TableCell tekst={botType.beløp + ' kroner'} />
             <TableCell tekst={botType.beskrivelse} />

@@ -25,3 +25,9 @@ body {
     text-wrap: balance;
   }
 }
+
+@layer base {
+  tr {
+    @apply hover:bg-yellow-100;
+  }
+}
