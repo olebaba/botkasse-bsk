@@ -82,7 +82,7 @@ export default function SpillerBøter({spillere}: { spillere: Spiller[] }) {
                             <tr
                                 key={spiller.draktnummer}
                                 onClick={() => {
-                                    if (merInfoSpiller !== undefined) setMerInfoSpiller(undefined)
+                                    if (merInfoSpiller == spiller) setMerInfoSpiller(undefined)
                                     else setMerInfoSpiller(spiller);
                                 }}
                             >
