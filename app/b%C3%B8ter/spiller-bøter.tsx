@@ -59,8 +59,8 @@ export default function SpillerBøter({spillere}: { spillere: Spiller[] }) {
                 ))}
             </div>)}
 
-            <div className="overflow-scroll">
-                <table className="min-w-full bg-white border border-gray-200 shadow-lg">
+            <div>
+                <table className="w-full bg-white border border-gray-200 shadow-lg text-sm md:text-base">
                     <thead className="bg-gray-50">
                     <tr className="hover:bg-gray-50">
                         {kolonner.map(
