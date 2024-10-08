@@ -40,7 +40,7 @@ const VippsDialog = ({tittel, spiller, setSpiller, innhold}: DialogProps) => {
             open={isModalOpen}
             onClose={handleCloseModal}
             title={tittel}
-            content={innhold}
+            content={innhold || `Vipps botsjef ${spiller.totalSum} kroner?`}
             onConfirm={() => {
                 betalIVipps(spiller)
                 setSpiller(spiller)

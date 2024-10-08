@@ -42,7 +42,7 @@ export default function SpillerBøter({spillere}: { spillere: Spiller[] }) {
 
     return (
         <>
-            <VippsDialog tittel="Betal i vipps?" spiller={spillerVipps} setSpiller={setSpillerVipps}/>
+            <VippsDialog tittel="Betal i vipps" spiller={spillerVipps} setSpiller={setSpillerVipps}/>
             <h1 className="text-3xl font-bold text-center mb-6">Spilleres bøter i BSK</h1>
             <button onClick={() => setVisFilter(!visFilter)}>Vis filter</button>
             {visFilter && (<div className="mb-4">
