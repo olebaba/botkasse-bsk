@@ -113,6 +113,7 @@ export default function SpillerBøter({spillere}: { spillere: Spiller[] }) {
                                         <Knapp
                                             tekst={"Betal bøter i Vipps"}
                                             className="bg-vipps-orange hover:bg-vipps-orange-dark text-white mb-4"
+                                            onClick={() => setSpillerVipps(spiller)}
                                         />
                                         <ListBoter erBotsjef={false} spiller={spiller}/>
                                     </td>
