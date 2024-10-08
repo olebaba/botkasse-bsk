@@ -3,6 +3,7 @@ import {useForseelser} from "@/app/hooks/useForseelser.ts";
 import {Knapp} from "@/app/komponenter/Knapp.tsx";
 import {markerBoterBetalt} from "@/app/lib/botService.ts";
 import React from "react";
+import dayjs from "@/app/lib/dayjs.ts";
 
 export const ListBoter = ({spiller, erBotsjef}: { spiller: Spiller; erBotsjef: boolean }) => {
     const {forseelser} = useForseelser();
@@ -20,6 +21,7 @@ export const ListBoter = ({spiller, erBotsjef}: { spiller: Spiller; erBotsjef: b
             <thead>
             <tr className="text-left text-sm md:text-base text-gray-700 bg-gray-100">
                 <th className="py-2 px-4">Forseelse</th>
+                <th className="py-2 px-4">Dato</th>
                 <th className="py-2 px-4">Beløp</th>
                 <th className="py-2 px-4">Status</th>
                 {erBotsjef && <th className="py-2 px-4">Handling</th>}
@@ -28,9 +30,11 @@ export const ListBoter = ({spiller, erBotsjef}: { spiller: Spiller; erBotsjef: b
             <tbody>
             {spiller.boter?.map((bot) => {
                 const forseelse = forseelser.find((f) => f.id.toString() == bot.forseelseId);
+                const dato = `${dayjs(bot.dato).format('DD. MMMM YYYY')}`
                 return (
                     <tr key={bot.id} className="border-t border-gray-200">
                         <td className="py-2 px-4">{forseelse?.navn}</td>
+                        <td className="py-2 px-4">{dato}</td>
                         <td className="py-2 px-4">{bot.belop} kroner</td>
                         <td className="py-2 px-4">
                             <span

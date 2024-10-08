@@ -1,6 +1,7 @@
 import {NextResponse} from "next/server";
 import {sql} from "@vercel/postgres";
 import dayjs from "@/app/lib/dayjs.ts";
+import type {Dayjs} from "dayjs";
 
 type Params = {
     draktnummer: string,
@@ -60,7 +61,7 @@ export interface Bot {
     id: string
     draktnummer: string
     belop: number
-    dato: string
+    dato: Dayjs
     forseelseId: string
     erBetalt: boolean
 }
