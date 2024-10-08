@@ -3,10 +3,14 @@ import TabellData from "@/app/komponenter/TabellData.tsx";
 import React, {useState} from "react";
 import {type Spiller} from "@/app/lib/spillereService.ts";
 import VippsDialog from "@/app/komponenter/vippsDialog.tsx";
+import {ListBoter} from "@/app/komponenter/ListBoter.tsx";
+import Header from "@/app/komponenter/Header.tsx";
+import {Knapp} from "@/app/komponenter/Knapp.tsx";
 
 export default function SpillerBøter({spillere}: { spillere: Spiller[] }) {
     const [spillerVipps, setSpillerVipps] = useState<Spiller | undefined>(undefined)
-    // Definer kolonner og visningstilstanden
+    const [merInfoSpiller, setMerInfoSpiller] = useState<Spiller | undefined>(undefined)
+
     const kolonner = [
         {id: 'draktnummer', navn: 'Draktnummer'},
         {id: 'totalSum', navn: 'Total sum bøter'},
@@ -16,7 +20,6 @@ export default function SpillerBøter({spillere}: { spillere: Spiller[] }) {
         {id: 'status', navn: 'Status'},
     ];
 
-    // Tilstand for å holde styr på hvilke kolonner som vises
     const [visKolonner, setVisKolonner] = useState<{ [index: string]: boolean }>({
         draktnummer: true,
         totalSum: false,
@@ -26,7 +29,6 @@ export default function SpillerBøter({spillere}: { spillere: Spiller[] }) {
         status: true,
     });
 
-    // Funksjon for å toggle kolonnevisning
     const toggleKolonne = (kolonneId: string) => {
         setVisKolonner((prevState) => ({
             ...prevState,
@@ -40,7 +42,7 @@ export default function SpillerBøter({spillere}: { spillere: Spiller[] }) {
 
     return (
         <>
-            <VippsDialog tittel="Betal i vipps?" spiller={spillerVipps} setSpiller={setSpillerVipps} />
+            <VippsDialog tittel="Betal i vipps?" spiller={spillerVipps} setSpiller={setSpillerVipps}/>
             <h1 className="text-3xl font-bold text-center mb-6">Spilleres bøter i BSK</h1>
             <button onClick={() => setVisFilter(!visFilter)}>Vis filter</button>
             {visFilter && (<div className="mb-4">
@@ -60,7 +62,7 @@ export default function SpillerBøter({spillere}: { spillere: Spiller[] }) {
             <div className="overflow-scroll">
                 <table className="min-w-full bg-white border border-gray-200 shadow-lg">
                     <thead className="bg-gray-50">
-                    <tr>
+                    <tr className="hover:bg-gray-50">
                         {kolonner.map(
                             (kolonne) =>
                                 visKolonner[kolonne.id] && (
@@ -76,15 +78,24 @@ export default function SpillerBøter({spillere}: { spillere: Spiller[] }) {
                     </thead>
                     <tbody>
                     {spillere.map((spiller) => (
-                        <tr key={spiller.draktnummer} className="hover:bg-gray-100"
-                            onClick={() => setSpillerVipps(spiller)}>
-                            <TabellData skalVises={visKolonner.draktnummer} verdi={spiller.draktnummer} erNok={false}/>
-                            <TabellData skalVises={visKolonner.totalSum} verdi={spiller.totalSum} erNok={true}/>
-                            <TabellData skalVises={visKolonner.betaltSesong} verdi={spiller.betaltSesong} erNok={true}/>
-                            <TabellData skalVises={visKolonner.betaltMaaned} verdi={spiller.betaltMaaned} erNok={true}/>
-                            <TabellData skalVises={visKolonner.utestaaende} verdi={spiller.totalSum} erNok={true}/>
-                            {visKolonner.status && (
-                                <td className="py-2 px-4 border-b text-center">
+                        <>
+                            <tr
+                                key={spiller.draktnummer}
+                                onClick={() => {
+                                    if (merInfoSpiller !== undefined) setMerInfoSpiller(undefined)
+                                    else setMerInfoSpiller(spiller);
+                                }}
+                            >
+                                <TabellData skalVises={visKolonner.draktnummer} verdi={spiller.draktnummer}
+                                            erNok={false}/>
+                                <TabellData skalVises={visKolonner.totalSum} verdi={spiller.totalSum} erNok={true}/>
+                                <TabellData skalVises={visKolonner.betaltSesong} verdi={spiller.betaltSesong}
+                                            erNok={true}/>
+                                <TabellData skalVises={visKolonner.betaltMaaned} verdi={spiller.betaltMaaned}
+                                            erNok={true}/>
+                                <TabellData skalVises={visKolonner.utestaaende} verdi={spiller.totalSum} erNok={true}/>
+                                {visKolonner.status && (
+                                    <td className="py-2 px-4 border-b text-center">
                                   <span
                                       className={`${
                                           spiller.betaltAlle ? 'text-green-600' : 'text-red-600'
@@ -92,9 +103,22 @@ export default function SpillerBøter({spillere}: { spillere: Spiller[] }) {
                                   >
                                     {spiller.betaltAlle ? 'Betalt' : 'Ikke betalt'}
                                   </span>
-                                </td>
+                                    </td>
+                                )}
+                            </tr>
+                            {spiller == merInfoSpiller && (
+                                <tr>
+                                    <td colSpan={Object.keys(visKolonner).length} className="p-4 bg-yellow-100 border-b">
+                                        <Header size={"small"} text={`Spiller nummer ${spiller.draktnummer}s bøter`}/>
+                                        <Knapp
+                                            tekst={"Betal bøter i Vipps"}
+                                            className="bg-vipps-orange hover:bg-vipps-orange-dark text-white mb-4"
+                                        />
+                                        <ListBoter erBotsjef={false} spiller={spiller}/>
+                                    </td>
+                                </tr>
                             )}
-                        </tr>
+                        </>
                     ))}
                     </tbody>
                 </table>
