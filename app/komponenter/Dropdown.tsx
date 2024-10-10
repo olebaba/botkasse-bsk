@@ -7,10 +7,9 @@ interface DropdownProps {
     label: string
     id: string
     placeholder: string
-    idKey?: string
 }
 
-export const Dropdown = ({ options, onChange, label, placeholder, id, idKey }: DropdownProps) => {
+export const Dropdown = ({ options, onChange, label, placeholder, id }: DropdownProps) => {
     const [valgtId, setValgtId] = useState('')
     return (
         <div className="mb-4">
@@ -28,8 +27,8 @@ export const Dropdown = ({ options, onChange, label, placeholder, id, idKey }: D
             >
                 <option value="" disabled selected>{placeholder}</option>
                 {options.map((option, index) => (
-                    <option key={index} value={option[idKey || 'id']}>
-                        {idKey ? option[idKey || "id"] + ' - ' : ''}{option.navn}
+                    <option key={index} value={option.id}>
+                        {option.draktnummer ? option.draktnummer + ' - ' : option.id + ' - '}{option.navn}
                     </option>
                 ))}
             </select>

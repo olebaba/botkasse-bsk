@@ -15,7 +15,6 @@ export const MarkerBetalt = () => {
             <Header size="medium" text="Marker betalt bot" />
             <Dropdown
                 id={"spillere"}
-                idKey={"draktnummer"}
                 label={"Velg spiller"}
                 options={spillere}
                 placeholder={"Velg en spiller"}

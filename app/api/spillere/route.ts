@@ -10,6 +10,7 @@ export async function GET() {
         const typedSpillere: Spiller[] = spillere.rows.map(row => ({
             id: row.id,
             draktnummer: row.draktnummer,
+            navn: row.navn,
             totalSum: row.total_sum,
             betaltSesong: row.betalt_sesong,
             betaltMaaned: row.betalt_maaned,

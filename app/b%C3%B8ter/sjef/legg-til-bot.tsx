@@ -50,7 +50,6 @@ export default function LeggTilBot() {
                     id={"draktnummer"}
                     label={"Draktnummer"}
                     options={spillere}
-                    idKey={"draktnummer"}
                     placeholder={"Velg en spiller"}
                     onChange={(e) => setDraktnummer(e.target.value)}
                 />
