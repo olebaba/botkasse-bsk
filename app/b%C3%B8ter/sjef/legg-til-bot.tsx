@@ -1,6 +1,6 @@
 'use client'
 import dayjs from "dayjs";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {lagBot} from "@/app/lib/forseelseService.ts";
 import {useSpillere} from "@/app/hooks/useSpillere.ts";
 import {useForseelser} from "@/app/hooks/useForseelser.ts";
@@ -11,28 +11,35 @@ import {Knapp} from "@/app/komponenter/Knapp.tsx";
 export default function LeggTilBot() {
     const {spillereMedBoter: spillere} = useSpillere()
     const {forseelser} = useForseelser()
-    const [draktnummer, setDraktnummer] = useState<string | undefined>(undefined);
-    const [beløp, setBeløp] = useState(0);
+    const [spillerId, setSpillerId] = useState<string | undefined>(undefined);
+    const [belop, setBelop] = useState(0);
     const [dato, setDato] = useState(dayjs().format('YYYY-MM-DD'));
     const [forseelsesId, setForseelsesId] = useState('');
     const [melding, setMelding] = useState<string | null>(null);
     const [erKampdag, setErKampdag] = useState(false);
 
+    useEffect(() => {
+        if (erKampdag) {
+            setBelop(belop * 2)
+        } else {
+            setBelop(belop / 2)
+        }
+    }, [erKampdag]);
 
     const handleLeggTilBot = async (e: React.FormEvent) => {
         e.preventDefault();
 
-        if (!draktnummer || !beløp || !dato || !forseelsesId) {
+        if (!spillerId || !belop || !dato || !forseelsesId) {
             setMelding('Alle felter må fylles ut.');
             return;
         }
 
         try {
-            await lagBot(draktnummer, beløp, dato, forseelsesId)
+            await lagBot(spillerId, belop, dato, forseelsesId)
 
             setMelding('Bot lagt til!');
-            setDraktnummer(undefined);
-            setBeløp(0);
+            setSpillerId(undefined);
+            setBelop(0);
             setDato('');
             setForseelsesId('');
         } catch (error) {
@@ -43,7 +50,7 @@ export default function LeggTilBot() {
 
     return (
         <div className="container mx-auto p-4 mt-28">
-            <Header size="medium" text="Legg til bot for en spiller" />
+            <Header size="medium" text="Legg til bot for en spiller"/>
             {melding && <p className="mb-4 text-red-600">{melding}</p>}
             <form onSubmit={handleLeggTilBot}>
                 <Dropdown
@@ -51,7 +58,7 @@ export default function LeggTilBot() {
                     label={"Draktnummer"}
                     options={spillere}
                     placeholder={"Velg en spiller"}
-                    onChange={(e) => setDraktnummer(e.target.value)}
+                    onChange={(e) => setSpillerId(e.target.value)}
                 />
                 <Dropdown
                     options={forseelser}
@@ -60,7 +67,7 @@ export default function LeggTilBot() {
                     id="forseelse"
                     onChange={(e) => {
                         setForseelsesId(e.target.value);
-                        setBeløp(forseelser.find((forseelse) => forseelse.id.toString() == e.target.value)?.beløp || 0)
+                        setBelop(forseelser.find((forseelse) => forseelse.id.toString() == e.target.value)?.beløp || 0)
                     }}
                 />
                 <div className="mb-4">
@@ -83,8 +90,8 @@ export default function LeggTilBot() {
                     <input
                         type="number"
                         id="beløp"
-                        value={beløp * (erKampdag ? 2 : 1)}
-                        onChange={(e) => setBeløp(Number.parseFloat(e.target.value))}
+                        value={belop}
+                        onChange={(e) => setBelop(Number.parseFloat(e.target.value))}
                         className="border rounded px-3 py-2 w-full"
                         placeholder="F.eks. 100.00"
                     />
@@ -101,7 +108,7 @@ export default function LeggTilBot() {
                         className="border rounded px-3 py-2 w-full"
                     />
                 </div>
-                <Knapp tekst="Legg til bot" />
+                <Knapp tekst="Legg til bot"/>
             </form>
         </div>
     );
