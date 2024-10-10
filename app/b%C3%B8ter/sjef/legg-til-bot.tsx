@@ -20,9 +20,9 @@ export default function LeggTilBot() {
 
     useEffect(() => {
         if (erKampdag) {
-            setBelop(belop * 2)
+            setBelop(b => b * 2)
         } else {
-            setBelop(belop / 2)
+            setBelop(b => b / 2)
         }
     }, [erKampdag]);
 
