@@ -109,7 +109,7 @@ export default function SpillerBøter({spillere}: { spillere: Spiller[] }) {
                             {spiller == merInfoSpiller && (
                                 <tr>
                                     <td colSpan={Object.keys(visKolonner).length} className="p-4 bg-yellow-100 border-b">
-                                        <Header size={"small"} text={`Spiller nummer ${spiller.draktnummer}s bøter`}/>
+                                        <Header size={"small"} text={`Spiller nummer ${spiller.id}s bøter`}/>
                                         <Knapp
                                             tekst={"Betal bøter i Vipps"}
                                             className="bg-vipps-orange hover:bg-vipps-orange-dark text-white mb-4"
