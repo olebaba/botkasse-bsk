@@ -2,13 +2,13 @@ import {sql} from '@vercel/postgres';
 import {NextResponse} from 'next/server';
 import type {Spiller} from "@/app/lib/spillereService";
 
-// Håndter GET-forespørsler
 export async function GET() {
     try {
         const spillere = await sql`
             SELECT *
             FROM spillere;`;
         const typedSpillere: Spiller[] = spillere.rows.map(row => ({
+            id: row.id,
             draktnummer: row.draktnummer,
             totalSum: row.total_sum,
             betaltSesong: row.betalt_sesong,
@@ -25,19 +25,18 @@ export async function GET() {
 
 // Håndter PATCH-forespørsler for å oppdatere en spillers data
 export async function PATCH(request: Request) {
-    const {draktnummer, totalSum, erBetalt} = await request.json();
+    const {spiller_id, totalSum, erBetalt} = await request.json();
 
     try {
-        if (!draktnummer || totalSum === undefined || erBetalt === undefined) {
+        if (!spiller_id || totalSum === undefined || erBetalt === undefined) {
             throw new Error('Draktnummer, totalsum og betalingsstatus kreves.');
         }
 
         // Oppdater spillerens totalSum og er_betalt felt
         const oppdatertSpiller = await sql`
             UPDATE spillere
-            SET total_sum   = ${totalSum},
-                betalt_alle = ${erBetalt}
-            WHERE draktnummer = ${draktnummer}
+            SET total_sum = ${totalSum}
+            WHERE id = ${spiller_id}
             RETURNING *;
         `;
 

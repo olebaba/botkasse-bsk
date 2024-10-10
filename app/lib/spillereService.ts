@@ -1,7 +1,8 @@
-import type {Bot} from "@/app/api/boter/[draktnummer]/route.ts";
+import type {Bot} from "@/app/api/boter/[spiller_id]/route.ts";
 
 export type Spiller = {
-    draktnummer: number;
+    id: string
+    draktnummer?: number;
     totalSum: number;
     betaltAlle?: boolean;
     navn?: string
@@ -33,9 +34,9 @@ interface BoterForSpiller {
     betaltAlle: boolean
 }
 
-export async function hentBoterForSpiller(draktnummer: number): Promise<BoterForSpiller | null> {
+export async function hentBoterForSpiller(spiller_id: string): Promise<BoterForSpiller | null> {
     try {
-        const res = await fetch('/api/boter/' + draktnummer, {
+        const res = await fetch('/api/boter/' + spiller_id, {
             next: {revalidate: 60}
         });
         if (!res.ok) {
@@ -44,14 +45,14 @@ export async function hentBoterForSpiller(draktnummer: number): Promise<BoterFor
         return await res.json();
     } catch (error) {
         console.error(error);
-        throw new Error(`Kunne ikke hente sum for spiller med draktnummer ${draktnummer}`);
+        throw new Error(`Kunne ikke hente sum for spiller med id ${spiller_id}`);
     }
 }
 
 export async function hentBoterForAlleSpillere(spillere: Spiller[]): Promise<Spiller[]> {
     return await Promise.all(
         spillere.map(async (spiller: Spiller) => {
-            const boterForSpiller = await hentBoterForSpiller(spiller.draktnummer);
+            const boterForSpiller = await hentBoterForSpiller(spiller.id);
             return {
                 ...spiller,
                 ...boterForSpiller

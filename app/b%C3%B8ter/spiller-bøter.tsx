@@ -80,13 +80,13 @@ export default function SpillerBøter({spillere}: { spillere: Spiller[] }) {
                     {spillere.map((spiller) => (
                         <>
                             <tr
-                                key={spiller.draktnummer}
+                                key={spiller.id}
                                 onClick={() => {
                                     if (merInfoSpiller == spiller) setMerInfoSpiller(undefined)
                                     else setMerInfoSpiller(spiller);
                                 }}
                             >
-                                <TabellData skalVises={visKolonner.draktnummer} verdi={spiller.draktnummer}
+                                <TabellData skalVises={visKolonner.draktnummer} verdi={spiller.id}
                                             erNok={false}/>
                                 <TabellData skalVises={visKolonner.totalSum} verdi={spiller.totalSum} erNok={true}/>
                                 <TabellData skalVises={visKolonner.betaltSesong} verdi={spiller.betaltSesong}
