@@ -10,7 +10,7 @@ import {Knapp} from "@/app/komponenter/Knapp.tsx";
 
 export default function LeggTilBot() {
     const {spillereMedBoter: spillere} = useSpillere()
-    const {forseelser, forseelserMap} = useForseelser()
+    const {forseelser} = useForseelser()
     const [spillerId, setSpillerId] = useState<string | undefined>(undefined);
     const [belop, setBelop] = useState(0);
     const [dato, setDato] = useState(dayjs().format('YYYY-MM-DD'));
@@ -20,9 +20,9 @@ export default function LeggTilBot() {
 
     useEffect(() => {
         if (erKampdag) {
-            setBelop(b => b * 2)
+            setBelop(belop * 2)
         } else {
-            setBelop(b => b / 2)
+            setBelop(belop / 2)
         }
     }, [erKampdag]);
 
@@ -67,7 +67,7 @@ export default function LeggTilBot() {
                     id="forseelse"
                     onChange={(e) => {
                         setForseelsesId(e.target.value);
-                        setBelop(forseelserMap[e.target.value].beløp || 0)
+                        setBelop(forseelser.find((forseelse) => forseelse.id.toString() == e.target.value)?.beløp || 0)
                     }}
                 />
                 <div className="mb-4">

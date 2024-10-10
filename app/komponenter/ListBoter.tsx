@@ -6,7 +6,7 @@ import React from "react";
 import dayjs from "@/app/lib/dayjs.ts";
 
 export const ListBoter = ({spiller, erBotsjef}: { spiller: Spiller; erBotsjef: boolean }) => {
-    const {forseelserMap} = useForseelser();
+    const {forseelser} = useForseelser();
     if (spiller.boter?.length === 0) return null;
 
     const handleMarkerBetalt = (bot: string) => {
@@ -29,7 +29,7 @@ export const ListBoter = ({spiller, erBotsjef}: { spiller: Spiller; erBotsjef: b
             </thead>
             <tbody>
             {spiller.boter?.map((bot) => {
-                const forseelse = forseelserMap[bot.forseelseId];
+                const forseelse = forseelser.find((f) => f.id.toString() == bot.forseelseId);
                 const dato = `${dayjs(bot.dato).format('DD. MMMM YYYY')}`
                 return (
                     <tr key={bot.id} className="border-t border-gray-200">
