@@ -19,7 +19,7 @@ export const MarkerBetalt = () => {
                 options={spillere}
                 placeholder={"Velg en spiller"}
                 onChange={(e) => {
-                    const spiller = spillere.find((spiller) => spiller.draktnummer == e.target.value)
+                    const spiller = spillere.find((spiller) => spiller.id == e.target.value)
                     setValgspiller(spiller)
                 }}
             />
