@@ -34,8 +34,6 @@ export async function POST(request: Request, {params}: { params: Params }) {
 }
 
 export async function GET(_request: Request, {params}: { params: Params }) {
-    // Hent draktnummer fra params og konverter til number
-    console.log("spiller_id", params.spiller_id);
     const spillerId = parseInt(params.spiller_id, 10);
     if (isNaN(spillerId)) {
         return new Response('Invalid draktnummer', {status: 400});

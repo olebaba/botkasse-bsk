@@ -2,15 +2,13 @@
 import dayjs from "dayjs";
 import React, {useEffect, useState} from "react";
 import {lagBot} from "@/app/lib/forseelseService.ts";
-import {useSpillere} from "@/app/hooks/useSpillere.ts";
-import {useForseelser} from "@/app/hooks/useForseelser.ts";
 import {Dropdown} from "@/app/komponenter/Dropdown.tsx";
 import Header from "@/app/komponenter/Header.tsx";
 import {Knapp} from "@/app/komponenter/Knapp.tsx";
+import type {Spiller} from "@/app/lib/spillereService.ts";
+import type {Forseelse} from "@/app/b%C3%B8ter/page.tsx";
 
-export default function LeggTilBot() {
-    const {spillereMedBoter: spillere} = useSpillere()
-    const {forseelser} = useForseelser()
+export default function LeggTilBot({spillere, forseelser}: {spillere: Spiller[], forseelser: Forseelse[]}) {
     const [spillerId, setSpillerId] = useState<string | undefined>(undefined);
     const [belop, setBelop] = useState(0);
     const [dato, setDato] = useState(dayjs().format('YYYY-MM-DD'));

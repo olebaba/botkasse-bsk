@@ -6,8 +6,9 @@ import VippsDialog from "@/app/komponenter/vippsDialog.tsx";
 import {ListBoter} from "@/app/komponenter/ListBoter.tsx";
 import Header from "@/app/komponenter/Header.tsx";
 import {Knapp} from "@/app/komponenter/Knapp.tsx";
+import type {Forseelse} from "@/app/b%C3%B8ter/page.tsx";
 
-export default function SpillerBøter({spillere}: { spillere: Spiller[] }) {
+export default function SpillerBøter({spillere, forseelser}: { spillere: Spiller[]; forseelser: Forseelse[]; }) {
     const [spillerVipps, setSpillerVipps] = useState<Spiller | undefined>(undefined)
     const [merInfoSpiller, setMerInfoSpiller] = useState<Spiller | undefined>(undefined)
 
@@ -115,7 +116,7 @@ export default function SpillerBøter({spillere}: { spillere: Spiller[] }) {
                                             className="bg-vipps-orange hover:bg-vipps-orange-dark text-white mb-4"
                                             onClick={() => setSpillerVipps(spiller)}
                                         />
-                                        <ListBoter erBotsjef={false} spiller={spiller}/>
+                                        <ListBoter forseelser={forseelser} erBotsjef={false} spiller={spiller}/>
                                     </td>
                                 </tr>
                             )}

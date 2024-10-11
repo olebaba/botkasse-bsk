@@ -1,12 +1,15 @@
 import type {Spiller} from "@/app/lib/spillereService.ts";
-import {useForseelser} from "@/app/hooks/useForseelser.ts";
 import {Knapp} from "@/app/komponenter/Knapp.tsx";
 import {markerBoterBetalt} from "@/app/lib/botService.ts";
 import React from "react";
 import dayjs from "@/app/lib/dayjs.ts";
+import type {Forseelse} from "@/app/b%C3%B8ter/page.tsx";
 
-export const ListBoter = ({spiller, erBotsjef}: { spiller: Spiller; erBotsjef: boolean }) => {
-    const {forseelser} = useForseelser();
+export const ListBoter = ({forseelser, spiller, erBotsjef}: {
+    forseelser: Forseelse[];
+    spiller: Spiller;
+    erBotsjef: boolean
+}) => {
     if (spiller.boter?.length === 0) return null;
 
     const handleMarkerBetalt = (bot: string) => {

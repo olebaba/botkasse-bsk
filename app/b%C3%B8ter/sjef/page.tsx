@@ -1,7 +1,7 @@
-import LeggTilBot from "@/app/b%C3%B8ter/sjef/legg-til-bot";
-import {redirect} from "next/navigation";
+import React from "react";
+import {Botsjef} from "@/app/b%C3%B8ter/sjef/botsjef.tsx";
 import {validateRequest} from "@/app/lib/auth.ts";
-import {MarkerBetalt} from "@/app/b%C3%B8ter/sjef/marker-betalt.tsx";
+import {redirect} from "next/navigation";
 
 export default async function Page() {
     const {user} = await validateRequest();
@@ -9,10 +9,5 @@ export default async function Page() {
         return redirect("/login");
     }
 
-    return (
-        <>
-            <LeggTilBot/>
-            <MarkerBetalt/>
-        </>
-    )
+    return <Botsjef />
 }
