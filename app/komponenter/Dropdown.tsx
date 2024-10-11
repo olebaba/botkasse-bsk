@@ -25,7 +25,7 @@ export const Dropdown = ({ options, onChange, label, placeholder, id }: Dropdown
                 }}
                 className="border rounded px-3 py-2 w-full"
             >
-                <option value="" disabled selected>{placeholder}</option>
+                <option value="" disabled>{placeholder}</option>
                 {options.map((option, index) => (
                     <option key={index} value={option.id}>
                         {option.draktnummer ? option.draktnummer + ' - ' : option.id + ' - '}{option.navn}
