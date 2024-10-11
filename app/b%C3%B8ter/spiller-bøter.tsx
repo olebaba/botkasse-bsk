@@ -14,30 +14,8 @@ export default function SpillerBøter({spillere, forseelser}: { spillere: Spille
 
     const kolonner = [
         {id: 'draktnummer', navn: 'Draktnummer'},
-        {id: 'totalSum', navn: 'Total sum bøter'},
-        {id: 'betaltSesong', navn: 'Betalt denne sesongen'},
-        {id: 'betaltMaaned', navn: 'Betalt denne måneden'},
-        {id: 'utestaaende', navn: 'Utestående beløp'},
-        {id: 'status', navn: 'Status'},
+        {id: 'manglendeBelop', navn: 'Skal betales'},
     ];
-
-    const [visKolonner, setVisKolonner] = useState<{ [index: string]: boolean }>({
-        draktnummer: true,
-        totalSum: false,
-        betaltSesong: false,
-        betaltMaaned: true,
-        utestaaende: true,
-        status: true,
-    });
-
-    const toggleKolonne = (kolonneId: string) => {
-        setVisKolonner((prevState) => ({
-            ...prevState,
-            [kolonneId]: !prevState[kolonneId],
-        }));
-    };
-
-    const [visFilter, setVisFilter] = useState(false)
 
     if (!spillere) return null;
 
@@ -45,35 +23,19 @@ export default function SpillerBøter({spillere, forseelser}: { spillere: Spille
         <>
             <VippsDialog tittel="Betal i vipps" spiller={spillerVipps} setSpiller={setSpillerVipps}/>
             <h1 className="text-3xl font-bold text-center mb-6">Spilleres bøter i BSK</h1>
-            <button onClick={() => setVisFilter(!visFilter)}>Vis filter</button>
-            {visFilter && (<div className="mb-4">
-                {kolonner.map((kolonne) => (
-                    <button
-                        key={kolonne.id}
-                        onClick={() => toggleKolonne(kolonne.id)}
-                        className={`px-3 py-1 mr-2 mb-2 rounded ${
-                            visKolonner[kolonne.id] ? 'bg-blue-500' : 'bg-gray-500'
-                        } text-white`}
-                    >
-                        {visKolonner[kolonne.id] ? `Skjul ${kolonne.navn}` : `Vis ${kolonne.navn}`}
-                    </button>
-                ))}
-            </div>)}
-
             <div>
                 <table className="w-full bg-white border border-gray-200 shadow-lg text-sm md:text-base">
                     <thead className="bg-gray-50">
                     <tr className="hover:bg-gray-50">
                         {kolonner.map(
-                            (kolonne) =>
-                                visKolonner[kolonne.id] && (
-                                    <th
-                                        key={kolonne.id}
-                                        className="py-2 px-4 left font-semibold text-gray-700 border-b text-center"
-                                    >
-                                        {kolonne.navn}
-                                    </th>
-                                )
+                            (kolonne) => {
+                                return <th
+                                    key={kolonne.id}
+                                    className="py-2 px-4 left font-semibold text-gray-700 border-b text-center"
+                                >
+                                    {kolonne.navn}
+                                </th>;
+                            }
                         )}
                     </tr>
                     </thead>
@@ -87,29 +49,13 @@ export default function SpillerBøter({spillere, forseelser}: { spillere: Spille
                                     else setMerInfoSpiller(spiller);
                                 }}
                             >
-                                <TabellData skalVises={visKolonner.draktnummer} verdi={spiller.id}
-                                            erNok={false}/>
-                                <TabellData skalVises={visKolonner.totalSum} verdi={spiller.totalSum} erNok={true}/>
-                                <TabellData skalVises={visKolonner.betaltSesong} verdi={spiller.betaltSesong}
-                                            erNok={true}/>
-                                <TabellData skalVises={visKolonner.betaltMaaned} verdi={spiller.betaltMaaned}
-                                            erNok={true}/>
-                                <TabellData skalVises={visKolonner.utestaaende} verdi={spiller.totalSum} erNok={true}/>
-                                {visKolonner.status && (
-                                    <td className="py-2 px-4 border-b text-center">
-                                  <span
-                                      className={`${
-                                          spiller.betaltAlle ? 'text-green-600' : 'text-red-600'
-                                      } font-semibold`}
-                                  >
-                                    {spiller.betaltAlle ? 'Betalt' : 'Ikke betalt'}
-                                  </span>
-                                    </td>
-                                )}
+                                <TabellData verdi={spiller.id} erNok={false}/>
+                                <TabellData verdi={spiller.totalSum} erNok={true}/>
                             </tr>
                             {spiller == merInfoSpiller && (
                                 <tr>
-                                    <td colSpan={Object.keys(visKolonner).length} className="p-4 bg-yellow-100 border-b">
+                                    <td colSpan={Object.keys(kolonner).length}
+                                        className="p-4 bg-yellow-100 border-b">
                                         <Header size={"small"} text={`Spiller nummer ${spiller.id}s bøter`}/>
                                         <Knapp
                                             tekst={"Betal bøter i Vipps"}

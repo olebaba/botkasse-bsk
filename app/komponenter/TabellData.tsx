@@ -1,21 +1,24 @@
 import Laster from "@/app/ikoner/laster.tsx";
+import React from "react";
 
-export default function TabellData({verdi, erNok, skalVises}: {
-    verdi: number | string | undefined,
-    erNok: boolean,
-    skalVises?: boolean
+export default function TabellData({verdi, erNok}: {
+    verdi: number | string | undefined;
+    erNok: boolean;
 }) {
-    if (!skalVises) return null;
-    if (verdi === undefined) {
-        return <td className="py-2">
-            <div className="flex justify-center items-center h-full">
-                <div className="h-[50px] w-[50px]">
-                    <Laster/>
-                </div>
-            </div>
-        </td>
-    }
     return (
-        <td className="py-2 px-4 border-b text-center">{verdi} {erNok ? 'kroner' : ''}</td>
-    )
+        <td className="py-2 px-4 border-b text-center">
+            {verdi === undefined && (
+                <div className="flex justify-center items-center h-full">
+                    <div className="h-[50px] w-[50px]">
+                        <Laster />
+                    </div>
+                </div>
+            )}
+            {verdi == 0 ? (
+                <p className="text-green-600 font-semibold">Betalt</p>
+            ) : (
+                `${verdi} ${erNok ? 'kroner' : ''}`
+            )}
+        </td>
+    );
 }
