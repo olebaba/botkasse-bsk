@@ -4,6 +4,7 @@ import Link from "next/link";
 import AlertBanner from "@/app/komponenter/AlertBanner.tsx";
 import {useSpillere} from "@/app/hooks/useSpillere.ts";
 import {useForseelser} from "@/app/hooks/useForseelser.ts";
+import Header from "@/app/komponenter/Header.tsx";
 
 export default function Forside() {
     const {spillereMedBoter} = useSpillere()
@@ -12,10 +13,10 @@ export default function Forside() {
     return (
         <div className="container mx-auto p-4 mt-24">
             <AlertBanner
-                message="Trykk på raden med ditt draknummer for å betale i Vipps! (Kun i Safari og Chrome)"
+                message="Trykk på en rad for å se mer info!"
                 type="info"
             />
-            <h3 className="text-xl mt-2">Hvilke bøter kan man få?</h3>
+            <Header className="mb-0" size="small" text="Hvilke bøter kan man få?" />
             <Link href={encodeURIComponent("bøter")} className="text-blue-600">Sjekk oversikt her</Link>
             <SpillerBøter spillere={spillereMedBoter} forseelser={forseelser}/>
         </div>

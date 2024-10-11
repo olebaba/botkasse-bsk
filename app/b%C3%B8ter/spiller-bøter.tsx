@@ -22,7 +22,7 @@ export default function SpillerBøter({spillere, forseelser}: { spillere: Spille
     return (
         <>
             <VippsDialog tittel="Betal i vipps" spiller={spillerVipps} setSpiller={setSpillerVipps}/>
-            <h1 className="text-3xl font-bold text-center mb-6">Spilleres bøter i BSK</h1>
+            <h1 className="text-3xl font-bold text-center mb-6 mt-2">Spilleres bøter i BSK</h1>
             <div>
                 <table className="w-full bg-white border border-gray-200 shadow-lg text-sm md:text-base">
                     <thead className="bg-gray-50">
