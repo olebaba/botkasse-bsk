@@ -2,7 +2,16 @@ import {sql} from '@vercel/postgres';
 import {NextResponse} from 'next/server';
 import type {Spiller} from "@/app/lib/spillereService";
 
-export async function GET() {
+export async function GET(request: Request) {
+    const hentNavn = (() => {
+        const cookie = request.headers.get("Cookie");
+        if (cookie) {
+            const cookies = cookie.split(";").map(c => c.trim());
+            const authSessionCookie = cookies.find(c => c.startsWith("auth_session="));
+            return authSessionCookie ? authSessionCookie.split("=")[1] : null;
+        }
+        return null;
+    })
     try {
         const spillere = await sql`
             SELECT *
@@ -10,7 +19,7 @@ export async function GET() {
         const typedSpillere: Spiller[] = spillere.rows.map(row => ({
             id: row.id,
             draktnummer: row.draktnummer,
-            navn: row.navn,
+            navn: hentNavn() ? row.navn : null,
             totalSum: row.total_sum,
             betaltSesong: row.betalt_sesong,
             betaltMaaned: row.betalt_maaned,
