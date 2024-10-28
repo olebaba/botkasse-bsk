@@ -1,4 +1,5 @@
 import {login} from "@/app/lib/auth.ts";
+import Link from "next/link";
 
 export default async function Page() {
     return (
@@ -8,13 +9,13 @@ export default async function Page() {
                 <form action={login}>
                     <div className="mb-4">
                         <label htmlFor="brukernavn" className="block text-sm font-medium text-gray-700 mb-2">
-                            Brukernavn
+                            Mobilnummer
                         </label>
                         <input
                             name="brukernavn"
                             id="brukernavn"
                             className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                            placeholder="Skriv inn brukernavn"
+                            placeholder="Skriv inn mobilnummer"
                         />
                     </div>
                     <div className="mb-6">
@@ -33,9 +34,12 @@ export default async function Page() {
                         type="submit"
                         className="w-full py-2 bg-blue-600 text-white font-semibold rounded-lg shadow-md hover:bg-blue-700 transition duration-300"
                     >
-                        Continue
+                        Logg inn
                     </button>
                 </form>
+                <div className="text-blue-600 mt-8">
+                    <Link className="text-blue-600 mt-8" href="/signup">Registrere deg? Trykk her</Link>
+                </div>
             </div>
         </div>
     );

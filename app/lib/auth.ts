@@ -3,8 +3,8 @@ import {NodePostgresAdapter} from "@lucia-auth/adapter-postgresql";
 import {redirect} from "next/navigation";
 import {cookies} from "next/headers";
 import {sql} from "@vercel/postgres";
-import {verify} from "@node-rs/argon2";
-import { cache } from "react";
+import {hash, verify} from "@node-rs/argon2";
+import {cache} from "react";
 
 type VercelPostgresError = {
     code: string;
@@ -47,6 +47,62 @@ interface DatabaseUserAttributes {
     username: string;
 }
 
+export interface ActionResult {
+    error: string;
+}
+
+export async function signup(formData: FormData): Promise<ActionResult> {
+    "use server";
+    try {
+        const feilmelding = {error: "Ugyldig brukernavn eller passord"}
+        const username = formData.get("brukernavn");
+        if (
+            typeof username !== "string"
+            || username.length < 5
+            || username.length > 13
+            || !/^\d+$/.test(username)
+        ) {
+            console.error("Feil brukernavn", typeof username);
+            return feilmelding;
+        }
+        const password = formData.get("passord");
+        if (typeof password !== "string" || password.length < 6 || password.length > 255) {
+            console.error("feil passord")
+            return feilmelding
+        }
+
+        const passwordHash = await hash(password, {
+            memoryCost: 19456,
+            timeCost: 2,
+            outputLen: 32,
+            parallelism: 1
+        });
+
+        const existingUser = await sql<Bruker>`SELECT *
+                                               FROM brukere
+                                               WHERE brukernavn = ${username}`;
+        if (existingUser.rows.length) {
+            return feilmelding
+        }
+
+        const registrertBruker = await sql`INSERT INTO brukere (brukernavn, passord)
+                                           VALUES (${username}, ${passwordHash})
+                                           RETURNING id`
+
+        const session = await lucia.createSession(registrertBruker.rows[0].id, {});
+        const sessionCookie = lucia.createSessionCookie(session.id);
+        (await cookies()).set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+    } catch (e) {
+        const maybeVercelPostgresError = (
+            typeof e === "object" ? e : {}
+        ) as Partial<VercelPostgresError>;
+
+        console.error(maybeVercelPostgresError)
+    } finally {
+        redirect('/');
+    }
+}
+
 export async function login(formData: FormData): Promise<void> {
     "use server";
     try {
@@ -69,8 +125,8 @@ export async function login(formData: FormData): Promise<void> {
         }
 
         const existingUser = await sql<Bruker>`SELECT *
-                                           FROM brukere
-                                           WHERE brukernavn = ${brukernavn}`;
+                                               FROM brukere
+                                               WHERE brukernavn = ${brukernavn}`;
 
         if (!existingUser.rows.length) {
             throw {
@@ -94,7 +150,7 @@ export async function login(formData: FormData): Promise<void> {
 
         const session = await lucia.createSession(typedBruker.id, {});
         const sessionCookie = lucia.createSessionCookie(session.id);
-        cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+        (await cookies()).set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
     } catch (e) {
         const maybeVercelPostgresError = (
             typeof e === "object" ? e : {}
@@ -102,7 +158,7 @@ export async function login(formData: FormData): Promise<void> {
 
         console.error(maybeVercelPostgresError)
     } finally {
-        redirect(encodeURIComponent('bøter') + '/sjef');
+        redirect(`/`);
     }
 }
 
@@ -114,7 +170,7 @@ interface Bruker {
 
 export const validateRequest = cache(
     async (): Promise<{ user: User; session: Session } | { user: null; session: null }> => {
-        const sessionId = cookies().get(lucia.sessionCookieName)?.value ?? null;
+        const sessionId = (await cookies()).get(lucia.sessionCookieName)?.value ?? null;
         if (!sessionId) {
             return {
                 user: null,
@@ -127,13 +183,13 @@ export const validateRequest = cache(
         try {
             if (result.session && result.session.fresh) {
                 const sessionCookie = lucia.createSessionCookie(result.session.id);
-                cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+                (await cookies()).set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
             }
             if (!result.session) {
                 const sessionCookie = lucia.createBlankSessionCookie();
-                cookies().set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+                (await cookies()).set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
             }
-        } catch(e) {
+        } catch (e) {
             console.error(e)
         }
         return result;
