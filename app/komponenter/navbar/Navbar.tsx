@@ -11,6 +11,7 @@ export default async function Navbar() {
     const sideLenker: SideLenke[] = [
         {href: "/", label: "Spilleres bøter"},
         {href: `/${encodeURIComponent('bøter')}`, label: "Oversikt typer bøter"},
+        {href: `/minside`, label: "Min side"},
     ];
     if (user?.admin) {
         sideLenker.push(

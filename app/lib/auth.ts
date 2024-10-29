@@ -41,11 +41,13 @@ declare module "lucia" {
         Lucia: typeof lucia;
         DatabaseUserAttributes: DatabaseUserAttributes;
     }
+
     interface DatabaseUserAttributes {
         brukernavn: string;
         admin: boolean
     }
 }
+
 export interface ActionResult {
     error: string;
 }
@@ -148,7 +150,7 @@ export async function login(formData: FormData): Promise<void> {
             };
         }
 
-        const session = await lucia.createSession(typedBruker.id, {admin: typedBruker.admin});
+        const session = await lucia.createSession(typedBruker.id, {});
         const sessionCookie = lucia.createSessionCookie(session.id);
         (await cookies()).set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
     } catch (e) {
@@ -158,7 +160,7 @@ export async function login(formData: FormData): Promise<void> {
 
         console.error(maybeVercelPostgresError)
     } finally {
-        redirect(`/`);
+        redirect(`/minside`);
     }
 }
 
@@ -171,7 +173,8 @@ interface Bruker {
 
 export const validateRequest = cache(
     async (): Promise<{ user: User | null; session: Session | null }> => {
-        const sessionId = (await cookies()).get(lucia.sessionCookieName)?.value ?? null;
+        const cookieStore = await cookies();
+        const sessionId = cookieStore.get(lucia.sessionCookieName)?.value ?? null;
 
         if (!sessionId) {
             return {
@@ -181,15 +184,14 @@ export const validateRequest = cache(
         }
 
         const result = await lucia.validateSession(sessionId);
-        // next.js throws when you attempt to set cookie when rendering page
         try {
             if (result.session && result.session.fresh) {
                 const sessionCookie = lucia.createSessionCookie(result.session.id);
-                (await cookies()).set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+                cookieStore.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
             }
             if (!result.session) {
                 const sessionCookie = lucia.createBlankSessionCookie();
-                (await cookies()).set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+                cookieStore.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
             }
         } catch (e) {
             console.error(e);
