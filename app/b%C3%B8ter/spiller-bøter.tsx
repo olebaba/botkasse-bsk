@@ -1,6 +1,6 @@
 'use client'
 import TabellData from "@/app/komponenter/TabellData.tsx";
-import React, {useState} from "react";
+import React, {Fragment, useState} from "react";
 import {type Spiller} from "@/app/lib/spillereService.ts";
 import VippsDialog from "@/app/komponenter/vippsDialog.tsx";
 import {ListBoter} from "@/app/komponenter/ListBoter.tsx";
@@ -41,9 +41,8 @@ export default function SpillerBøter({spillere, forseelser}: { spillere: Spille
                     </thead>
                     <tbody>
                     {spillere.map((spiller) => (
-                        <>
+                        <Fragment key={spiller.id}>
                             <tr
-                                key={spiller.id}
                                 onClick={() => {
                                     if (merInfoSpiller == spiller) setMerInfoSpiller(undefined)
                                     else setMerInfoSpiller(spiller);
@@ -72,7 +71,7 @@ export default function SpillerBøter({spillere, forseelser}: { spillere: Spille
                                     </td>
                                 </tr>
                             )}
-                        </>
+                        </Fragment>
                     ))}
                     </tbody>
                 </table>
