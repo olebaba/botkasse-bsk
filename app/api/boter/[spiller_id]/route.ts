@@ -7,7 +7,8 @@ type Params = {
     spiller_id: string,
 }
 
-export async function POST(request: Request, {params}: { params: Params }) {
+export async function POST(request: Request, props: { params: Promise<Params> }) {
+    const params = await props.params;
     const {beløp, dato, forseelsesId}: { beløp: number, dato: string, forseelsesId: number } = await request.json();
     const spiller_id = parseInt(params.spiller_id, 10);
 
@@ -33,7 +34,8 @@ export async function POST(request: Request, {params}: { params: Params }) {
     }
 }
 
-export async function GET(_request: Request, {params}: { params: Params }) {
+export async function GET(_request: Request, props: { params: Promise<Params> }) {
+    const params = await props.params;
     const spillerId = parseInt(params.spiller_id, 10);
     if (isNaN(spillerId)) {
         return new Response('Invalid draktnummer', {status: 400});
