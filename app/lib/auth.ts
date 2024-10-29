@@ -30,8 +30,8 @@ export const lucia = new Lucia(adapter, {
     },
     getUserAttributes: (attributes) => {
         return {
-            // attributes has the type of DatabaseUserAttributes
-            username: attributes.username
+            brukernavn: attributes.brukernavn,
+            admin: attributes.admin
         };
     }
 });
@@ -41,12 +41,11 @@ declare module "lucia" {
         Lucia: typeof lucia;
         DatabaseUserAttributes: DatabaseUserAttributes;
     }
+    interface DatabaseUserAttributes {
+        brukernavn: string;
+        admin: boolean
+    }
 }
-
-interface DatabaseUserAttributes {
-    username: string;
-}
-
 export interface ActionResult {
     error: string;
 }
@@ -85,11 +84,12 @@ export async function signup(formData: FormData): Promise<ActionResult> {
             return feilmelding
         }
 
-        const registrertBruker = await sql`INSERT INTO brukere (brukernavn, passord)
-                                           VALUES (${username}, ${passwordHash})
-                                           RETURNING id`
+        const registrertBruker = await sql<Bruker>`INSERT INTO brukere (brukernavn, passord)
+                                                   VALUES (${username}, ${passwordHash})
+                                                   RETURNING *`
+        const typedBruker = registrertBruker.rows[0]
 
-        const session = await lucia.createSession(registrertBruker.rows[0].id, {});
+        const session = await lucia.createSession(typedBruker.id, {admin: typedBruker.admin});
         const sessionCookie = lucia.createSessionCookie(session.id);
         (await cookies()).set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
     } catch (e) {
@@ -148,7 +148,7 @@ export async function login(formData: FormData): Promise<void> {
             };
         }
 
-        const session = await lucia.createSession(typedBruker.id, {});
+        const session = await lucia.createSession(typedBruker.id, {admin: typedBruker.admin});
         const sessionCookie = lucia.createSessionCookie(session.id);
         (await cookies()).set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
     } catch (e) {
@@ -166,11 +166,13 @@ interface Bruker {
     id: string
     brukernavn: string
     passord: string
+    admin: boolean
 }
 
 export const validateRequest = cache(
-    async (): Promise<{ user: User; session: Session } | { user: null; session: null }> => {
+    async (): Promise<{ user: User | null; session: Session | null }> => {
         const sessionId = (await cookies()).get(lucia.sessionCookieName)?.value ?? null;
+
         if (!sessionId) {
             return {
                 user: null,
@@ -190,8 +192,12 @@ export const validateRequest = cache(
                 (await cookies()).set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
             }
         } catch (e) {
-            console.error(e)
+            console.error(e);
         }
-        return result;
+
+        return {
+            user: result.user,
+            session: result.session
+        };
     }
 );

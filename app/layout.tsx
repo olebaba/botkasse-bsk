@@ -1,11 +1,11 @@
 import type {Metadata} from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import Navbar from "@/app/komponenter/navbar/navbar.tsx";
 import React from "react";
 import {SpeedInsights} from "@vercel/speed-insights/react";
 import {Analytics} from "@vercel/analytics/react"
 import manifest from "@/app/manifest.ts";
+import Navbar from "@/app/komponenter/navbar/Navbar.tsx";
 
 const geistSans = localFont({
     src: "./fonts/GeistVF.woff",
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
         description: "Oversikt over bøter for spillere i bsk sitt A-lag"
     },
     icons: [
-        { rel: "apple-touch-icon", url: "/apple-touch-icon.png" },
+        {rel: "apple-touch-icon", url: "/apple-touch-icon.png"},
     ],
     manifest: JSON.stringify(manifest()),
 };

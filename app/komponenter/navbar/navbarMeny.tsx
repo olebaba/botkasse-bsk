@@ -3,6 +3,7 @@ import React, {useState} from "react";
 import Link from "next/link";
 import Logo from "@/app/ikoner/logo/logo";
 import BurgerKnapp from "@/app/komponenter/burger-knapp";
+import type {SideLenke} from "@/app/komponenter/navbar/Navbar.tsx";
 
 interface NavbarProps {
     href: string
@@ -31,7 +32,7 @@ const DesktopMeny = ({lenker}: { lenker: { href: string, label: string }[] }) =>
 );
 
 interface MobilMenyProps {
-    lenker: { href: string, label: string }[]
+    lenker: SideLenke[]
     erAapen: boolean;
     lukkMeny: () => void;
 }
@@ -56,7 +57,7 @@ const MobilMeny = ({lenker, erAapen, lukkMeny}: MobilMenyProps) => (
     </div>
 );
 
-export default function Navbar() {
+export default function NavbarMeny({sideLenker}: {sideLenker: SideLenke[]}) {
     const [erMenyAapen, setErMenyAapen] = useState(false);
 
     const toggleMeny = () => {
@@ -66,13 +67,6 @@ export default function Navbar() {
     const lukkMeny = () => {
         setErMenyAapen(false);
     };
-
-    // Define your navigation links here
-    const sideLenker = [
-        {href: "/", label: "Spilleres bøter"},
-        {href: `/${encodeURIComponent('bøter')}`, label: "Oversikt typer bøter"},
-        {href: `/${encodeURIComponent('bøter')}/sjef`, label: "Botsjef 🔐"},
-    ];
 
     return (
         <nav className="bg-yellow-300 border-b border-gray-200 fixed top-0 w-full z-10">

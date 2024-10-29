@@ -8,6 +8,9 @@ export default async function Page() {
     if (!user) {
         return redirect("/login");
     }
+    if (!user.admin) {
+        return redirect("/");
+    }
 
     return <Botsjef />
 }
