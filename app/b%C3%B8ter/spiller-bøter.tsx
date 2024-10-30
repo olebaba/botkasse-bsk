@@ -24,6 +24,8 @@ export default function SpillerBøter({spillere, forseelser, bruker}: {
         {id: 'manglendeBelop', navn: 'Skal betales'},
     ];
 
+    spillere.sort((a, b) => b.totalSum-a.totalSum)
+
     if (bruker) {
         kolonner[0] = {id: "navn", navn: "Spiller"}
         spillere.sort((a, b) => {
