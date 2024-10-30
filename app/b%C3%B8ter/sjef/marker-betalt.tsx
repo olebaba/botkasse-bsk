@@ -1,9 +1,9 @@
 'use client'
-import {ListBoter} from "@/app/komponenter/ListBoter.tsx";
-import {Dropdown} from "@/app/komponenter/Dropdown.tsx";
+import {ListBoter} from "@/komponenter/ListBoter.tsx";
+import {Dropdown} from "@/komponenter/Dropdown.tsx";
 import {useState} from "react";
-import type {Spiller} from "@/app/lib/spillereService.ts";
-import Header from "@/app/komponenter/Header.tsx";
+import type {Spiller} from "@/lib/spillereService.ts";
+import Header from "@/komponenter/Header.tsx";
 import type {Forseelse} from "@/app/b%C3%B8ter/page.tsx";
 
 export const MarkerBetalt = ({spillere, forseelser}: { spillere: Spiller[], forseelser: Forseelse[] }) => {

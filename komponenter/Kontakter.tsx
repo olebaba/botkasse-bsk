@@ -1,5 +1,5 @@
-import Telefonnummer from "@/app/komponenter/Telefonnummer.tsx";
-import Header from "@/app/komponenter/Header.tsx";
+import Telefonnummer from "@/komponenter/Telefonnummer.tsx";
+import Header from "@/komponenter/Header.tsx";
 
 export const Kontakter = () => {
     const personer = [

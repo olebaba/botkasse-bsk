@@ -1,22 +1,10 @@
 import type {Metadata} from "next";
-import localFont from "next/font/local";
 import "./globals.css";
 import React from "react";
 import {SpeedInsights} from "@vercel/speed-insights/react";
 import {Analytics} from "@vercel/analytics/react"
 import manifest from "@/app/manifest.ts";
-import Navbar from "@/app/komponenter/navbar/Navbar.tsx";
-
-const geistSans = localFont({
-    src: "./fonts/GeistVF.woff",
-    variable: "--font-geist-sans",
-    weight: "100 900",
-});
-const geistMono = localFont({
-    src: "./fonts/GeistMonoVF.woff",
-    variable: "--font-geist-mono",
-    weight: "100 900",
-});
+import Navbar from "@/komponenter/navbar/Navbar.tsx";
 
 export const metadata: Metadata = {
     title: "Bækkelaget botkasse",
@@ -45,7 +33,7 @@ export const metadata: Metadata = {
 export default function RootLayout({children,}: Readonly<{ children: React.ReactNode }>) {
     return (
         <html lang="no">
-        <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <body className="antialiased">
         <Navbar/>
         {children}
         <SpeedInsights/>

@@ -1,10 +1,10 @@
 import * as React from 'react';
 import {useEffect, useState} from "react";
 import {useRouter} from "next/navigation";
-import type {Spiller} from "@/app/lib/spillereService.ts";
-import {generateVippsUrl} from "@/app/lib/vipps.ts";
-import dayjs from "@/app/lib/dayjs.ts";
-import SimpleModal from "@/app/komponenter/SimpleModal.tsx";
+import type {Spiller} from "@/lib/spillereService.ts";
+import {generateVippsUrl} from "@/lib/vipps.ts";
+import dayjs from "@/lib/dayjs.ts";
+import SimpleModal from "@/komponenter/SimpleModal.tsx";
 
 interface DialogProps {
     tittel: string

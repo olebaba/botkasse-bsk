@@ -1,9 +1,9 @@
 'use client';
 import React, {useState} from "react";
 import Link from "next/link";
-import Logo from "@/app/ikoner/logo/logo";
-import BurgerKnapp from "@/app/komponenter/burger-knapp";
-import type {SideLenke} from "@/app/komponenter/navbar/Navbar.tsx";
+import Logo from "@/ikoner/logo/logo.tsx";
+import BurgerKnapp from "@/komponenter/burger-knapp.tsx";
+import type {SideLenke} from "@/komponenter/navbar/Navbar.tsx";
 
 interface NavbarProps {
     href: string

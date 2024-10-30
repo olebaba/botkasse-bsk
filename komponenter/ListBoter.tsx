@@ -1,8 +1,8 @@
-import type {Spiller} from "@/app/lib/spillereService.ts";
-import {Knapp} from "@/app/komponenter/Knapp.tsx";
-import {markerBoterBetalt} from "@/app/lib/botService.ts";
+import type {Spiller} from "@/lib/spillereService.ts";
+import {Knapp} from "@/komponenter/Knapp.tsx";
+import {markerBoterBetalt} from "@/lib/botService.ts";
 import React from "react";
-import dayjs from "@/app/lib/dayjs.ts";
+import dayjs from "@/lib/dayjs.ts";
 import type {Forseelse} from "@/app/b%C3%B8ter/page.tsx";
 
 export const ListBoter = ({forseelser, spiller, erBotsjef}: {

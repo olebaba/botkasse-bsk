@@ -1,4 +1,4 @@
-import Laster from "@/app/ikoner/laster.tsx";
+import Laster from "@/ikoner/laster.tsx";
 import React from "react";
 
 export default function TabellData({verdi, erNok}: {

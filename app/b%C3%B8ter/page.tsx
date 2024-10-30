@@ -1,8 +1,8 @@
 'use client'
-import {Table} from "@/app/komponenter/table";
-import {fetchForseelser} from "@/app/lib/forseelseService.ts";
+import {Table} from "@/komponenter/table.tsx";
+import {fetchForseelser} from "@/lib/forseelseService.ts";
 import {useEffect, useState} from "react";
-import {Kontakter} from "@/app/komponenter/Kontakter.tsx";
+import {Kontakter} from "@/komponenter/Kontakter.tsx";
 
 export type Forseelse = {
     id: number;

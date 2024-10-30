@@ -1,5 +1,5 @@
-import {validateRequest} from "@/app/lib/auth.ts";
-import NavbarMeny from "@/app/komponenter/navbar/navbarMeny.tsx";
+import {validateRequest} from "@/lib/auth.ts";
+import NavbarMeny from "@/komponenter/navbar/navbarMeny.tsx";
 
 export interface SideLenke {
     href: string;

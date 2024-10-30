@@ -1,10 +1,10 @@
 'use client'
 import SpillerBøter from "@/app/b%C3%B8ter/spiller-bøter";
 import Link from "next/link";
-import AlertBanner from "@/app/komponenter/AlertBanner.tsx";
-import {useSpillere} from "@/app/hooks/useSpillere.ts";
-import {useForseelser} from "@/app/hooks/useForseelser.ts";
-import Header from "@/app/komponenter/Header.tsx";
+import AlertBanner from "@/komponenter/AlertBanner.tsx";
+import {useSpillere} from "@/hooks/useSpillere.ts";
+import {useForseelser} from "@/hooks/useForseelser.ts";
+import Header from "@/komponenter/Header.tsx";
 
 export default function Forside() {
     const {spillereMedBoter} = useSpillere()

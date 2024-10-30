@@ -1,6 +1,6 @@
 import {NextResponse} from "next/server";
 import {sql} from "@vercel/postgres";
-import dayjs from "@/app/lib/dayjs.ts";
+import dayjs from "@/lib/dayjs.ts";
 import type {Dayjs} from "dayjs";
 
 type Params = {

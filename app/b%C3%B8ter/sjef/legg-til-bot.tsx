@@ -1,11 +1,11 @@
 'use client'
 import dayjs from "dayjs";
 import React, {useEffect, useState} from "react";
-import {lagBot} from "@/app/lib/forseelseService.ts";
-import {Dropdown} from "@/app/komponenter/Dropdown.tsx";
-import Header from "@/app/komponenter/Header.tsx";
-import {Knapp} from "@/app/komponenter/Knapp.tsx";
-import type {Spiller} from "@/app/lib/spillereService.ts";
+import {lagBot} from "@/lib/forseelseService.ts";
+import {Dropdown} from "@/komponenter/Dropdown.tsx";
+import Header from "@/komponenter/Header.tsx";
+import {Knapp} from "@/komponenter/Knapp.tsx";
+import type {Spiller} from "@/lib/spillereService.ts";
 import type {Forseelse} from "@/app/b%C3%B8ter/page.tsx";
 
 export default function LeggTilBot({spillere, forseelser}: {spillere: Spiller[], forseelser: Forseelse[]}) {

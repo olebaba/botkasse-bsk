@@ -1,5 +1,5 @@
 "use client"
-import Header from "@/app/komponenter/Header.tsx";
+import Header from "@/komponenter/Header.tsx";
 import { useEffect, useState } from "react";
 import type { BrukerInfo } from "@/app/api/spillere/[brukernavn]/route.ts";
 

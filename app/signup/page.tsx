@@ -1,4 +1,4 @@
-import {signup, validateRequest} from "@/app/lib/auth.ts";
+import {signup, validateRequest} from "@/lib/auth.ts";
 import Link from "next/link";
 import SignupForm from "@/app/signup/signup-form.tsx";
 import {redirect} from "next/navigation";

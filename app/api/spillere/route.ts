@@ -1,6 +1,6 @@
 import {sql} from '@vercel/postgres';
 import {NextResponse} from 'next/server';
-import type {Spiller} from "@/app/lib/spillereService";
+import type {Spiller} from "@/lib/spillereService";
 
 export async function GET(request: Request) {
     const hentNavn = (() => {

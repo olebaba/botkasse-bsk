@@ -1,4 +1,4 @@
-import {login, validateRequest} from "@/app/lib/auth.ts";
+import {login, validateRequest} from "@/lib/auth.ts";
 import Link from "next/link";
 import {redirect} from "next/navigation";
 

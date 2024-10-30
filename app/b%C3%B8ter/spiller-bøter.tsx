@@ -1,11 +1,11 @@
 'use client'
-import TabellData from "@/app/komponenter/TabellData.tsx";
+import TabellData from "@/komponenter/TabellData.tsx";
 import React, {Fragment, useState} from "react";
-import {type Spiller} from "@/app/lib/spillereService.ts";
-import VippsDialog from "@/app/komponenter/vippsDialog.tsx";
-import {ListBoter} from "@/app/komponenter/ListBoter.tsx";
-import Header from "@/app/komponenter/Header.tsx";
-import {Knapp} from "@/app/komponenter/Knapp.tsx";
+import {type Spiller} from "@/lib/spillereService.ts";
+import VippsDialog from "@/komponenter/vippsDialog.tsx";
+import {ListBoter} from "@/komponenter/ListBoter.tsx";
+import Header from "@/komponenter/Header.tsx";
+import {Knapp} from "@/komponenter/Knapp.tsx";
 import type {Forseelse} from "@/app/b%C3%B8ter/page.tsx";
 
 export default function SpillerBøter({spillere, forseelser}: { spillere: Spiller[]; forseelser: Forseelse[]; }) {
