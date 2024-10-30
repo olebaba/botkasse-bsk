@@ -1,7 +1,13 @@
-import {login} from "@/app/lib/auth.ts";
+import {login, validateRequest} from "@/app/lib/auth.ts";
 import Link from "next/link";
+import {redirect} from "next/navigation";
 
 export default async function Page() {
+    const {user} = await validateRequest();
+    if (user) {
+        return redirect("/minside");
+    }
+
     return (
         <div className="flex items-center justify-center min-h-screen">
             <div className="bg-white shadow-lg rounded-lg p-8 max-w-sm w-full">

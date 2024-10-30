@@ -1,8 +1,14 @@
-import {signup} from "@/app/lib/auth.ts";
+import {signup, validateRequest} from "@/app/lib/auth.ts";
 import Link from "next/link";
 import SignupForm from "@/app/signup/signup-form.tsx";
+import {redirect} from "next/navigation";
 
 export default async function Page() {
+    const {user} = await validateRequest();
+    if (user) {
+        console.log(user)
+        return redirect("/minside");
+    }
     return (
         <div className="flex items-center justify-center min-h-screen">
             <div className="bg-white shadow-lg rounded-lg p-8 max-w-sm w-full">
