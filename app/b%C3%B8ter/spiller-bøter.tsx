@@ -7,8 +7,15 @@ import {ListBoter} from "@/komponenter/ListBoter.tsx";
 import Header from "@/komponenter/Header.tsx";
 import {Knapp} from "@/komponenter/Knapp.tsx";
 import type {Forseelse} from "@/app/b%C3%B8ter/page.tsx";
+import type {User} from "lucia";
+import {useBrukerInfo} from "@/hooks/useBrukerInfo.ts";
 
-export default function SpillerBøter({spillere, forseelser}: { spillere: Spiller[]; forseelser: Forseelse[]; }) {
+export default function SpillerBøter({spillere, forseelser, bruker}: {
+    spillere: Spiller[],
+    forseelser: Forseelse[],
+    bruker?: User
+}) {
+    const {brukerInfo} = useBrukerInfo(bruker?.brukernavn ?? "")
     const [spillerVipps, setSpillerVipps] = useState<Spiller | undefined>(undefined)
     const [merInfoSpiller, setMerInfoSpiller] = useState<Spiller | undefined>(undefined)
 
@@ -16,6 +23,15 @@ export default function SpillerBøter({spillere, forseelser}: { spillere: Spille
         {id: 'draktnummer', navn: 'Draktnummer'},
         {id: 'manglendeBelop', navn: 'Skal betales'},
     ];
+
+    if (bruker) {
+        kolonner[0] = {id: "navn", navn: "Spiller"}
+        spillere.sort((a, b) => {
+            if (a.id === brukerInfo?.spiller_id) return -1;
+            if (b.id === brukerInfo?.spiller_id) return 1;
+            return 0;
+        })
+    }
 
     if (!spillere) return null;
 
@@ -48,7 +64,7 @@ export default function SpillerBøter({spillere, forseelser}: { spillere: Spille
                                     else setMerInfoSpiller(spiller);
                                 }}
                             >
-                                <TabellData verdi={spiller.id} erNok={false}/>
+                                <TabellData verdi={bruker ? spiller.navn : spiller.id} erNok={false}/>
                                 <TabellData verdi={spiller.totalSum} erNok={true}/>
                             </tr>
                             {spiller == merInfoSpiller && (
@@ -58,7 +74,8 @@ export default function SpillerBøter({spillere, forseelser}: { spillere: Spille
                                         <div className="p-2 bg-white rounded">
                                             <Header size={"small"} text={`Spiller nummer ${spiller.id}s bøter`}/>
                                             <div className="mb-2 font-semibold">
-                                                <p>Sum alle bøter: {spiller.totalSum + (spiller?.betaltSesong || 0)} kroner.</p>
+                                                <p>Sum alle
+                                                    bøter: {spiller.totalSum + (spiller?.betaltSesong || 0)} kroner.</p>
                                                 <p>Betalt denne sesongen: {spiller.betaltSesong} kroner.</p>
                                             </div>
                                             <Knapp
