@@ -14,7 +14,7 @@ export default function TabellData({verdi, erNok}: {
                     </div>
                 </div>
             )}
-            {verdi == 0 ? (
+            {typeof verdi === "number" && verdi <= 0 ? (
                 <p className="text-green-600 font-semibold">Betalt</p>
             ) : (
                 `${verdi} ${erNok ? 'kroner' : ''}`

@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react';
 import {type Spiller, hentSpillere, hentBoterForAlleSpillere} from '@/lib/spillereService.ts';
 
-export function useSpillere() {
+export function useSpillereMedBoter() {
     const [spillereMedBoter, setSpillereMedBoter] = useState<Spiller[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<null | string>(null);

@@ -1,14 +1,12 @@
 'use client'
-import TabellData from "@/komponenter/TabellData.tsx";
 import React, {Fragment, useState} from "react";
 import {type Spiller} from "@/lib/spillereService.ts";
 import VippsDialog from "@/komponenter/vippsDialog.tsx";
-import {ListBoter} from "@/komponenter/ListBoter.tsx";
-import Header from "@/komponenter/Header.tsx";
-import {Knapp} from "@/komponenter/Knapp.tsx";
 import type {Forseelse} from "@/app/b%C3%B8ter/page.tsx";
 import type {User} from "lucia";
 import {useSpillerInfo} from "@/hooks/useSpillerInfo.ts";
+import {SpillerRad} from "@/app/b%C3%B8ter/spiller-rad.tsx";
+import {SpillerMerInfo} from "@/app/b%C3%B8ter/spiller-mer-info.tsx";
 
 export default function SpillerBøter({spillere, forseelser, bruker}: {
     spillere: Spiller[],
@@ -21,10 +19,12 @@ export default function SpillerBøter({spillere, forseelser, bruker}: {
 
     const kolonner = [
         {id: 'draktnummer', navn: 'Draktnummer'},
-        {id: 'manglendeBelop', navn: 'Skal betales'},
+        {id: 'manglendeBelop', navn: 'Må betales'},
+        {id: 'nyeBoter', navn: 'Nye bøter'},
     ];
 
-    spillere.sort((a, b) => b.totalSum-a.totalSum)
+    //TODO sortering
+    // spillere.sort((a, b) => beregnSum(b.boter) - beregnSum(a.boter))
 
     if (bruker) {
         kolonner[0] = {id: "navn", navn: "Spiller"}
@@ -60,35 +60,20 @@ export default function SpillerBøter({spillere, forseelser, bruker}: {
                     <tbody>
                     {spillere.map((spiller) => (
                         <Fragment key={spiller.id}>
-                            <tr
+                            <SpillerRad
+                                spiller={spiller}
+                                visNavn={bruker != undefined}
                                 onClick={() => {
                                     if (merInfoSpiller == spiller) setMerInfoSpiller(undefined)
                                     else setMerInfoSpiller(spiller);
-                                }}
-                            >
-                                <TabellData verdi={bruker ? spiller.navn : spiller.id} erNok={false}/>
-                                <TabellData verdi={spiller.totalSum} erNok={true}/>
-                            </tr>
+                                }}/>
                             {spiller == merInfoSpiller && (
-                                <tr>
-                                    <td colSpan={Object.keys(kolonner).length}
-                                        className="p-2 bg-yellow-100">
-                                        <div className="p-2 bg-white rounded">
-                                            <Header size={"small"} text={`Spiller nummer ${spiller.id}s bøter`}/>
-                                            <div className="mb-2 font-semibold">
-                                                <p>Sum alle
-                                                    bøter: {spiller.totalSum + (spiller?.betaltSesong || 0)} kroner.</p>
-                                                <p>Betalt denne sesongen: {spiller.betaltSesong} kroner.</p>
-                                            </div>
-                                            <Knapp
-                                                tekst={"Betal bøter i Vipps"}
-                                                className="bg-vipps-orange hover:bg-vipps-orange-dark text-white mb-4"
-                                                onClick={() => setSpillerVipps(spiller)}
-                                            />
-                                            <ListBoter forseelser={forseelser} erBotsjef={false} spiller={spiller}/>
-                                        </div>
-                                    </td>
-                                </tr>
+                                <SpillerMerInfo
+                                    spiller={spiller}
+                                    kolonner={kolonner}
+                                    forseelser={forseelser}
+                                    setSpillerVipps={setSpillerVipps}
+                                />
                             )}
                         </Fragment>
                     ))}

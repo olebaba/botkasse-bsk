@@ -1,6 +1,5 @@
 import {NextResponse} from "next/server";
 import {sql} from "@vercel/postgres";
-import dayjs from "@/lib/dayjs.ts";
 import type {Dayjs} from "dayjs";
 
 type Params = {
@@ -42,20 +41,7 @@ export async function GET(_request: Request, props: { params: Promise<Params> })
     }
 
     const boter = await hentBoterForSpillerId(spillerId)
-
-    // Beregn summer
-    const betaltMaaned = beregnSumForSisteMaaned(boter);
-    const betaltSesong = beregnSumForSesong(boter);
-    const totalSum = beregnUtestaaendeSum(boter);
-    const betaltAlle = boter.every(bot => bot.erBetalt)
-
-    return NextResponse.json({
-        boter,
-        betaltMaaned,
-        betaltSesong,
-        totalSum,
-        betaltAlle
-    });
+    return NextResponse.json({boter});
 }
 
 export interface Bot {
@@ -81,29 +67,4 @@ async function hentBoterForSpillerId(spiller_id: number): Promise<Bot[]> {
         forseelseId: row.forseelse_id,
         erBetalt: row.er_betalt
     }));
-}
-
-// Beregner total bøtesum for siste måned
-function beregnSumForSisteMaaned(boter: Bot[]): number {
-    const oneMonthAgo = dayjs().subtract(1, "month")
-
-    return boter
-        .filter(bot => bot.erBetalt && dayjs(bot.dato).isAfter(oneMonthAgo))
-        .reduce((sum, bot) => sum + Number(bot.belop), 0);
-}
-
-// Beregner total bøtesum for hele sesongen
-function beregnSumForSesong(boter: Bot[]): number {
-    const sesongStart = dayjs('2024-09-01');
-
-    return boter
-        .filter(bot => bot.erBetalt && dayjs(bot.dato).isAfter(sesongStart))
-        .reduce((sum, bot) => sum + Number(bot.belop), 0);
-}
-
-// Beregner utestående bøtesum (ikke betalt)
-function beregnUtestaaendeSum(boter: Bot[]): number {
-    return boter
-        .filter(bot => !bot.erBetalt)
-        .reduce((sum, bot) => sum + Number(bot.belop), 0);
 }

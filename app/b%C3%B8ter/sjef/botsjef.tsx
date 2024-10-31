@@ -1,12 +1,12 @@
 'use client'
-import {useSpillere} from "@/hooks/useSpillere.ts";
+import {useSpillereMedBoter} from "@/hooks/useSpillereMedBoter.ts";
 import {useForseelser} from "@/hooks/useForseelser.ts";
 import LeggTilBot from "@/app/b%C3%B8ter/sjef/legg-til-bot.tsx";
 import {MarkerBetalt} from "@/app/b%C3%B8ter/sjef/marker-betalt.tsx";
 import React from "react";
 
 export const Botsjef = () => {
-    const {spillereMedBoter: spillere} = useSpillere()
+    const {spillereMedBoter: spillere} = useSpillereMedBoter()
     const {forseelser} = useForseelser()
 
     return (

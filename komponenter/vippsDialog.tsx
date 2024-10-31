@@ -5,6 +5,7 @@ import type {Spiller} from "@/lib/spillereService.ts";
 import {generateVippsUrl} from "@/lib/vipps.ts";
 import dayjs from "@/lib/dayjs.ts";
 import SimpleModal from "@/komponenter/SimpleModal.tsx";
+import {beregnSumMaaBetales} from "@/lib/botBeregning.ts";
 
 interface DialogProps {
     tittel: string
@@ -30,7 +31,7 @@ const VippsDialog = ({tittel, spiller, setSpiller, innhold}: DialogProps) => {
 
     const betalIVipps = (spiller: Spiller) => {
         const maaned = dayjs().add(-1, "month").format('MMMM');
-        const belopOre = (spiller.totalSum ?? 0) * 100;
+        const belopOre = beregnSumMaaBetales(spiller.boter) * 100;
         const vippsUrl = generateVippsUrl('97513023', belopOre, `Bøter for måneden ${maaned}`)
         router.push(vippsUrl)
     }
@@ -40,7 +41,7 @@ const VippsDialog = ({tittel, spiller, setSpiller, innhold}: DialogProps) => {
             open={isModalOpen}
             onClose={handleCloseModal}
             title={tittel}
-            content={innhold || `Vipps botsjef ${spiller.totalSum} kroner?`}
+            content={innhold || `Vipps botsjef ${beregnSumMaaBetales(spiller.boter)} kroner?`}
             onConfirm={() => {
                 betalIVipps(spiller)
                 setSpiller(spiller)

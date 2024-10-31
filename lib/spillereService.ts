@@ -3,12 +3,8 @@ import type {Bot} from "@/app/api/boter/[spiller_id]/route.ts";
 export type Spiller = {
     id: string
     draktnummer?: number;
-    totalSum: number;
-    betaltAlle?: boolean;
     navn?: string
-    betaltSesong?: number
-    betaltMaaned?: number
-    boter?: Bot[]
+    boter: Bot[]
 };
 
 export async function hentSpillere(): Promise<Spiller[]> {
