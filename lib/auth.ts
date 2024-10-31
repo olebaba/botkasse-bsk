@@ -112,7 +112,7 @@ async function sjekkBrukerFinnes(brukernavn: string) {
         FROM brukere
         WHERE brukernavn = ${brukernavn}
     `;
-    if (!eksisterendeBruker.rows[0]) {
+    if (eksisterendeBruker.rows[0]) {
         throw {error: "Bruker finnes allerede"}
     }
 }

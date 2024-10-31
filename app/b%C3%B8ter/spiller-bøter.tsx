@@ -8,14 +8,14 @@ import Header from "@/komponenter/Header.tsx";
 import {Knapp} from "@/komponenter/Knapp.tsx";
 import type {Forseelse} from "@/app/b%C3%B8ter/page.tsx";
 import type {User} from "lucia";
-import {useBrukerInfo} from "@/hooks/useBrukerInfo.ts";
+import {useSpillerInfo} from "@/hooks/useSpillerInfo.ts";
 
 export default function SpillerBøter({spillere, forseelser, bruker}: {
     spillere: Spiller[],
     forseelser: Forseelse[],
     bruker?: User
 }) {
-    const {brukerInfo} = useBrukerInfo(bruker?.brukernavn ?? "")
+    const {spillerInfo} = useSpillerInfo(bruker?.brukernavn ?? "")
     const [spillerVipps, setSpillerVipps] = useState<Spiller | undefined>(undefined)
     const [merInfoSpiller, setMerInfoSpiller] = useState<Spiller | undefined>(undefined)
 
@@ -29,8 +29,8 @@ export default function SpillerBøter({spillere, forseelser, bruker}: {
     if (bruker) {
         kolonner[0] = {id: "navn", navn: "Spiller"}
         spillere.sort((a, b) => {
-            if (a.id === brukerInfo?.spiller_id) return -1;
-            if (b.id === brukerInfo?.spiller_id) return 1;
+            if (a.id === spillerInfo?.id) return -1;
+            if (b.id === spillerInfo?.id) return 1;
             return 0;
         })
     }

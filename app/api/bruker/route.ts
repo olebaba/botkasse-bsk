@@ -1,8 +1,15 @@
-import {NextResponse} from "next/server";
 import {sql} from "@vercel/postgres";
+import {NextResponse} from "next/server";
+
+export interface BrukerInfo {
+    brukernavn: string;
+    id: string;
+    spiller_id: string;
+}
 
 type Params = {
     brukernavn: string,
+    navn: string,
 }
 
 export async function GET(_request: Request, props: { params: Promise<Params> }) {
@@ -17,12 +24,8 @@ export async function GET(_request: Request, props: { params: Promise<Params> })
     const brukerInfo: BrukerInfo = rows.map((row) => ({
         brukernavn: row.brukernavn,
         spiller_id: row.spiller_id,
+        id: row.id
     }))[0];
 
     return NextResponse.json(brukerInfo);
-}
-
-export interface BrukerInfo {
-    brukernavn: string;
-    spiller_id: string;
 }
