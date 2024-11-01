@@ -3,7 +3,7 @@ import type {Bot} from "@/app/api/boter/[spiller_id]/route.ts";
 export type Spiller = {
     id: string
     draktnummer?: number;
-    navn?: string
+    navn: string
     boter: Bot[]
 };
 
