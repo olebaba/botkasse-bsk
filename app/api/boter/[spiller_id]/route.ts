@@ -46,7 +46,7 @@ export async function GET(_request: Request, props: { params: Promise<Params> })
 
 export interface Bot {
     id: string
-    spiller_id: string
+    spillerId: string
     belop: number
     dato: Dayjs
     forseelseId: string
@@ -61,7 +61,7 @@ async function hentBoterForSpillerId(spiller_id: number): Promise<Bot[]> {
     `;
     return rows.map((row) => ({
         id: row.id,
-        spiller_id: row.spiller_id,
+        spillerId: row.spiller_id,
         belop: row.beløp,
         dato: row.dato,
         forseelseId: row.forseelse_id,

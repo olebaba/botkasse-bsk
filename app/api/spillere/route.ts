@@ -1,14 +1,37 @@
 import {sql} from '@vercel/postgres';
-import {NextResponse} from 'next/server';
+import {NextRequest, NextResponse} from 'next/server';
 import type {Spiller} from "@/lib/spillereService";
+import type {Bot} from "@/app/api/boter/[spiller_id]/route.ts";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+    const req = request.nextUrl.searchParams
+    const medBoter: boolean = req.get("medBoter") == "true"
     try {
         const spillereQuery = await sql<Spiller>`
             SELECT *
             FROM spillere
         `;
         const spillere: Spiller[] = spillereQuery.rows
+
+        if (medBoter) {
+            const boterForAlleSpillereQuery = await sql`
+                SELECT *
+                from bøter
+            `
+            const alleBoter: Bot[] = boterForAlleSpillereQuery.rows.map((row) => ({
+                id: row.id,
+                spillerId: row.spiller_id,
+                belop: row.beløp,
+                dato: row.dato,
+                forseelseId: row.forseelse_id,
+                erBetalt: row.er_betalt
+            }))
+            const spillereMedBoter: Spiller[] = spillere.map(s => {
+                return {...s, boter: alleBoter.filter(bot => bot.spillerId == s.id)}
+            })
+            return NextResponse.json({spillere: spillereMedBoter}, {status: 200})
+        }
+
         return NextResponse.json({spillere}, {status: 200});
     } catch (error) {
         return NextResponse.json({error: 'Feil ved henting av spillere'}, {status: 500});

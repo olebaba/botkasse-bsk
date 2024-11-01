@@ -2,7 +2,7 @@
 import SpillerBøter from "@/app/b%C3%B8ter/spiller-bøter";
 import Link from "next/link";
 import AlertBanner from "@/komponenter/AlertBanner.tsx";
-import {useSpillereMedBoter} from "@/hooks/useSpillereMedBoter.ts";
+import {useSpillere} from "@/hooks/useSpillere.ts";
 import {useForseelser} from "@/hooks/useForseelser.ts";
 import Header from "@/komponenter/Header.tsx";
 import type {User} from "lucia";
@@ -13,10 +13,10 @@ interface ForsideProps {
 }
 
 export default function Forside({bruker}: ForsideProps) {
-    const {spillereMedBoter} = useSpillereMedBoter()
+    const {spillere} = useSpillere(true)
     const {forseelser} = useForseelser()
 
-    const alleBetalteBoter = spillereMedBoter.flatMap(s => s.boter).filter(b => b.erBetalt)
+    const alleBetalteBoter = spillere.flatMap(s => s.boter).filter(b => b.erBetalt)
     const sumBetalteBoter: number = beregnSum(alleBetalteBoter)
 
     return (
@@ -28,7 +28,7 @@ export default function Forside({bruker}: ForsideProps) {
             <Header className="!mb-0" size="small" text="Hvilke bøter kan man få?"/>
             <Link href={encodeURIComponent("bøter")} className="text-blue-600">Sjekk oversikt her</Link>
             <Header className="mt-2" size="small" text={`Totalt innbetalt: ${sumBetalteBoter}kr 💰`}/>
-            <SpillerBøter spillere={spillereMedBoter} forseelser={forseelser} bruker={bruker}/>
+            <SpillerBøter spillere={spillere} forseelser={forseelser} bruker={bruker}/>
         </div>
     );
 }

@@ -7,9 +7,9 @@ export type Spiller = {
     boter: Bot[]
 };
 
-export async function hentSpillere(): Promise<Spiller[]> {
+export async function hentSpillere(medBoter: boolean): Promise<Spiller[]> {
     try {
-        const res = await fetch('/api/spillere', {
+        const res = await fetch(`/api/spillere${medBoter ? '?medBoter=true' : ''}`, {
             next: {revalidate: 60}
         });
         if (!res.ok) {
