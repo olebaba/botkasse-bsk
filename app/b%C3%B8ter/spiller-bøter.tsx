@@ -8,6 +8,7 @@ import {useSpillerInfo} from "@/hooks/useSpillerInfo.ts";
 import {SpillerRad} from "@/app/b%C3%B8ter/spiller-rad.tsx";
 import {SpillerMerInfo} from "@/app/b%C3%B8ter/spiller-mer-info.tsx";
 import {beregnSumMaaBetales, beregnSumNyeBoter} from "@/lib/botBeregning.ts";
+import Loading from "@/app/loading.tsx";
 
 export default function SpillerBøter({spillere, forseelser, bruker}: {
     spillere: Spiller[],
@@ -48,12 +49,11 @@ export default function SpillerBøter({spillere, forseelser, bruker}: {
         setSortertSpillere(spillere)
     }, [spillere]);
 
-    if (!spillere) return null;
+    if (spillere.length == 0) return <Loading />;
 
     return (
         <>
             <VippsDialog tittel="Betal i vipps" spiller={spillerVipps} setSpiller={setSpillerVipps}/>
-            <h1 className="text-3xl font-bold text-center mb-6 mt-2">Spilleres bøter i BSK</h1>
             <div>
                 <table className="w-full bg-white border border-gray-200 shadow-lg text-lg md:text-base">
                     <thead className="bg-gray-50">

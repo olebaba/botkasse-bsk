@@ -17,6 +17,9 @@ const config: Config = {
         'vipps-light-gray': '#f2f2f2', // Light gray for background buttons
         'vipps-dark-gray': '#4a4a4a', // Gray for content text
       },
+      animation: {
+        'spin-cool': 'spin 1s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite'
+      },
     },
   },
   plugins: [],

@@ -27,7 +27,12 @@ export default function Forside({bruker}: ForsideProps) {
             />
             <Header className="!mb-0" size="small" text="Hvilke bøter kan man få?"/>
             <Link href={encodeURIComponent("bøter")} className="text-blue-600">Sjekk oversikt her</Link>
-            <Header className="mt-2" size="small" text={`Totalt innbetalt: ${sumBetalteBoter}kr 💰`}/>
+            <div className="flex flex-row">
+                <Header className="mt-2 mr-2" size="small" text={`Totalt innbetalt:`}/>
+                {!sumBetalteBoter && (<p className="mt-2 animate-spin-cool h-[20px] text-center object-cover">💰</p>)}
+                {sumBetalteBoter > 0 && (<Header className="mt-2" size="small" text={`${sumBetalteBoter} kr 💰`}/>)}
+            </div>
+            <Header className="text-3xl font-bold text-center mb-6 mt-2" size="large" text="Spilleres bøter i BSK"/>
             <SpillerBøter spillere={spillere} forseelser={forseelser} bruker={bruker}/>
         </div>
     );
