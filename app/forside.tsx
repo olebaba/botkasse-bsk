@@ -22,7 +22,7 @@ export default function Forside({bruker}: ForsideProps) {
     return (
         <div className="container mx-auto p-4 mt-24">
             <AlertBanner
-                message="Trykk på en rad for å se mer info!"
+                message="Trykk på menyen for å opprette bruker!"
                 type="info"
             />
             <Header className="!mb-0" size="small" text="Hvilke bøter kan man få?"/>
