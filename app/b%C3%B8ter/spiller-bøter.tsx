@@ -31,7 +31,7 @@ export default function SpillerBøter({spillere, forseelser, bruker}: {
     }
 
     const kolonner = [
-        {id: 'draktnummer', navn: 'Draktnummer', sortering: () => sorterAlfabetisk("id")},
+        {id: 'draktnummer', navn: 'Spiller', sortering: () => sorterAlfabetisk("id")},
         {id: 'maaBetales', navn: 'Må betales', sortering: sorterMaaBetales},
         {id: 'nyeBoter', navn: 'Nye bøter', sortering: sorterNyeBoter},
     ];
@@ -58,6 +58,7 @@ export default function SpillerBøter({spillere, forseelser, bruker}: {
                 <table className="w-full bg-white border border-gray-200 shadow-lg text-lg md:text-base">
                     <thead className="bg-gray-50">
                     <tr className="hover:bg-gray-50">
+                        <th>⇅</th>
                         {kolonner.map(
                             (kolonne) => {
                                 return <th

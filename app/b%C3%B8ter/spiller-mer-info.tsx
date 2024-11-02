@@ -17,7 +17,7 @@ export const SpillerMerInfo = ({spiller, kolonner, setSpillerVipps, forseelser}:
 
     return (
         <tr>
-            <td colSpan={Object.keys(kolonner).length}
+            <td colSpan={Object.keys(kolonner).length+1}
                 className="p-2 bg-yellow-100">
                 <div className="p-2 bg-white rounded">
                     <Header size={"small"} text={`Spiller nummer ${spiller.id}s bøter`}/>
