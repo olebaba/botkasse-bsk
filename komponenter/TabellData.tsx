@@ -17,7 +17,7 @@ export default function TabellData({verdi, erNok}: {
             {typeof verdi === "number" && verdi <= 0 ? (
                 <p className="text-green-600 font-semibold">Betalt</p>
             ) : (
-                `${verdi} ${erNok ? 'kroner' : ''}`
+                `${verdi} ${erNok ? 'kr' : ''}`
             )}
         </td>
     );
