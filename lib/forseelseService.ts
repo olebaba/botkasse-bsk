@@ -1,4 +1,4 @@
-import type {Forseelse} from "@/app/b%C3%B8ter/page.tsx";
+import type {Forseelse} from "@/app/api/boter/typer/route.ts";
 
 export const fetchForseelser = async (): Promise<Forseelse[]> => {
     const response = await fetch('/api/boter/typer', {

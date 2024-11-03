@@ -1,12 +1,16 @@
 import React, {type ReactElement} from "react";
-import type {Forseelse} from "@/app/b%C3%B8ter/page.tsx";
+import type {Forseelse} from "@/app/api/boter/typer/route.ts";
 
-interface TableProps {
-    botTyper: Forseelse[];
+interface BotListeProps {
+    forseelser: Forseelse[];
 }
 
-export const Table: React.FC<TableProps> = ({botTyper}) => {
-    const sortertListe = botTyper.sort((a, b) => a.beløp - b.beløp)
+export const BotListe= ({forseelser}: BotListeProps) => {
+
+    const sorterOppdatert = () => {
+        return forseelser.toSorted((a: Forseelse,b: Forseelse) => b.oppdatert.localeCompare(a.oppdatert))
+    }
+
     return (
         <table className="w-full mt-4 bg-white border border-gray-200 shadow-lg">
             <thead className="bg-gray-50">
@@ -17,7 +21,7 @@ export const Table: React.FC<TableProps> = ({botTyper}) => {
             </tr>
             </thead>
             <tbody>
-            {sortertListe.map((botType, index) => (
+            {sorterOppdatert().map((botType, index) => (
                 <TableRow key={botType.id} botType={botType} isEven={index % 2 === 0}/>
             ))}
             </tbody>
@@ -30,7 +34,7 @@ interface TableRowProps {
     isEven: boolean;
 }
 
-const TableRow: React.FC<TableRowProps> = ({botType, isEven}) => {
+const TableRow = ({botType, isEven}: TableRowProps) => {
     return (
         <tr className={`${isEven ? 'bg-gray-50' : 'bg-white'}`}>
             <TableCell tekst={botType.navn} />

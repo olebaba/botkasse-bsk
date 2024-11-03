@@ -1,4 +1,4 @@
-import Forside from "@/app/forside.tsx";
+import Forside from "@/app/forside/forside.tsx";
 import {validateRequest} from "@/lib/auth.ts";
 
 export default async function Page() {

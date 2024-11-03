@@ -1,15 +1,9 @@
 'use client'
-import {Table} from "@/komponenter/table.tsx";
-import {fetchForseelser} from "@/lib/forseelseService.ts";
+import {BotListe} from "@/komponenter/botListe.tsx";
 import {useEffect, useState} from "react";
 import {Kontakter} from "@/komponenter/Kontakter.tsx";
-
-export type Forseelse = {
-    id: number;
-    navn: string;
-    beløp: number;
-    beskrivelse: string;
-};
+import type {Forseelse} from "@/app/api/boter/typer/route.ts";
+import {fetchForseelser} from "@/lib/forseelseService.ts";
 
 export default function Page() {
     const [forseelser, setForseelser] = useState<Forseelse[]>([])
@@ -35,7 +29,7 @@ export default function Page() {
                 Bøtene går til lagfester, så alle bidrag går kun tilbake til laget 🍻
             </p>
             <Kontakter />
-            <Table botTyper={forseelser}/>
+            <BotListe forseelser={forseelser}/>
         </div>
     );
 }

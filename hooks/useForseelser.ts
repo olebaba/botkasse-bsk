@@ -1,6 +1,6 @@
 import {useEffect, useState} from "react";
 import {fetchForseelser} from "@/lib/forseelseService.ts";
-import type {Forseelse} from "@/app/b%C3%B8ter/page.tsx";
+import type {Forseelse} from "@/app/api/boter/typer/route.ts";
 
 export function useForseelser() {
     const [forseelser, setForseelser] = useState<Forseelse[]>([])

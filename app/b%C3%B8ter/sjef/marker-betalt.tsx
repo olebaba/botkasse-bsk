@@ -4,9 +4,11 @@ import {Dropdown} from "@/komponenter/Dropdown.tsx";
 import {useState} from "react";
 import type {Spiller} from "@/lib/spillereService.ts";
 import Header from "@/komponenter/Header.tsx";
-import type {Forseelse} from "@/app/b%C3%B8ter/page.tsx";
+import type {Forseelse} from "@/app/api/boter/typer/route.ts";
 
-export const MarkerBetalt = ({spillere, forseelser}: { spillere: Spiller[], forseelser: Forseelse[] }) => {
+export const MarkerBetalt = (
+    {spillere, forseelser}: { spillere: Spiller[], forseelser: Forseelse[] }
+) => {
     const [valgtSpiller, setValgspiller] = useState<Spiller>()
 
     return (

@@ -3,8 +3,8 @@ import Header from "@/komponenter/Header.tsx";
 import {Knapp} from "@/komponenter/Knapp.tsx";
 import {ListBoter} from "@/komponenter/ListBoter.tsx";
 import React from "react";
-import type {Forseelse} from "@/app/b%C3%B8ter/page.tsx";
 import {beregnSum} from "@/lib/botBeregning.ts";
+import type {Forseelse} from "@/app/api/boter/typer/route.ts";
 
 interface SpillerMerInfoProps {
     spiller: Spiller;
@@ -17,7 +17,7 @@ export const SpillerMerInfo = ({spiller, kolonner, setSpillerVipps, forseelser}:
 
     return (
         <tr>
-            <td colSpan={Object.keys(kolonner).length+1}
+            <td colSpan={Object.keys(kolonner).length + 1}
                 className="p-2 bg-yellow-100">
                 <div className="p-2 bg-white rounded">
                     <Header size={"small"} text={`Spiller nummer ${spiller.id}s bøter`}/>

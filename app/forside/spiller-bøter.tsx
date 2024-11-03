@@ -2,13 +2,13 @@
 import React, {Fragment, useEffect, useState} from "react";
 import {type Spiller} from "@/lib/spillereService.ts";
 import VippsDialog from "@/komponenter/vippsDialog.tsx";
-import type {Forseelse} from "@/app/b%C3%B8ter/page.tsx";
 import type {User} from "lucia";
 import {useSpillerInfo} from "@/hooks/useSpillerInfo.ts";
-import {SpillerRad} from "@/app/b%C3%B8ter/spiller-rad.tsx";
-import {SpillerMerInfo} from "@/app/b%C3%B8ter/spiller-mer-info.tsx";
+import {SpillerRad} from "@/app/forside/spiller-rad.tsx";
+import {SpillerMerInfo} from "@/app/forside/spiller-mer-info.tsx";
 import {beregnSumMaaBetales, beregnSumNyeBoter} from "@/lib/botBeregning.ts";
 import Loading from "@/app/loading.tsx";
+import type {Forseelse} from "@/app/api/boter/typer/route.ts";
 
 export default function SpillerBøter({spillere, forseelser, bruker}: {
     spillere: Spiller[],

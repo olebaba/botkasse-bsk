@@ -1,5 +1,5 @@
 'use client'
-import SpillerBøter from "@/app/b%C3%B8ter/spiller-bøter";
+import SpillerBøter from "@/app/forside/spiller-bøter.tsx";
 import Link from "next/link";
 import AlertBanner from "@/komponenter/AlertBanner.tsx";
 import {useSpillere} from "@/hooks/useSpillere.ts";

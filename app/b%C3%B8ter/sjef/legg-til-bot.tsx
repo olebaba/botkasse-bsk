@@ -6,7 +6,7 @@ import {Dropdown} from "@/komponenter/Dropdown.tsx";
 import Header from "@/komponenter/Header.tsx";
 import {Knapp} from "@/komponenter/Knapp.tsx";
 import type {Spiller} from "@/lib/spillereService.ts";
-import type {Forseelse} from "@/app/b%C3%B8ter/page.tsx";
+import type {Forseelse} from "@/app/api/boter/typer/route.ts";
 
 export default function LeggTilBot({spillere, forseelser}: {spillere: Spiller[], forseelser: Forseelse[]}) {
     const [spillerId, setSpillerId] = useState<string | undefined>(undefined);

@@ -3,7 +3,7 @@ import {Knapp} from "@/komponenter/Knapp.tsx";
 import {markerBoterBetalt} from "@/lib/botService.ts";
 import React from "react";
 import dayjs from "@/lib/dayjs.ts";
-import type {Forseelse} from "@/app/b%C3%B8ter/page.tsx";
+import type {Forseelse} from "@/app/api/boter/typer/route.ts";
 
 export const ListBoter = ({forseelser, spiller, erBotsjef}: {
     forseelser: Forseelse[];
