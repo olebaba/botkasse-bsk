@@ -21,7 +21,7 @@ export async function GET(request: NextRequest) {
             const alleBoter: Bot[] = boterForAlleSpillereQuery.rows.map((row) => ({
                 id: row.id,
                 spillerId: row.spiller_id,
-                belop: row.beløp,
+                belop:  Math.round(Number(row.beløp)),
                 dato: row.dato,
                 forseelseId: row.forseelse_id,
                 erBetalt: row.er_betalt

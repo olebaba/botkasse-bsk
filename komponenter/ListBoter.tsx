@@ -20,10 +20,10 @@ export const ListBoter = ({forseelser, spiller, erBotsjef}: {
     };
 
     return (
-        <table className="min-w-full bg-white shadow-md rounded-md mb-4">
+        <table className="w-full bg-white shadow-md rounded-md mb-4">
             <thead>
             <tr className="text-left text-sm md:text-base text-gray-700 bg-gray-100">
-                <th className="py-2 px-4">Forseelse</th>
+                <th className="py-2 px-4">Bot</th>
                 <th className="py-2 px-4">Dato</th>
                 <th className="py-2 px-4">Beløp</th>
                 <th className="py-2 px-4">Status</th>
@@ -33,12 +33,12 @@ export const ListBoter = ({forseelser, spiller, erBotsjef}: {
             <tbody>
             {spiller.boter?.map((bot) => {
                 const forseelse = forseelser.find((f) => f.id.toString() == bot.forseelseId);
-                const dato = `${dayjs(bot.dato).format('DD. MMMM YYYY')}`
+                const dato = `${dayjs(bot.dato).format('DD.MM')}`
                 return (
                     <tr key={bot.id} className="border-t border-gray-200">
                         <td className="py-2 px-4">{forseelse?.navn}</td>
                         <td className="py-2 px-4">{dato}</td>
-                        <td className="py-2 px-4">{bot.belop} kroner</td>
+                        <td className="py-2 px-4 text-right">{bot.belop}kr</td>
                         <td className="py-2 px-4">
                             <span
                                 className={`${
