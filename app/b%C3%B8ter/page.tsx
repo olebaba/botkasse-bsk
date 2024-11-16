@@ -20,16 +20,20 @@ export default function Page() {
         <div className="container mx-auto p-4 mt-28">
             <h1 className="text-3xl font-bold mb-6">Oversikt bøter</h1>
             <p>
-                <b>Bøtesatser for sesongen 2024/2025</b>: Gjelder alle spillere med kontrakt.
-                Beløpene dobles på kampdager, og ved uenigheter avgjøres saken i en rettssak der botsjefen har det siste
-                ordet.
-                Bøtene betales via Vipps til botsjefen innen utgangen av hver måned 🗓️
+                <b>Bøtesatser for sesongen 2024/2025</b>:
             </p>
-            <p className="mt-2">
-                Bøtene går til lagfester, så alle bidrag går kun tilbake til laget 🍻
-            </p>
-            <Kontakter />
+            <ul className="list-disc ml-4">
+                <li>Gjelder alle spillere med kontrakt ✍️</li>
+                <li>Beløpene dobles på kampdager 🏑</li>
+                <li>
+                    Ved uenigheter avgjøres saken i en rettssak der botsjefen har det siste
+                    ordet 🧑‍⚖️
+                </li>
+                <li>Bøtene betales via Vipps til botsjefen innen utgangen av hver måned 🗓️</li>
+                <li>Bøtene går til lagfester, så alle bidrag går kun tilbake til laget 🍻</li>
+            </ul>
             <BotListe forseelser={forseelser}/>
+            <Kontakter/>
         </div>
     );
 }
