@@ -5,28 +5,48 @@ import Loading from "@/app/loading.tsx";
 import ios_share from "@/ikoner/ios-share.svg"
 import add_to_home_chrome from "@/ikoner/add-to-home-screen-chrome.svg"
 import Image from "next/image";
+import {Knapp} from "@/komponenter/Knapp.tsx";
+import {Input} from "@/komponenter/Input.tsx";
+import {type FormEvent, useState} from "react";
+import {oppdaterSpillerInfo} from "@/lib/brukerService.ts";
 
 interface MinSideInfoProps {
     mobilnummer: string
     brukerId: string
 }
 
-export const MinSideInfo = ({brukernavn}: BrukerInfoProps) => {
-    const {spillerInfo, loading} = useSpillerInfo(brukernavn)
 export const MinSideInfo = ({brukerId, mobilnummer}: MinSideInfoProps) => {
     const {spillerInfo, loading} = useSpillerInfo(brukerId)
+    const [rediger, setRediger] = useState(false);
 
     if (loading) {
         return <Loading/>
     }
 
+    const oppdaterInfo = (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault()
+        const formData = new FormData(event.currentTarget);
+
+        const setOppdatertInfo = async () => {
+            await oppdaterSpillerInfo(brukerId, formData)
+        }
+        setOppdatertInfo().then(() => {
+            setRediger(false)
+        })
+    }
+
     return (
         <div className="w-2/3 mx-auto flex flex-col justify-end text-left">
             {spillerInfo && (
-                <div className="flex flex-col justify-between border-b mb-2">
-                    <Header size="small" text={`Ditt mobilnummer: ${brukernavn}`}/>
-                    <Header size="small" text={`Mitt draktnummer: ${spillerInfo.id}`}/>
-                    <Header size="small" text={`Mitt navn: ${spillerInfo.navn}`}/>
+                <div className="flex flex-col justify-between border-b mb-2 pb-16">
+                    <form onSubmit={(event) => oppdaterInfo(event)} className="mb-4 w-full">
+                        <Input tittel="Draktnummer" placeholder={spillerInfo.id} rediger={false}/>
+                        <Input tittel="Navn" placeholder={spillerInfo.navn} rediger={rediger}/>
+                        <Input tittel="Mobilnummer" placeholder={mobilnummer} type="number" rediger={rediger}/>
+                        {!rediger && <Knapp tekst="Endre info" onClick={() => setRediger(!rediger)}/>}
+                        {rediger && <Knapp tekst="Lagre endringer"/>}
+                        {rediger && <Knapp className="bg-red-500 ml-4" tekst="Avbryt" onClick={() => setRediger(false)}/>}
+                    </form>
                 </div>
             )}
 
