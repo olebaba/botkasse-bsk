@@ -16,12 +16,12 @@ type Params = {
 
 export async function GET(_request: Request, props: { params: Promise<Params> }) {
     const params = await props.params;
-    const brukernavn = params.id;
+    const brukerId = params.id;
 
     const brukerQuery = await sql<BrukerInfo>`
         SELECT *
         FROM brukere
-        WHERE brukernavn = ${brukernavn}
+        WHERE id = ${brukerId}
     `
     const brukerInfo = brukerQuery.rows[0]
 
@@ -33,7 +33,7 @@ export async function GET(_request: Request, props: { params: Promise<Params> })
     const spillerInfo: SpillerInfo = spillerQuery.rows[0]
 
     if (!spillerInfo) {
-        console.error(`Fant ikke spiller med brukernavn ${brukernavn}`)
+        console.error(`Fant ikke spiller med id ${brukerId}`)
     }
 
     return NextResponse.json(spillerInfo);

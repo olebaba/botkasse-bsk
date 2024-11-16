@@ -12,7 +12,7 @@ export default async function MinSide(){
     return (
         <div className="text-center">
             <Header className="mt-24" size="large" text="Min side" />
-            <MinSideInfo brukernavn={user.brukernavn}/>
+            <MinSideInfo brukerId={user.id} mobilnummer={user.brukernavn}/>
             <form className="mt-8" action={logout}>
                 <Knapp tekst={"Logg ut"} />
             </form>

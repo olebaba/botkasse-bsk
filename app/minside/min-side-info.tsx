@@ -6,12 +6,15 @@ import ios_share from "@/ikoner/ios-share.svg"
 import add_to_home_chrome from "@/ikoner/add-to-home-screen-chrome.svg"
 import Image from "next/image";
 
-interface BrukerInfoProps {
-    brukernavn: string;
+interface MinSideInfoProps {
+    mobilnummer: string
+    brukerId: string
 }
 
 export const MinSideInfo = ({brukernavn}: BrukerInfoProps) => {
     const {spillerInfo, loading} = useSpillerInfo(brukernavn)
+export const MinSideInfo = ({brukerId, mobilnummer}: MinSideInfoProps) => {
+    const {spillerInfo, loading} = useSpillerInfo(brukerId)
 
     if (loading) {
         return <Loading/>
@@ -38,7 +41,7 @@ export const MinSideInfo = ({brukernavn}: BrukerInfoProps) => {
             <p>1. Trykk ⋮ øverst til høyre</p>
             <div className="flex flex-row">
                 <p>2. Velg Legg til på startsiden</p>
-                <Image alt={"Legg til på startsiden ikon"} src={add_to_home_chrome} />
+                <Image alt={"Legg til på startsiden ikon"} src={add_to_home_chrome}/>
             </div>
         </div>
     );

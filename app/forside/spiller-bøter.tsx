@@ -16,7 +16,7 @@ export default function SpillerBøter({spillere, forseelser, bruker}: {
     bruker?: User
 }) {
     const [sortertSpillere, setSortertSpillere] = useState<Spiller[]>(spillere);
-    const {spillerInfo} = useSpillerInfo(bruker?.brukernavn ?? "")
+    const {spillerInfo} = useSpillerInfo(bruker?.id ?? "")
     const [spillerVipps, setSpillerVipps] = useState<Spiller | undefined>(undefined)
     const [merInfoSpiller, setMerInfoSpiller] = useState<Spiller | undefined>(undefined)
 

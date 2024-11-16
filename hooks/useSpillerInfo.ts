@@ -2,14 +2,14 @@ import {useEffect, useState} from 'react';
 import {fetchSpillerInfo} from "@/lib/brukerService.ts";
 import type {SpillerInfo} from "@/app/api/spillere/[id]/route.ts";
 
-export function useSpillerInfo(brukernavn: string) {
+export function useSpillerInfo(brukerId: string) {
     const [spillerInfo, setSpillerInfo] = useState<SpillerInfo>();
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<null | string>(null);
 
     useEffect(() => {
         const fetchSpillere = async () => {
-            const oppdaterteSpillere = await fetchSpillerInfo(brukernavn);
+            const oppdaterteSpillere = await fetchSpillerInfo(brukerId);
             setSpillerInfo(oppdaterteSpillere)
         };
 
