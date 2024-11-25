@@ -1,7 +1,7 @@
 'use client'
 import SpillerBøter from "@/app/forside/spiller-bøter.tsx";
 import Link from "next/link";
-import AlertBanner from "@/komponenter/AlertBanner.tsx";
+import AlertBanner, {AlertTypes} from "@/komponenter/AlertBanner.tsx";
 import {useSpillere} from "@/hooks/useSpillere.ts";
 import {useForseelser} from "@/hooks/useForseelser.ts";
 import Header from "@/komponenter/Header.tsx";
@@ -26,7 +26,7 @@ export default function Forside({bruker}: ForsideProps) {
         <div className="container mx-auto p-4 mt-24">
             <AlertBanner
                 message="Vil du se navn istedenfor draktnummer? Trykk på menyen for å opprette bruker!"
-                type="info"
+                type={AlertTypes.INFO}
             />
             <Header className="!mb-0" size="small" text="Hvilke bøter kan man få?"/>
             <Link href={encodeURIComponent("bøter")} className="text-blue-600 flex">

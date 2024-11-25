@@ -11,7 +11,7 @@ export const ListBoter = ({forseelser, spiller, erBotsjef, visResultat}: {
     forseelser: Forseelse[];
     spiller: Spiller;
     erBotsjef: boolean;
-    visResultat: (melding: string, type: AlertTypes) => void
+    visResultat?: (melding: string, type: AlertTypes) => void
 }) => {
     const [boterForSpiller, setBoterForSpiller] = useState<Bot[]>([]);
     if (spiller.boter?.length === 0) return null;
@@ -20,7 +20,8 @@ export const ListBoter = ({forseelser, spiller, erBotsjef, visResultat}: {
         setBoterForSpiller(spiller.boter);
     }, [spiller]);
 
-    const handleMarkerBetalt = async (bot: Bot): Promise<boolean> => {
+    const handleMarkerBetalt = async (bot: Bot) => {
+        if (!visResultat) return;
         try {
             const oppdatertBot: Bot = {
                 ...bot, erBetalt: !bot.erBetalt,
@@ -31,11 +32,9 @@ export const ListBoter = ({forseelser, spiller, erBotsjef, visResultat}: {
             setBoterForSpiller(oppdaterteBoter)
             await toggleBoterBetalt([bot.id])
             visResultat(!bot.erBetalt ? "Markerte bot som betalt" : "Markerte som ikke betalt", AlertTypes.SUCCESS)
-            return true
         } catch (error) {
             console.error(error)
             visResultat("Noe gikk galt, ble ikke markert", AlertTypes.ERROR)
-            return false
         }
     };
 
