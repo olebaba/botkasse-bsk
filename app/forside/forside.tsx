@@ -10,6 +10,7 @@ import {beregnSum} from "@/lib/botBeregning.ts";
 import Image from "next/image";
 import new_release from "@/ikoner/new-release.svg";
 import React from "react";
+import {useRouter} from "next/navigation";
 
 interface ForsideProps {
     bruker?: User
@@ -18,6 +19,7 @@ interface ForsideProps {
 export default function Forside({bruker}: ForsideProps) {
     const {spillere} = useSpillere(true)
     const {forseelser} = useForseelser()
+    const router = useRouter()
 
     const alleBetalteBoter = spillere.flatMap(s => s.boter).filter(b => b.erBetalt)
     const sumBetalteBoter: number = beregnSum(alleBetalteBoter)
@@ -25,8 +27,9 @@ export default function Forside({bruker}: ForsideProps) {
     return (
         <div className="container mx-auto p-4 mt-24">
             <AlertBanner
-                message="Vil du se navn istedenfor draktnummer? Trykk på menyen for å opprette bruker!"
+                message="Vil du se navn istedenfor draktnummer? Trykk på her for å opprette bruker!"
                 type={AlertTypes.INFO}
+                onClick={() => router.push("/signup")}
             />
             <Header className="!mb-0" size="small" text="Hvilke bøter kan man få?"/>
             <Link href={encodeURIComponent("bøter")} className="text-blue-600 flex">

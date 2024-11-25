@@ -8,9 +8,10 @@ interface AlertProps{
     message: string
     type: AlertTypes
     onClose?: () => void
+    onClick?: () => void
 }
 
-const AlertBanner = ({ message, type = AlertTypes.INFO, onClose }: AlertProps) => {
+const AlertBanner = ({ message, type = AlertTypes.INFO, onClose, onClick }: AlertProps) => {
     // Define styles based on alert type
     const typeStyles = {
         success: 'bg-green-100 text-green-800 border-green-400',
@@ -23,6 +24,7 @@ const AlertBanner = ({ message, type = AlertTypes.INFO, onClose }: AlertProps) =
         <div
             className={`flex justify-between items-center border-l-4 p-4 ${typeStyles[type]} mb-4`}
             role="alert"
+            onClick={onClick}
         >
             <span>{message}</span>
             {onClose && (
