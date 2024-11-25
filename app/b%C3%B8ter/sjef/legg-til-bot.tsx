@@ -7,13 +7,14 @@ import Header from "@/komponenter/Header.tsx";
 import {Knapp} from "@/komponenter/Knapp.tsx";
 import type {Spiller} from "@/lib/spillereService.ts";
 import type {Forseelse} from "@/app/api/boter/typer/route.ts";
+import AlertBanner, {AlertTypes} from "@/komponenter/AlertBanner.tsx";
 
-export default function LeggTilBot({spillere, forseelser}: {spillere: Spiller[], forseelser: Forseelse[]}) {
+export default function LeggTilBot({spillere, forseelser}: { spillere: Spiller[], forseelser: Forseelse[] }) {
     const [spillerId, setSpillerId] = useState<string | undefined>(undefined);
     const [belop, setBelop] = useState(0);
     const [dato, setDato] = useState(dayjs().format('YYYY-MM-DD'));
     const [forseelsesId, setForseelsesId] = useState('');
-    const [melding, setMelding] = useState<string | null>(null);
+    const [melding, setMelding] = useState<{tekst: string, type: AlertTypes} | null>(null);
     const [erKampdag, setErKampdag] = useState(false);
 
     useEffect(() => {
@@ -28,28 +29,25 @@ export default function LeggTilBot({spillere, forseelser}: {spillere: Spiller[],
         e.preventDefault();
 
         if (!spillerId || !belop || !dato || !forseelsesId) {
-            setMelding('Alle felter må fylles ut.');
+            setMelding({tekst: 'Alle felter må fylles ut.', type: AlertTypes.ERROR} );
             return;
         }
 
         try {
             await lagBot(spillerId, belop, dato, forseelsesId)
-
-            setMelding('Bot lagt til!');
-            setSpillerId(undefined);
-            setBelop(0);
-            setDato('');
-            setForseelsesId('');
+            setMelding({tekst: 'Bot lagt til!', type: AlertTypes.SUCCESS});
         } catch (error) {
             console.error(error);
-            setMelding('Noe gikk galt, prøv igjen senere.');
+            setMelding({tekst: 'Noe gikk galt, prøv igjen senere.', type: AlertTypes.ERROR});
         }
     };
 
     return (
         <div className="container mx-auto p-4 mt-28">
             <Header size="medium" text="Legg til bot for en spiller"/>
-            {melding && <p className="mb-4 text-red-600">{melding}</p>}
+            {melding &&
+                <AlertBanner message={melding.tekst} type={melding.type}/>
+            }
             <form onSubmit={handleLeggTilBot}>
                 <Dropdown
                     id={"draktnummer"}
@@ -78,7 +76,6 @@ export default function LeggTilBot({spillere, forseelser}: {spillere: Spiller[],
                         checked={erKampdag}
                         onChange={(e) => setErKampdag(e.target.checked)}
                         className="border rounded px-3 py-2 left h-full"
-                        placeholder="F.eks. 100.00"
                     />
                 </div>
                 <div className="mb-4">

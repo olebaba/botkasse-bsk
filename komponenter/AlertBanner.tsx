@@ -1,12 +1,16 @@
 import React from 'react';
 
+export enum AlertTypes {
+    ERROR = 'error' , WARNING = 'warning', INFO = 'info' , SUCCESS = 'success'
+}
+
 interface AlertProps{
     message: string
-    type: 'error' | 'warning' | 'info' | 'success'
+    type: AlertTypes
     onClose?: () => void
 }
 
-const AlertBanner = ({ message, type = 'info', onClose }: AlertProps) => {
+const AlertBanner = ({ message, type = AlertTypes.INFO, onClose }: AlertProps) => {
     // Define styles based on alert type
     const typeStyles = {
         success: 'bg-green-100 text-green-800 border-green-400',
