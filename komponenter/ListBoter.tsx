@@ -1,22 +1,42 @@
 import type {Spiller} from "@/lib/spillereService.ts";
 import {Knapp} from "@/komponenter/Knapp.tsx";
-import {markerBoterBetalt} from "@/lib/botService.ts";
-import React from "react";
+import {toggleBoterBetalt} from "@/lib/botService.ts";
+import React, {useEffect, useState} from "react";
 import dayjs from "@/lib/dayjs.ts";
 import type {Forseelse} from "@/app/api/boter/typer/route.ts";
+import {AlertTypes} from "@/komponenter/AlertBanner.tsx";
+import type {Bot} from "@/app/api/boter/[spiller_id]/route.ts";
 
-export const ListBoter = ({forseelser, spiller, erBotsjef}: {
+export const ListBoter = ({forseelser, spiller, erBotsjef, visResultat}: {
     forseelser: Forseelse[];
     spiller: Spiller;
-    erBotsjef: boolean
+    erBotsjef: boolean;
+    visResultat: (melding: string, type: AlertTypes) => void
 }) => {
+    const [boterForSpiller, setBoterForSpiller] = useState<Bot[]>([]);
     if (spiller.boter?.length === 0) return null;
 
-    const handleMarkerBetalt = (bot: string) => {
-        markerBoterBetalt([bot])
-            .catch(e => {
-                console.error(e);
-            });
+    useEffect(() => {
+        setBoterForSpiller(spiller.boter);
+    }, [spiller]);
+
+    const handleMarkerBetalt = async (bot: Bot): Promise<boolean> => {
+        try {
+            const oppdatertBot: Bot = {
+                ...bot, erBetalt: !bot.erBetalt,
+            }
+            const oppdaterteBoter = boterForSpiller.map((b) =>
+                b.id === bot.id ? oppdatertBot : b
+            );
+            setBoterForSpiller(oppdaterteBoter)
+            await toggleBoterBetalt([bot.id])
+            visResultat(!bot.erBetalt ? "Markerte bot som betalt" : "Markerte som ikke betalt", AlertTypes.SUCCESS)
+            return true
+        } catch (error) {
+            console.error(error)
+            visResultat("Noe gikk galt, ble ikke markert", AlertTypes.ERROR)
+            return false
+        }
     };
 
     return (
@@ -31,7 +51,7 @@ export const ListBoter = ({forseelser, spiller, erBotsjef}: {
             </tr>
             </thead>
             <tbody>
-            {spiller.boter?.map((bot) => {
+            {boterForSpiller?.map((bot) => {
                 const forseelse = forseelser.find((f) => f.id.toString() == bot.forseelseId);
                 const dato = `${dayjs(bot.dato).format('DD.MM')}`
                 return (
@@ -50,7 +70,13 @@ export const ListBoter = ({forseelser, spiller, erBotsjef}: {
                         </td>
                         {erBotsjef && (
                             <td className="py-2 px-4">
-                                <Knapp tekst="Marker betalt" onClick={() => handleMarkerBetalt(bot.id)}/>
+                                <Knapp
+                                    className={bot.erBetalt ? "bg-red-500 hover:bg-red-500" : ""}
+                                    tekst={bot.erBetalt ? "Sett ubetalt" : "Sett betalt"}
+                                    onClick={async () => {
+                                        await handleMarkerBetalt(bot);
+                                    }}
+                                />
                             </td>
                         )}
                     </tr>

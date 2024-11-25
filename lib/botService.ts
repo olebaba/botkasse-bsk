@@ -1,4 +1,4 @@
-export async function markerBoterBetalt(botIder: string[]) {
+export async function toggleBoterBetalt(botIder: string[]) {
     try {
         const res = await fetch('/api/boter/betal', {
             method: 'POST',
@@ -6,7 +6,6 @@ export async function markerBoterBetalt(botIder: string[]) {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({botIder}),
-            next: {revalidate: 60}
         })
         if (!res.ok) {
             throw new Error('Feil ved markering av bøter som betalt')

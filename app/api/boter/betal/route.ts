@@ -7,7 +7,7 @@ export async function POST(request: Request) {
     try {
         await sql `
             UPDATE bøter
-            SET er_betalt = true
+            SET er_betalt = NOT er_betalt
             WHERE id IN (${botIder.join(',')})
         `
 
