@@ -1,7 +1,7 @@
 import { sql } from '@vercel/postgres';
 
 export type Forseelse = {
-    id: number;
+    id: string;
     navn: string;
     beløp: number;
     beskrivelse: string;

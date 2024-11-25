@@ -14,7 +14,7 @@ export default function LeggTilBot({spillere, forseelser}: { spillere: Spiller[]
     const [belop, setBelop] = useState(0);
     const [dato, setDato] = useState(dayjs().format('YYYY-MM-DD'));
     const [forseelsesId, setForseelsesId] = useState('');
-    const [melding, setMelding] = useState<{tekst: string, type: AlertTypes} | null>(null);
+    const [melding, setMelding] = useState<{ tekst: string, type: AlertTypes } | null>(null);
     const [erKampdag, setErKampdag] = useState(false);
 
     useEffect(() => {
@@ -29,12 +29,12 @@ export default function LeggTilBot({spillere, forseelser}: { spillere: Spiller[]
         e.preventDefault();
 
         if (!spillerId || !belop || !dato || !forseelsesId) {
-            setMelding({tekst: 'Alle felter må fylles ut.', type: AlertTypes.ERROR} );
+            setMelding({tekst: 'Alle felter må fylles ut.', type: AlertTypes.ERROR});
             return;
         }
 
         try {
-            await lagBot(spillerId, belop, dato, forseelsesId)
+            await lagBot(spillerId, Number(belop), dato, forseelsesId)
             setMelding({tekst: 'Bot lagt til!', type: AlertTypes.SUCCESS});
         } catch (error) {
             console.error(error);
@@ -62,8 +62,13 @@ export default function LeggTilBot({spillere, forseelser}: { spillere: Spiller[]
                     placeholder="Velg en forseelse"
                     id="forseelse"
                     onChange={(e) => {
-                        setForseelsesId(e.target.value);
-                        setBelop(forseelser.find((forseelse) => forseelse.id.toString() == e.target.value)?.beløp || 0)
+                        const forseelse = forseelser.find((forseelse) => forseelse.id.toString() == e.target.value)
+                        if (!forseelse) {
+                            console.warn("Fant ikke forseelse med id", e.target.value)
+                            return
+                        }
+                        setForseelsesId(forseelse.id);
+                        setBelop(Number(forseelse.beløp) || 0);
                     }}
                 />
                 <div className="mb-4">
@@ -85,10 +90,9 @@ export default function LeggTilBot({spillere, forseelser}: { spillere: Spiller[]
                     <input
                         type="number"
                         id="beløp"
-                        value={belop}
-                        onChange={(e) => setBelop(Number.parseFloat(e.target.value))}
+                        value={Number(belop).toFixed(1)}
+                        onChange={(e) => setBelop(parseFloat(e.target.value))}
                         className="border rounded px-3 py-2 w-full"
-                        placeholder="F.eks. 100.00"
                     />
                 </div>
                 <div className="mb-4">
