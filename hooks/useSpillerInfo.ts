@@ -9,6 +9,7 @@ export function useSpillerInfo(brukerId: string) {
 
     useEffect(() => {
         const fetchSpillere = async () => {
+            if (brukerId == "") return;
             const oppdaterteSpillere = await fetchSpillerInfo(brukerId);
             setSpillerInfo(oppdaterteSpillere)
         };

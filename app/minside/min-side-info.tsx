@@ -9,14 +9,14 @@ import {Knapp} from "@/komponenter/Knapp.tsx";
 import {Input} from "@/komponenter/Input.tsx";
 import {type FormEvent, useState} from "react";
 import {oppdaterSpillerInfo} from "@/lib/brukerService.ts";
+import type {Bruker} from "@/lib/auth/authConfig.ts";
 
 interface MinSideInfoProps {
-    mobilnummer: string
-    brukerId: string
+    bruker: Bruker;
 }
 
-export const MinSideInfo = ({brukerId, mobilnummer}: MinSideInfoProps) => {
-    const {spillerInfo, loading} = useSpillerInfo(brukerId)
+export const MinSideInfo = ({bruker}: MinSideInfoProps) => {
+    const {spillerInfo, loading} = useSpillerInfo((bruker && bruker?.type != "gjest") ? bruker?.id ?? "" : "")
     const [rediger, setRediger] = useState(false);
 
     if (loading) {
@@ -28,7 +28,7 @@ export const MinSideInfo = ({brukerId, mobilnummer}: MinSideInfoProps) => {
         const formData = new FormData(event.currentTarget);
 
         const setOppdatertInfo = async () => {
-            await oppdaterSpillerInfo(brukerId, formData)
+            await oppdaterSpillerInfo(bruker.id, formData)
         }
         setOppdatertInfo().then(() => {
             setRediger(false)
@@ -42,7 +42,7 @@ export const MinSideInfo = ({brukerId, mobilnummer}: MinSideInfoProps) => {
                     <form onSubmit={(event) => oppdaterInfo(event)} className="mb-4 w-full">
                         <Input tittel="Draktnummer" placeholder={spillerInfo.id} rediger={false}/>
                         <Input tittel="Navn" placeholder={spillerInfo.navn} rediger={rediger}/>
-                        <Input tittel="Mobilnummer" placeholder={mobilnummer} type="number" rediger={rediger}/>
+                        <Input tittel="Mobilnummer" placeholder={bruker.brukernavn} type="number" rediger={rediger}/>
                         {!rediger && <Knapp tekst="Endre info" onClick={() => setRediger(!rediger)}/>}
                         {rediger && <Knapp tekst="Lagre endringer"/>}
                         {rediger && <Knapp className="bg-red-500 ml-4" tekst="Avbryt" onClick={() => setRediger(false)}/>}

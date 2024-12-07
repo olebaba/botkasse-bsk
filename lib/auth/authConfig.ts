@@ -51,7 +51,7 @@ export interface ActionResult {
 export interface Bruker {
     id: string
     brukernavn: string
-    passord: string
+    passord?: string
     type: 'admin' | 'bruker' | 'gjest'
 }
 
