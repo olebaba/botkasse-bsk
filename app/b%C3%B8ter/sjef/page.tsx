@@ -8,7 +8,7 @@ export default async function Page() {
     if (!user) {
         return redirect("/login");
     }
-    if (!user.admin) {
+    if (user.type != "admin") {
         return redirect("/");
     }
 

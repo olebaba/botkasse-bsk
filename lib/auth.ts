@@ -31,7 +31,7 @@ export const lucia = new Lucia(adapter, {
     getUserAttributes: (attributes) => {
         return {
             brukernavn: attributes.brukernavn,
-            admin: attributes.admin
+            type: attributes.type
         };
     }
 });
@@ -44,7 +44,7 @@ declare module "lucia" {
 
     interface DatabaseUserAttributes {
         brukernavn: string;
-        admin: boolean
+        type: 'admin' | 'bruker' | 'gjest'
     }
 }
 
@@ -216,7 +216,7 @@ interface Bruker {
     id: string
     brukernavn: string
     passord: string
-    admin: boolean
+    type: 'admin' | 'bruker' | 'gjest'
 }
 
 export const validateRequest = cache(
