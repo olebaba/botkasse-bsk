@@ -1,7 +1,6 @@
 'use client'
 import SpillerBøter from "@/app/forside/spiller-bøter.tsx";
 import Link from "next/link";
-import AlertBanner, {AlertTypes} from "@/komponenter/AlertBanner.tsx";
 import {useSpillere} from "@/hooks/useSpillere.ts";
 import {useForseelser} from "@/hooks/useForseelser.ts";
 import Header from "@/komponenter/Header.tsx";
@@ -10,7 +9,6 @@ import {beregnSum} from "@/lib/botBeregning.ts";
 import Image from "next/image";
 import new_release from "@/ikoner/new-release.svg";
 import React, {type FormEvent, useState} from "react";
-import {useRouter} from "next/navigation";
 import EnkelModal from "@/komponenter/EnkelModal.tsx";
 import {Input} from "@/komponenter/Input.tsx";
 import {Knapp} from "@/komponenter/Knapp.tsx";
@@ -24,7 +22,6 @@ interface ForsideProps {
 export default function Forside({bruker, gjestebrukerAction}: ForsideProps) {
     const {spillere} = useSpillere(true)
     const {forseelser} = useForseelser()
-    const router = useRouter()
     const [error, setError] = useState<string | null>(null);
 
     const alleBetalteBoter = spillere.flatMap(s => s.boter).filter(b => b.erBetalt)

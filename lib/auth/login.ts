@@ -37,7 +37,7 @@ export async function login(formData: FormData): Promise<void> {
 
         const typedBruker: Bruker = existingUser.rows[0]
 
-        if (!typedBruker) {
+        if (!typedBruker || !typedBruker.passord) {
             throw {
                 error: "Incorrect username or password"
             };
