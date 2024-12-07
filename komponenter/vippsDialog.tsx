@@ -4,8 +4,9 @@ import {useRouter} from "next/navigation";
 import type {Spiller} from "@/lib/spillereService.ts";
 import {generateVippsUrl} from "@/lib/vipps.ts";
 import dayjs from "@/lib/dayjs.ts";
-import SimpleModal from "@/komponenter/SimpleModal.tsx";
+import EnkelModal from "@/komponenter/EnkelModal.tsx";
 import {beregnSumMaaBetales} from "@/lib/botBeregning.ts";
+import {Knapp} from "@/komponenter/Knapp.tsx";
 
 interface DialogProps {
     tittel: string
@@ -37,16 +38,22 @@ const VippsDialog = ({tittel, spiller, setSpiller, innhold}: DialogProps) => {
     }
 
     return (
-        <SimpleModal
-            open={isModalOpen}
+        <EnkelModal
+            apen={isModalOpen}
             onClose={handleCloseModal}
-            title={tittel}
-            content={innhold || `Vipps botsjef ${beregnSumMaaBetales(spiller.boter)} kroner?`}
-            onConfirm={() => {
-                betalIVipps(spiller)
-                setSpiller(spiller)
-            }}
-        />
+            tittel={tittel}
+            innhold={innhold || `Vipps botsjef ${beregnSumMaaBetales(spiller.boter)} kroner?`}
+        >
+            <div className="flex justify-end space-x-3">
+                <Knapp tekst="Avbryt" onClick={handleCloseModal}
+                       className="px-4 py-2 bg-vipps-light-gray text-vipps-dark-blue rounded-md"/>
+                <Knapp tekst="Åpne vipps" className="px-4 py-2 bg-vipps-orange text-white rounded-md"
+                       onClick={() => {
+                           betalIVipps(spiller)
+                           setSpiller(spiller)
+                       }}/>
+            </div>
+        </EnkelModal>
     );
 }
 
