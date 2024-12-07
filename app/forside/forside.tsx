@@ -9,20 +9,64 @@ import type {User} from "lucia";
 import {beregnSum} from "@/lib/botBeregning.ts";
 import Image from "next/image";
 import new_release from "@/ikoner/new-release.svg";
-import React from "react";
+import React, {type FormEvent, useState} from "react";
 import {useRouter} from "next/navigation";
+import EnkelModal from "@/komponenter/EnkelModal.tsx";
+import {Input} from "@/komponenter/Input.tsx";
+import {Knapp} from "@/komponenter/Knapp.tsx";
+import type {ActionResult} from "@/lib/auth/authConfig.ts";
 
 interface ForsideProps {
     bruker?: User
+    gjestebrukerAction: (formData: FormData) => Promise<ActionResult>;
 }
 
-export default function Forside({bruker}: ForsideProps) {
+export default function Forside({bruker, gjestebrukerAction}: ForsideProps) {
     const {spillere} = useSpillere(true)
     const {forseelser} = useForseelser()
     const router = useRouter()
+    const [error, setError] = useState<string | null>(null);
 
     const alleBetalteBoter = spillere.flatMap(s => s.boter).filter(b => b.erBetalt)
     const sumBetalteBoter: number = beregnSum(alleBetalteBoter)
+
+    const lagGjestebruker = async (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault()
+        const formData = new FormData(event.currentTarget);
+
+        try {
+            const result = await gjestebrukerAction(formData);
+            if (result.error) {
+                setError(result.error)
+            }
+        } catch (error) {
+            setError("Noe feilet, ta kontakt med admin.");
+            console.error("Signup failed:", error);
+        }
+    }
+
+    if (!bruker) {
+        return (
+            <EnkelModal
+                tittel="Siden er ikke åpen for alle"
+                innhold="Fyll inn koden du har fått for å kunne se innholdet på denne siden."
+                onClose={() => {}}
+                apen={true}
+            >
+                <form onSubmit={lagGjestebruker}>
+                    {error && (
+                        <div className="text-red-500 text-center mb-4">
+                            {error}
+                        </div>
+                    )}
+                    <Input placeholder="Kode" rediger={true} tittel="Skriv inn kode"/>
+                    <div className="flex justify-end space-x-3">
+                        <Knapp className="text-white ml-auto" tekst="Send inn"/>
+                    </div>
+                </form>
+            </EnkelModal>
+        )
+    }
 
     return (
         <div className="container mx-auto p-4 mt-24">

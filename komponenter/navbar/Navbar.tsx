@@ -13,7 +13,6 @@ export default async function Navbar() {
         {href: `/${encodeURIComponent('bøter')}`, label: "Oversikt typer bøter"},
         {href: `/minside`, label: `${user ? 'Min side' : 'Lag bruker'}`},
     ];
-    console.log(user)
     if (user?.type == "admin") {
         sideLenker.push(
             {href: `/${encodeURIComponent('bøter')}/sjef`, label: "Botsjef 🔐"},
