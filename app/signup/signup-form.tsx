@@ -1,7 +1,7 @@
 "use client";
 
 import React, {useState} from "react";
-import type {ActionResult} from "@/lib/auth.ts";
+import type {ActionResult} from "@/lib/auth/authConfig.ts";
 
 type SignupFormProps = {
     signupAction: (formData: FormData) => Promise<ActionResult>;

@@ -1,7 +1,8 @@
-import {signup, validateRequest} from "@/lib/auth.ts";
 import Link from "next/link";
 import SignupForm from "@/app/signup/signup-form.tsx";
 import {redirect} from "next/navigation";
+import {validateRequest} from "@/lib/auth/validateRequest.ts";
+import {signup} from "@/lib/auth/signup.ts";
 
 export default async function Page() {
     const {user} = await validateRequest();

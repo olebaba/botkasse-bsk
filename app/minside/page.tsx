@@ -1,8 +1,9 @@
-import {logout, validateRequest} from "@/lib/auth.ts";
 import {redirect} from "next/navigation";
 import Header from "@/komponenter/Header.tsx";
 import {MinSideInfo} from "@/app/minside/min-side-info.tsx";
 import {Knapp} from "@/komponenter/Knapp.tsx";
+import {validateRequest} from "@/lib/auth/validateRequest.ts";
+import {logout} from "@/lib/auth/logout.ts";
 
 export default async function MinSide(){
     const {user} = await validateRequest();

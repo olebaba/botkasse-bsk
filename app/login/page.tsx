@@ -1,6 +1,7 @@
-import {login, validateRequest} from "@/lib/auth.ts";
 import Link from "next/link";
 import {redirect} from "next/navigation";
+import {validateRequest} from "@/lib/auth/validateRequest.ts";
+import {login} from "@/lib/auth/login.ts";
 
 export default async function Page() {
     const {user} = await validateRequest();
