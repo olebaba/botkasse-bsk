@@ -3,7 +3,6 @@ import { beregnSum, beregnSumMaaBetales, beregnSumNyeBoter } from '@/lib/botBere
 import { ListBoter } from '@/komponenter/ListBoter'
 import type { Spiller } from '@/lib/spillereService'
 import type { Forseelse } from '@/app/api/boter/typer/route'
-import { useAnimatedHeight } from '@/hooks/useAnimatedHeight'
 
 interface SpillerKortProps {
     spiller: Spiller
@@ -63,8 +62,6 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
         setSpillerVipps(spiller)
     }, [setSpillerVipps, spiller])
 
-    const { ref: forseelseRef, height: forseelseHeight } = useAnimatedHeight(merInfoOpen, [spiller])
-
     return (
         <div ref={cardRef} className={getKortKlasser()}>
             <div
@@ -87,14 +84,7 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
                 </span>
             </div>
 
-            <div
-                ref={forseelseRef}
-                style={{ maxHeight: forseelseHeight }}
-                className={`transition-all duration-500 overflow-hidden ${
-                    merInfoOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
-                }`}
-                aria-hidden={!merInfoOpen}
-            >
+            {merInfoOpen && (
                 <div className="mt-2 bg-yellow-50 rounded p-2" onClick={e => e.stopPropagation()}>
                     <div className="mb-2 space-y-1">
                         <p><span className="font-medium">Sum alle bøter:</span> {botStatistikk.sumAlle} kroner</p>
@@ -109,7 +99,7 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
                     </button>
                     <ListBoter forseelser={forseelser} erBotsjef={false} spiller={spiller} />
                 </div>
-            </div>
+            )}
         </div>
     )
 }

@@ -5,10 +5,14 @@ export const useAnimatedHeight = (isOpen: boolean, dependencies: any[]) => {
     const [height, setHeight] = useState(0)
 
     useEffect(() => {
-        if (isOpen && ref.current) {
-            setHeight(ref.current.scrollHeight)
-        } else {
-            setHeight(0)
+        if (ref.current) {
+            if (isOpen) {
+                // Force a reflow to ensure accurate measurement
+                ref.current.style.height = 'auto'
+                setHeight(ref.current.scrollHeight)
+            } else {
+                setHeight(0)
+            }
         }
     }, [isOpen, ...dependencies])
 
