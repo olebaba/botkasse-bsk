@@ -1,9 +1,8 @@
 'use client'
-import React, { Fragment, useEffect, useState } from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import { type Spiller } from '@/lib/spillereService.ts'
 import VippsDialog from '@/komponenter/vippsDialog.tsx'
 import type { User } from 'lucia'
-import { useSpillerInfo } from '@/hooks/useSpillerInfo.ts'
 import {beregnSum, beregnSumMaaBetales, beregnSumNyeBoter} from '@/lib/botBeregning.ts'
 import Loading from '@/app/loading.tsx'
 import type { Forseelse } from '@/app/api/boter/typer/route.ts'
@@ -13,35 +12,43 @@ import {ListBoter} from "@/komponenter/ListBoter.tsx";
 export default function SpillerBøter({
     spillere,
     forseelser,
-    bruker,
 }: {
     spillere: Spiller[]
     forseelser: Forseelse[]
     bruker?: User
 }) {
     const [sortertSpillere, setSortertSpillere] = useState<Spiller[]>(spillere)
-    const { spillerInfo } = useSpillerInfo(bruker && bruker?.type != 'gjest' ? (bruker?.id ?? '') : '')
     const [spillerVipps, setSpillerVipps] = useState<Spiller | undefined>(undefined)
     const [merInfoSpiller, setMerInfoSpiller] = useState<Spiller | undefined>(undefined)
     const aar = dayjs().year()
     const nesteAar = dayjs().add(1, 'year').year()
     const [visAlleSesonger, setVisAlleSesonger] = useState(false)
 
-    const sorterMaaBetales = () => {
-        setSortertSpillere(
-            sortertSpillere.toSorted((a, b) => beregnSumMaaBetales(b.boter) - beregnSumMaaBetales(a.boter)),
-        )
-    }
-    const sorterNyeBoter = () => {
-        setSortertSpillere(sortertSpillere.toSorted((a, b) => beregnSumNyeBoter(b.boter) - beregnSumNyeBoter(a.boter)))
-    }
-    const sorterAlfabetisk = (felt: 'navn' | 'id') => {
-        setSortertSpillere(sortertSpillere.toSorted((a, b) => a[felt].localeCompare(b[felt])))
-    }
-
     useEffect(() => {
         setSortertSpillere(spillere)
     }, [spillere])
+
+    const cardRefs = useRef<(HTMLDivElement | null)[]>([])
+
+    const [navbarHeight, setNavbarHeight] = useState(0)
+    useEffect(() => {
+        const navbar = document.querySelector('nav')
+        if (navbar) {
+            setNavbarHeight(navbar.getBoundingClientRect().height)
+        }
+    }, [])
+
+    useEffect(() => {
+        if (merInfoSpiller) {
+            const idx = sortertSpillere.findIndex(s => s === merInfoSpiller)
+            if (idx !== -1 && cardRefs.current[idx]) {
+                const el = cardRefs.current[idx]
+                const rect = el?.getBoundingClientRect()
+                const scrollTop = (window.scrollY ?? 0) + (rect?.top ?? 0) - navbarHeight - 16
+                window.scrollTo({ top: scrollTop, behavior: 'smooth' })
+            }
+        }
+    }, [merInfoSpiller, sortertSpillere, navbarHeight])
 
     if (spillere.length == 0) return <Loading />
 
@@ -63,7 +70,7 @@ export default function SpillerBøter({
                 </button>
             </div>
             <div className="space-y-4">
-                {sortertSpillere.map((spiller) => {
+                {sortertSpillere.map((spiller, idx) => {
                     const boter = spiller.boter
                     const maaBetales = boter ? beregnSumMaaBetales(boter) : 0
                     const nyeBoter = boter ? beregnSumNyeBoter(boter) : 0
@@ -71,6 +78,7 @@ export default function SpillerBøter({
                     return (
                         <div
                             key={spiller.id}
+                            ref={el => { cardRefs.current[idx] = el || null }}
                             className={`bg-white rounded shadow border p-4 flex flex-col gap-2 transition-all duration-200 ${merInfoOpen ? 'ring-2 ring-blue-500 bg-blue-50' : 'hover:ring-1 hover:ring-blue-300 cursor-pointer'}`}
                         >
                             <div
