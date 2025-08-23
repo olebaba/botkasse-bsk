@@ -9,6 +9,7 @@ import { SpillerMerInfo } from '@/app/forside/spiller-mer-info.tsx'
 import { beregnSumMaaBetales, beregnSumNyeBoter } from '@/lib/botBeregning.ts'
 import Loading from '@/app/loading.tsx'
 import type { Forseelse } from '@/app/api/boter/typer/route.ts'
+import dayjs from '@/lib/dayjs.ts'
 
 export default function SpillerBøter({
     spillere,
@@ -23,6 +24,9 @@ export default function SpillerBøter({
     const { spillerInfo } = useSpillerInfo(bruker && bruker?.type != 'gjest' ? (bruker?.id ?? '') : '')
     const [spillerVipps, setSpillerVipps] = useState<Spiller | undefined>(undefined)
     const [merInfoSpiller, setMerInfoSpiller] = useState<Spiller | undefined>(undefined)
+    const aar = dayjs().year()
+    const nesteAar = dayjs().add(1, 'year').year()
+    const [visAlleSesonger, setVisAlleSesonger] = useState(false)
 
     const sorterMaaBetales = () => {
         setSortertSpillere(
@@ -59,6 +63,10 @@ export default function SpillerBøter({
         })
     }
 
+    const filtrerteSpillere = visAlleSesonger
+        ? sortertSpillere
+        : sortertSpillere.filter((spiller) => spiller.visNavn)
+
     useEffect(() => {
         setSortertSpillere(spillere)
     }, [spillere])
@@ -68,6 +76,20 @@ export default function SpillerBøter({
     return (
         <>
             <VippsDialog tittel="Betal i vipps" spiller={spillerVipps} setSpiller={setSpillerVipps} />
+            <div className="mb-4 flex gap-2">
+                <button
+                    className={`px-4 py-2 rounded ${!visAlleSesonger ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'}`}
+                    onClick={() => setVisAlleSesonger(false)}
+                >
+                    Gjeldende sesong {aar}/{nesteAar}
+                </button>
+                <button
+                    className={`px-4 py-2 rounded ${visAlleSesonger ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'}`}
+                    onClick={() => setVisAlleSesonger(true)}
+                >
+                    Alle sesonger
+                </button>
+            </div>
             <div>
                 <table className="w-full bg-white border border-gray-200 shadow-lg text-lg md:text-base">
                     <thead className="bg-gray-50">
@@ -87,11 +109,11 @@ export default function SpillerBøter({
                         </tr>
                     </thead>
                     <tbody>
-                        {sortertSpillere.map((spiller) => (
+                        {filtrerteSpillere.map((spiller) => (
                             <Fragment key={spiller.id}>
                                 <SpillerRad
                                     spiller={spiller}
-                                    visNavn={bruker != undefined}
+                                    visRad={visAlleSesonger || spiller.visNavn !== false}
                                     onClick={() => {
                                         if (merInfoSpiller == spiller) setMerInfoSpiller(undefined)
                                         else setMerInfoSpiller(spiller)

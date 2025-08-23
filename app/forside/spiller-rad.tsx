@@ -10,10 +10,14 @@ import dropdown_up from '@/ikoner/dropdown-up.svg'
 interface SpillerRadProps {
     spiller: Spiller
     onClick: () => void
-    visNavn?: boolean
+    /**
+     * Om raden for spilleren skal vises eller ikke
+     */
+    visRad?: boolean
 }
 
-export const SpillerRad = ({ spiller, onClick, visNavn }: SpillerRadProps) => {
+export const SpillerRad = ({ spiller, onClick, visRad }: SpillerRadProps) => {
+    if (visRad === false) return null
     const [pil, setPil] = useState<string>(dropdown_down)
     const boter = spiller.boter
     if (!boter) return <Laster />
@@ -31,7 +35,7 @@ export const SpillerRad = ({ spiller, onClick, visNavn }: SpillerRadProps) => {
             <td className="border-y">
                 <Image className="mx-auto" alt={'Vis mer info om spilleren'} src={pil} />
             </td>
-            <TabellData verdi={visNavn ? spiller.navn : spiller.id} erNok={false} />
+            <TabellData verdi={spiller.navn} erNok={false} />
             <TabellData verdi={maaBetales} erNok={true} />
             <TabellData verdi={nyeBoter} erNok={true} />
         </tr>

@@ -5,6 +5,10 @@ export type Spiller = {
     draktnummer?: number
     navn: string
     boter: Bot[]
+    /**
+     * Om raden for spilleren skal vises eller ikke
+     */
+    visNavn?: boolean
 }
 
 export async function hentSpillere(medBoter: boolean): Promise<Spiller[]> {

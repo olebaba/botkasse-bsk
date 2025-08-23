@@ -7,11 +7,14 @@ export async function GET(request: NextRequest) {
     const req = request.nextUrl.searchParams
     const medBoter: boolean = req.get('medBoter') == 'true'
     try {
-        const spillereQuery = await sql<Spiller>`
-            SELECT *
+        const spillereQuery = await sql<any>`
+            SELECT *, vis_navn
             FROM spillere
         `
-        const spillere: Spiller[] = spillereQuery.rows
+        const spillere: Spiller[] = spillereQuery.rows.map((row) => ({
+            ...row,
+            visNavn: typeof row.vis_navn === 'boolean' ? row.vis_navn : Boolean(row.vis_navn),
+        }))
 
         if (medBoter) {
             const boterForAlleSpillereQuery = await sql`
@@ -27,7 +30,7 @@ export async function GET(request: NextRequest) {
                 erBetalt: row.er_betalt,
             }))
             const spillereMedBoter: Spiller[] = spillere.map((s) => {
-                return { ...s, boter: alleBoter.filter((bot) => bot.spillerId == s.id) }
+                return { ...s, boter: alleBoter.filter((bot) => bot.spillerId == s.id), visNavn: s.visNavn }
             })
             return NextResponse.json({ spillere: spillereMedBoter }, { status: 200 })
         }
