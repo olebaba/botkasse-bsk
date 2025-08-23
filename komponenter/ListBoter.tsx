@@ -44,45 +44,32 @@ export const ListBoter = ({
     }
 
     return (
-        <table className="w-full bg-white shadow-md rounded-md mb-4">
-            <thead>
-                <tr className="text-left text-sm md:text-base text-gray-700 bg-gray-100">
-                    <th className="py-2 px-4">Bot</th>
-                    <th className="py-2 px-4">Dato</th>
-                    <th className="py-2 px-4">Beløp</th>
-                    <th className="py-2 px-4">Status</th>
-                    {erBotsjef && <th className="py-2 px-4">Handling</th>}
-                </tr>
-            </thead>
-            <tbody>
-                {boterForSpiller?.map((bot) => {
-                    const forseelse = forseelser.find((f) => f.id.toString() == bot.forseelseId)
-                    const dato = `${dayjs(bot.dato).format('DD.MM.YYYY')}`
-                    return (
-                        <tr key={bot.id} className="border-t border-gray-200">
-                            <td className="py-2 px-4">{forseelse?.navn}</td>
-                            <td className="py-2 px-4">{dato}</td>
-                            <td className="py-2 px-4 text-right">{bot.belop}kr</td>
-                            <td className="py-2 px-4">
-                                <span className={`${bot.erBetalt ? 'text-green-600' : 'text-red-600'} font-semibold`}>
-                                    {bot.erBetalt ? 'Betalt' : 'Ikke betalt'}
-                                </span>
-                            </td>
-                            {erBotsjef && (
-                                <td className="py-2 px-4">
-                                    <Knapp
-                                        className={bot.erBetalt ? 'bg-red-500 hover:bg-red-500' : ''}
-                                        tekst={bot.erBetalt ? 'Sett ubetalt' : 'Sett betalt'}
-                                        onClick={async () => {
-                                            await handleMarkerBetalt(bot)
-                                        }}
-                                    />
-                                </td>
-                            )}
-                        </tr>
-                    )
-                })}
-            </tbody>
-        </table>
+        <div className="flex flex-col gap-2">
+            {boterForSpiller?.map((bot) => {
+                const forseelse = forseelser.find((f) => f.id.toString() == bot.forseelseId)
+                const dato = dayjs(bot.dato).format('DD.MM.YYYY')
+                return (
+                    <div key={bot.id} className="bg-white rounded shadow border p-3 flex flex-col gap-1">
+                        <div className="font-semibold">{forseelse?.navn}</div>
+                        <div><span className="font-medium">Dato:</span> {dato}</div>
+                        <div><span className="font-medium">Beløp:</span> {bot.belop} kr</div>
+                        <div>
+                            <span className={`font-semibold ${bot.erBetalt ? 'text-green-600' : 'text-red-600'}`}>{bot.erBetalt ? 'Betalt' : 'Ikke betalt'}</span>
+                        </div>
+                        {erBotsjef && (
+                            <div>
+                                <Knapp
+                                    className={bot.erBetalt ? 'bg-red-500 hover:bg-red-500' : ''}
+                                    tekst={bot.erBetalt ? 'Sett ubetalt' : 'Sett betalt'}
+                                    onClick={async () => {
+                                        await handleMarkerBetalt(bot)
+                                    }}
+                                />
+                            </div>
+                        )}
+                    </div>
+                )
+            })}
+        </div>
     )
 }

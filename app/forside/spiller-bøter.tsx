@@ -4,12 +4,11 @@ import { type Spiller } from '@/lib/spillereService.ts'
 import VippsDialog from '@/komponenter/vippsDialog.tsx'
 import type { User } from 'lucia'
 import { useSpillerInfo } from '@/hooks/useSpillerInfo.ts'
-import { SpillerRad } from '@/app/forside/spiller-rad.tsx'
-import { SpillerMerInfo } from '@/app/forside/spiller-mer-info.tsx'
-import { beregnSumMaaBetales, beregnSumNyeBoter } from '@/lib/botBeregning.ts'
+import {beregnSum, beregnSumMaaBetales, beregnSumNyeBoter} from '@/lib/botBeregning.ts'
 import Loading from '@/app/loading.tsx'
 import type { Forseelse } from '@/app/api/boter/typer/route.ts'
 import dayjs from '@/lib/dayjs.ts'
+import {ListBoter} from "@/komponenter/ListBoter.tsx";
 
 export default function SpillerBøter({
     spillere,
@@ -40,33 +39,6 @@ export default function SpillerBøter({
         setSortertSpillere(sortertSpillere.toSorted((a, b) => a[felt].localeCompare(b[felt])))
     }
 
-    const kolonner = [
-        {
-            id: 'draktnummer',
-            navn: 'Spiller',
-            sortering: () => sorterAlfabetisk('id'),
-        },
-        { id: 'maaBetales', navn: 'Må betales', sortering: sorterMaaBetales },
-        { id: 'nyeBoter', navn: 'Nye bøter', sortering: sorterNyeBoter },
-    ]
-
-    if (bruker) {
-        kolonner[0] = {
-            id: 'navn',
-            navn: 'Spiller',
-            sortering: () => sorterAlfabetisk('navn'),
-        }
-        spillere.sort((a, b) => {
-            if (a.id === spillerInfo?.id) return -1
-            if (b.id === spillerInfo?.id) return 1
-            return 0
-        })
-    }
-
-    const filtrerteSpillere = visAlleSesonger
-        ? sortertSpillere
-        : sortertSpillere.filter((spiller) => spiller.visNavn)
-
     useEffect(() => {
         setSortertSpillere(spillere)
     }, [spillere])
@@ -76,61 +48,59 @@ export default function SpillerBøter({
     return (
         <>
             <VippsDialog tittel="Betal i vipps" spiller={spillerVipps} setSpiller={setSpillerVipps} />
-            <div className="mb-4 flex gap-2">
+            <div className="mb-4 flex gap-2 flex-wrap">
                 <button
-                    className={`px-4 py-2 rounded ${!visAlleSesonger ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'}`}
+                    className={`px-4 py-2 rounded whitespace-nowrap ${!visAlleSesonger ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'}`}
                     onClick={() => setVisAlleSesonger(false)}
                 >
                     Gjeldende sesong {aar}/{nesteAar}
                 </button>
                 <button
-                    className={`px-4 py-2 rounded ${visAlleSesonger ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'}`}
+                    className={`px-4 py-2 rounded whitespace-nowrap ${visAlleSesonger ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'}`}
                     onClick={() => setVisAlleSesonger(true)}
                 >
                     Alle sesonger
                 </button>
             </div>
-            <div>
-                <table className="w-full bg-white border border-gray-200 shadow-lg text-lg md:text-base">
-                    <thead className="bg-gray-50">
-                        <tr className="hover:bg-gray-50">
-                            <th>⇅</th>
-                            {kolonner.map((kolonne) => {
-                                return (
-                                    <th
-                                        key={kolonne.id}
-                                        className="py-2 px-4 left font-semibold text-gray-700 border-b text-center"
-                                        onClick={kolonne.sortering}
+            <div className="space-y-4">
+                {spillere.map((spiller) => {
+                    const boter = spiller.boter
+                    const maaBetales = boter ? beregnSumMaaBetales(boter) : 0
+                    const nyeBoter = boter ? beregnSumNyeBoter(boter) : 0
+                    const merInfoOpen = merInfoSpiller === spiller
+                    return (
+                        <div key={spiller.id} className="bg-white rounded shadow border p-4 flex flex-col gap-2">
+                            <div className="flex items-center justify-between">
+                                <div className="font-semibold text-lg">{spiller.navn}</div>
+                                <button
+                                    className="text-blue-600 underline text-sm"
+                                    onClick={() => setMerInfoSpiller(merInfoOpen ? undefined : spiller)}
+                                >
+                                    {merInfoOpen ? 'Skjul info' : 'Vis mer info'}
+                                </button>
+                            </div>
+                            <div className="flex flex-col gap-1">
+                                <div><span className="font-medium">Må betales:</span> {maaBetales} kr</div>
+                                <div><span className="font-medium">Nye bøter:</span> {nyeBoter} kr</div>
+                            </div>
+                            {merInfoOpen && (
+                                <div className="mt-2 bg-yellow-50 rounded p-2">
+                                    <div className="mb-2 font-semibold">
+                                        <p>Sum alle bøter: {boter ? beregnSum(boter) : 0} kroner.</p>
+                                        <p>Betalt denne sesongen: {boter ? beregnSum(boter.filter((b) => b.erBetalt)) : 0} kroner.</p>
+                                    </div>
+                                    <button
+                                        className="bg-vipps-orange hover:bg-vipps-orange-dark text-white rounded px-3 py-2 mb-2"
+                                        onClick={() => setSpillerVipps(spiller)}
                                     >
-                                        {kolonne.navn}
-                                    </th>
-                                )
-                            })}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {filtrerteSpillere.map((spiller) => (
-                            <Fragment key={spiller.id}>
-                                <SpillerRad
-                                    spiller={spiller}
-                                    visRad={visAlleSesonger || spiller.visNavn !== false}
-                                    onClick={() => {
-                                        if (merInfoSpiller == spiller) setMerInfoSpiller(undefined)
-                                        else setMerInfoSpiller(spiller)
-                                    }}
-                                />
-                                {spiller == merInfoSpiller && (
-                                    <SpillerMerInfo
-                                        spiller={spiller}
-                                        kolonner={kolonner}
-                                        forseelser={forseelser}
-                                        setSpillerVipps={setSpillerVipps}
-                                    />
-                                )}
-                            </Fragment>
-                        ))}
-                    </tbody>
-                </table>
+                                        Betal bøter i Vipps
+                                    </button>
+                                    <ListBoter forseelser={forseelser} erBotsjef={false} spiller={spiller} />
+                                </div>
+                            )}
+                        </div>
+                    )
+                })}
             </div>
         </>
     )
