@@ -1,81 +1,82 @@
 'use client'
-import React, {useEffect, useRef, useState} from 'react'
+import React, { useEffect, useState, useMemo, useCallback } from 'react'
 import { type Spiller } from '@/lib/spillereService.ts'
 import VippsDialog from '@/komponenter/vippsDialog.tsx'
 import type { User } from 'lucia'
-import {beregnSum, beregnSumMaaBetales, beregnSumNyeBoter} from '@/lib/botBeregning.ts'
 import Loading from '@/app/loading.tsx'
 import type { Forseelse } from '@/app/api/boter/typer/route.ts'
 import dayjs from '@/lib/dayjs.ts'
-import {ListBoter} from "@/komponenter/ListBoter.tsx";
 import SpillerKort from './SpillerKort'
+import { useNavbarHeight } from '@/hooks/useNavbarHeight'
+import { useScrollToCard } from '@/hooks/useScrollToCard'
 
-export default function SpillerBøter({
-    spillere,
-    forseelser,
-}: {
+interface SpillerBøterProps {
     spillere: Spiller[]
     forseelser: Forseelse[]
     bruker?: User
-}) {
-    const [sortertSpillere, setSortertSpillere] = useState<Spiller[]>(spillere)
+}
+
+export default function SpillerBøter({ spillere, forseelser }: SpillerBøterProps) {
     const [spillerVipps, setSpillerVipps] = useState<Spiller | undefined>(undefined)
     const [merInfoSpiller, setMerInfoSpiller] = useState<Spiller | undefined>(undefined)
-    const aar = dayjs().year()
-    const nesteAar = dayjs().add(1, 'year').year()
     const [visAlleSesonger, setVisAlleSesonger] = useState(false)
 
-    useEffect(() => {
-        setSortertSpillere(spillere)
-    }, [spillere])
+    const navbarHeight = useNavbarHeight()
+    const { cardRefs, scrollToSpiller } = useScrollToCard(spillere, navbarHeight)
 
-    const cardRefs = useRef<(HTMLDivElement | null)[]>([])
+    const sesongTekst = useMemo(() => {
+        const aar = dayjs().year()
+        const nesteAar = dayjs().add(1, 'year').year()
+        return `${aar}/${nesteAar}`
+    }, [])
 
-    const [navbarHeight, setNavbarHeight] = useState(0)
-    useEffect(() => {
-        const navbar = document.querySelector('nav')
-        if (navbar) {
-            setNavbarHeight(navbar.getBoundingClientRect().height)
-        }
+    const getKnappKlasser = useCallback((erAktiv: boolean) => {
+        const base = 'px-4 py-2 rounded whitespace-nowrap transition-colors'
+        const variant = erAktiv
+            ? 'bg-blue-600 text-white'
+            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+        return `${base} ${variant}`
     }, [])
 
     useEffect(() => {
         if (merInfoSpiller) {
-            const idx = sortertSpillere.findIndex(s => s === merInfoSpiller)
-            if (idx !== -1 && cardRefs.current[idx]) {
-                const el = cardRefs.current[idx]
-                const rect = el?.getBoundingClientRect()
-                const scrollTop = (window.scrollY ?? 0) + (rect?.top ?? 0) - navbarHeight - 16
-                window.scrollTo({ top: scrollTop, behavior: 'smooth' })
-            }
+            scrollToSpiller(merInfoSpiller)
         }
-    }, [merInfoSpiller, sortertSpillere, navbarHeight])
+    }, [merInfoSpiller, scrollToSpiller])
 
-    if (spillere.length == 0) return <Loading />
+    if (spillere.length === 0) return <Loading />
 
     return (
         <>
-            <VippsDialog tittel="Betal i vipps" spiller={spillerVipps} setSpiller={setSpillerVipps} />
+            <VippsDialog
+                tittel="Betal i vipps"
+                spiller={spillerVipps}
+                setSpiller={setSpillerVipps}
+            />
+
             <div className="mb-4 flex gap-2 flex-wrap">
                 <button
-                    className={`px-4 py-2 rounded whitespace-nowrap ${!visAlleSesonger ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'}`}
+                    className={getKnappKlasser(!visAlleSesonger)}
                     onClick={() => setVisAlleSesonger(false)}
+                    type="button"
                 >
-                    Gjeldende sesong {aar}/{nesteAar}
+                    Gjeldende sesong {sesongTekst}
                 </button>
                 <button
-                    className={`px-4 py-2 rounded whitespace-nowrap ${visAlleSesonger ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700'}`}
+                    className={getKnappKlasser(visAlleSesonger)}
                     onClick={() => setVisAlleSesonger(true)}
+                    type="button"
                 >
                     Alle sesonger
                 </button>
             </div>
+
             <div className="space-y-4">
-                {sortertSpillere.map((spiller, idx) => (
+                {spillere.map((spiller, idx) => (
                     <SpillerKort
                         key={spiller.id}
                         spiller={spiller}
-                        cardRef={el => { cardRefs.current[idx] = el || null }}
+                        cardRef={el => { cardRefs.current[idx] = el }}
                         merInfoOpen={merInfoSpiller === spiller}
                         setMerInfoSpiller={setMerInfoSpiller}
                         setSpillerVipps={setSpillerVipps}

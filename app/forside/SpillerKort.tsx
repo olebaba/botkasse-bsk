@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useMemo, useCallback } from 'react'
 import { beregnSum, beregnSumMaaBetales, beregnSumNyeBoter } from '@/lib/botBeregning'
 import { ListBoter } from '@/komponenter/ListBoter'
 import type { Spiller } from '@/lib/spillereService'
 import type { Forseelse } from '@/app/api/boter/typer/route'
+import { useAnimatedHeight } from '@/hooks/useAnimatedHeight'
 
 interface SpillerKortProps {
     spiller: Spiller
@@ -21,59 +22,88 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
     setSpillerVipps,
     forseelser
 }) => {
-    const boter = spiller.boter
-    const maaBetales = boter ? beregnSumMaaBetales(boter) : 0
-    const nyeBoter = boter ? beregnSumNyeBoter(boter) : 0
-    const alleBetalt = boter && boter.length > 0 ? boter.every(b => b.erBetalt) : false
+    const botStatistikk = useMemo(() => {
+        const boter = spiller.boter
+        if (!boter) return { maaBetales: 0, nyeBoter: 0, alleBetalt: false, sumAlle: 0, sumBetalt: 0 }
 
-    const kortBakgrunn = alleBetalt ? 'bg-green-50' : 'bg-red-50'
-    const kortRing = merInfoOpen ? 'ring-2 ring-blue-500 bg-blue-50' : 'hover:ring-1 hover:ring-blue-300 cursor-pointer'
-    const kortTransition = 'transition-all duration-600'
-
-    const forseelseRef = React.useRef<HTMLDivElement>(null)
-    const [forseelseHeight, setForseelseHeight] = React.useState(0)
-
-    React.useEffect(() => {
-        if (merInfoOpen && forseelseRef.current) {
-            setForseelseHeight(forseelseRef.current.scrollHeight)
-        } else {
-            setForseelseHeight(0)
+        return {
+            maaBetales: beregnSumMaaBetales(boter),
+            nyeBoter: beregnSumNyeBoter(boter),
+            alleBetalt: boter.length > 0 ? boter.every(b => b.erBetalt) : false,
+            sumAlle: beregnSum(boter),
+            sumBetalt: beregnSum(boter.filter(b => b.erBetalt))
         }
-    }, [merInfoOpen, spiller])
+    }, [spiller.boter])
+
+    const getKortKlasser = useCallback(() => {
+        const base = 'bg-white rounded shadow border p-4 flex flex-col gap-2 transition-all duration-600'
+        const bakgrunn = botStatistikk.alleBetalt ? 'bg-green-50' : 'bg-red-50'
+        const ring = merInfoOpen
+            ? 'ring-2 ring-blue-500 bg-blue-50'
+            : 'hover:ring-1 hover:ring-blue-300 cursor-pointer'
+
+        return `${base} ${bakgrunn} ${ring}`
+    }, [botStatistikk.alleBetalt, merInfoOpen])
+
+    const getStatusKnappKlasser = useCallback(() => {
+        const base = 'text-xs px-2 py-1 rounded mt-2 md:mt-0'
+        const variant = merInfoOpen
+            ? 'bg-blue-500 text-white'
+            : 'bg-gray-200 text-gray-700'
+
+        return `${base} ${variant}`
+    }, [merInfoOpen])
+
+    const handleToggleInfo = useCallback(() => {
+        setMerInfoSpiller(merInfoOpen ? undefined : spiller)
+    }, [merInfoOpen, setMerInfoSpiller, spiller])
+
+    const handleVippsBetaling = useCallback((e: React.MouseEvent) => {
+        e.stopPropagation()
+        setSpillerVipps(spiller)
+    }, [setSpillerVipps, spiller])
+
+    const { ref: forseelseRef, height: forseelseHeight } = useAnimatedHeight(merInfoOpen, [spiller])
 
     return (
-        <div
-            ref={cardRef}
-            className={`bg-white rounded shadow border p-4 flex flex-col gap-2 ${kortBakgrunn} ${kortRing} ${kortTransition}`}
-        >
+        <div ref={cardRef} className={getKortKlasser()}>
             <div
                 className="flex flex-col gap-1 md:flex-row md:items-center md:justify-between cursor-pointer"
-                onClick={() => setMerInfoSpiller(merInfoOpen ? undefined : spiller)}
+                onClick={handleToggleInfo}
                 tabIndex={0}
                 role="button"
                 aria-pressed={merInfoOpen}
+                aria-expanded={merInfoOpen}
             >
                 <div className="flex flex-col md:flex-row md:items-center md:gap-4">
-                    <div className="font-semibold text-lg">{spiller.navn}</div>
-                    <div><span className="font-medium">Må betales:</span> {maaBetales} kr</div>
-                    <div><span className="font-medium">Nye bøter:</span> {nyeBoter} kr</div>
+                    <h3 className="font-semibold text-lg">{spiller.navn}</h3>
+                    <div className="flex flex-col md:flex-row md:gap-4">
+                        <span><span className="font-medium">Må betales:</span> {botStatistikk.maaBetales} kr</span>
+                        <span><span className="font-medium">Nye bøter:</span> {botStatistikk.nyeBoter} kr</span>
+                    </div>
                 </div>
-                <span className={`text-xs px-2 py-1 rounded mt-2 md:mt-0 ${merInfoOpen ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'}`}>{merInfoOpen ? 'Åpen' : 'Trykk for mer info'}</span>
+                <span className={getStatusKnappKlasser()}>
+                    {merInfoOpen ? 'Åpen' : 'Trykk for mer info'}
+                </span>
             </div>
+
             <div
                 ref={forseelseRef}
-                style={{ maxHeight: merInfoOpen ? forseelseHeight : 0 }}
-                className={`transition-all duration-500 overflow-hidden ${merInfoOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+                style={{ maxHeight: forseelseHeight }}
+                className={`transition-all duration-500 overflow-hidden ${
+                    merInfoOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
+                }`}
                 aria-hidden={!merInfoOpen}
             >
                 <div className="mt-2 bg-yellow-50 rounded p-2" onClick={e => e.stopPropagation()}>
-                    <div className="mb-2 font-semibold">
-                        <p>Sum alle bøter: {boter ? beregnSum(boter) : 0} kroner.</p>
-                        <p>Betalt denne sesongen: {boter ? beregnSum(boter.filter((b) => b.erBetalt)) : 0} kroner.</p>
+                    <div className="mb-2 space-y-1">
+                        <p><span className="font-medium">Sum alle bøter:</span> {botStatistikk.sumAlle} kroner</p>
+                        <p><span className="font-medium">Betalt denne sesongen:</span> {botStatistikk.sumBetalt} kroner</p>
                     </div>
                     <button
-                        className="bg-vipps-orange hover:bg-vipps-orange-dark text-white rounded px-3 py-2 mb-2"
-                        onClick={e => { e.stopPropagation(); setSpillerVipps(spiller) }}
+                        className="bg-vipps-orange hover:bg-vipps-orange-dark text-white rounded px-3 py-2 mb-2 transition-colors"
+                        onClick={handleVippsBetaling}
+                        type="button"
                     >
                         Betal bøter i Vipps
                     </button>
@@ -85,4 +115,3 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
 }
 
 export default SpillerKort
-
