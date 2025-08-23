@@ -1,6 +1,6 @@
-import {useEffect, useState} from "react";
-import {fetchForseelser} from "@/lib/forseelseService.ts";
-import type {Forseelse} from "@/app/api/boter/typer/route.ts";
+import { useEffect, useState } from 'react'
+import { fetchForseelser } from '@/lib/forseelseService.ts'
+import type { Forseelse } from '@/app/api/boter/typer/route.ts'
 
 export function useForseelser() {
     const [forseelser, setForseelser] = useState<Forseelse[]>([])
@@ -12,7 +12,7 @@ export function useForseelser() {
         }
 
         hentForseelser().then()
-    }, []);
+    }, [])
 
-    return {forseelser}
+    return { forseelser }
 }

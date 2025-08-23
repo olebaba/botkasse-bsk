@@ -1,41 +1,37 @@
-"use client";
+'use client'
 
-import React, {useState} from "react";
-import type {ActionResult} from "@/lib/auth/authConfig.ts";
+import React, { useState } from 'react'
+import type { ActionResult } from '@/lib/auth/authConfig.ts'
 
 type SignupFormProps = {
-    signupAction: (formData: FormData) => Promise<ActionResult>;
-};
+    signupAction: (formData: FormData) => Promise<ActionResult>
+}
 
-export default function SignupForm({signupAction}: SignupFormProps) {
-    const [error, setError] = useState<string | null>(null);
+export default function SignupForm({ signupAction }: SignupFormProps) {
+    const [error, setError] = useState<string | null>(null)
 
     async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
-        event.preventDefault();
-        setError(null); // Clear previous errors
+        event.preventDefault()
+        setError(null) // Clear previous errors
 
-        const formData = new FormData(event.currentTarget);
+        const formData = new FormData(event.currentTarget)
 
         try {
-            const result = await signupAction(formData);
+            const result = await signupAction(formData)
             if (result.error) {
                 setError(result.error)
             } else {
-                console.log("Signup successful:", result);
+                console.log('Signup successful:', result)
             }
         } catch (error) {
-            setError("Registrering feilet, vennligst prøv igjen senere.");
-            console.error("Signup failed:", error);
+            setError('Registrering feilet, vennligst prøv igjen senere.')
+            console.error('Signup failed:', error)
         }
     }
 
     return (
         <form onSubmit={handleSubmit}>
-            {error && (
-                <div className="text-red-500 text-center mb-4">
-                    {error}
-                </div>
-            )}
+            {error && <div className="text-red-500 text-center mb-4">{error}</div>}
 
             <div className="mb-4">
                 <label htmlFor="draktnummer" className="block text-sm font-medium text-gray-700 mb-2">
@@ -79,5 +75,5 @@ export default function SignupForm({signupAction}: SignupFormProps) {
                 Registrer
             </button>
         </form>
-    );
+    )
 }

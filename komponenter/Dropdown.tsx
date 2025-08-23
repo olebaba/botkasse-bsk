@@ -1,5 +1,5 @@
 /* eslint-disable  @typescript-eslint/no-explicit-any */
-import React, {useState} from 'react';
+import React, { useState } from 'react'
 
 interface DropdownProps {
     options: any[]
@@ -21,17 +21,20 @@ export const Dropdown = ({ options, onChange, label, placeholder, id }: Dropdown
                 value={valgtId}
                 onChange={(e) => {
                     setValgtId(e.target.value)
-                    onChange(e);
+                    onChange(e)
                 }}
                 className="border rounded px-3 py-2 w-full"
             >
-                <option value="" disabled>{placeholder}</option>
+                <option value="" disabled>
+                    {placeholder}
+                </option>
                 {options.map((option, index) => (
                     <option key={index} value={option.id}>
-                        {option.draktnummer ? option.draktnummer + ' - ' : option.id + ' - '}{option.navn}
+                        {option.draktnummer ? option.draktnummer + ' - ' : option.id + ' - '}
+                        {option.navn}
                     </option>
                 ))}
             </select>
         </div>
-    );
-};
+    )
+}

@@ -1,9 +1,9 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    serverExternalPackages: ["@node-rs/argon2"],
+    serverExternalPackages: ['@node-rs/argon2'],
     eslint: {
-        dirs: ['app']
+        dirs: ['app'],
     },
-};
+}
 
-export default nextConfig;
+export default nextConfig

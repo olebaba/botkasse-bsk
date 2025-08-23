@@ -1,19 +1,20 @@
 'use client'
-import React, { useState } from 'react';
+import React, { useState } from 'react'
 
-export default function Telefonnummer({nummer}: { nummer: string }) {
-    const [copied, setCopied] = useState(false);
+export default function Telefonnummer({ nummer }: { nummer: string }) {
+    const [copied, setCopied] = useState(false)
 
     const copyToClipboard = () => {
-        navigator.clipboard.writeText(nummer)  // Kopierer nummeret til utklippstavlen
+        navigator.clipboard
+            .writeText(nummer) // Kopierer nummeret til utklippstavlen
             .then(() => {
-                setCopied(true);  // Oppdaterer tilstanden til at kopieringen var vellykket
-                setTimeout(() => setCopied(false), 2000);  // Tilbakestill meldingen etter 2 sekunder
+                setCopied(true) // Oppdaterer tilstanden til at kopieringen var vellykket
+                setTimeout(() => setCopied(false), 2000) // Tilbakestill meldingen etter 2 sekunder
             })
-            .catch(err => {
-                console.error('Failed to copy: ', err);
-            });
-    };
+            .catch((err) => {
+                console.error('Failed to copy: ', err)
+            })
+    }
 
     return (
         <div className="flex justify-evenly">
@@ -22,5 +23,5 @@ export default function Telefonnummer({nummer}: { nummer: string }) {
                 {copied ? 'Kopiert!' : 'Kopier nummer'}
             </button>
         </div>
-    );
-};
+    )
+}

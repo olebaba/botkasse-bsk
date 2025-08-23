@@ -1,10 +1,7 @@
-import Laster from "@/ikoner/laster.tsx";
-import React from "react";
+import Laster from '@/ikoner/laster.tsx'
+import React from 'react'
 
-export default function TabellData({verdi, erNok}: {
-    verdi: number | string | undefined;
-    erNok: boolean;
-}) {
+export default function TabellData({ verdi, erNok }: { verdi: number | string | undefined; erNok: boolean }) {
     return (
         <td className="py-2 px-4 border-b text-center">
             {verdi === undefined && (
@@ -14,11 +11,11 @@ export default function TabellData({verdi, erNok}: {
                     </div>
                 </div>
             )}
-            {typeof verdi === "number" && verdi <= 0 ? (
+            {typeof verdi === 'number' && verdi <= 0 ? (
                 <p className="text-green-600 font-semibold">Betalt</p>
             ) : (
                 `${verdi} ${erNok ? 'kr' : ''}`
             )}
         </td>
-    );
+    )
 }

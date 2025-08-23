@@ -5,12 +5,12 @@ export async function toggleBoterBetalt(botIder: string[]) {
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({botIder}),
+            body: JSON.stringify({ botIder }),
         })
         if (!res.ok) {
             throw new Error('Feil ved markering av bøter som betalt')
         }
-        return await res.json();
+        return await res.json()
     } catch (error) {
         console.error(error)
         throw new Error('Kunne ikke markere bøter som betalt')

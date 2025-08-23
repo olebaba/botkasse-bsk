@@ -1,40 +1,40 @@
-import {cookies} from "next/headers";
-import {hash} from "@node-rs/argon2";
-import {sql} from "@vercel/postgres";
-import {redirect} from "next/navigation";
-import {type ActionResult, type Bruker, lucia, type VercelPostgresError} from "@/lib/auth/authConfig.ts";
+import { cookies } from 'next/headers'
+import { hash } from '@node-rs/argon2'
+import { sql } from '@vercel/postgres'
+import { redirect } from 'next/navigation'
+import { type ActionResult, type Bruker, lucia, type VercelPostgresError } from '@/lib/auth/authConfig.ts'
 
 export async function signup(formData: FormData): Promise<ActionResult> {
-    "use server";
-    const cookieStore = await cookies();
+    'use server'
+    const cookieStore = await cookies()
     try {
-        let brukernavn, passord;
+        let brukernavn, passord
 
         try {
-            ({brukernavn, passord} = validerBrukernavnOgPassord(formData));
+            ;({ brukernavn, passord } = validerBrukernavnOgPassord(formData))
         } catch (error) {
             console.error(error)
-            return error as ActionResult;
+            return error as ActionResult
         }
         const passwordHash = await hash(passord, {
             memoryCost: 19456,
             timeCost: 2,
             outputLen: 32,
-            parallelism: 1
-        });
+            parallelism: 1,
+        })
 
         try {
             await sjekkBrukerFinnes(brukernavn)
         } catch (error) {
             console.error(error)
-            return error as ActionResult;
+            return error as ActionResult
         }
-        let spiller;
+        let spiller
         try {
-            spiller = await sjekkDraktnummer(formData);
+            spiller = await sjekkDraktnummer(formData)
         } catch (error) {
             console.error(error)
-            return error as ActionResult;
+            return error as ActionResult
         }
 
         const registrertBruker = await sql<Bruker>`
@@ -44,18 +44,16 @@ export async function signup(formData: FormData): Promise<ActionResult> {
         `
         const typedBruker = registrertBruker.rows[0]
 
-        const session = await lucia.createSession(typedBruker.id, {});
-        const sessionCookie = lucia.createSessionCookie(session.id);
-        cookieStore.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes);
+        const session = await lucia.createSession(typedBruker.id, {})
+        const sessionCookie = lucia.createSessionCookie(session.id)
+        cookieStore.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes)
     } catch (e) {
-        const maybeVercelPostgresError = (
-            typeof e === "object" ? e : {}
-        ) as Partial<VercelPostgresError>;
+        const maybeVercelPostgresError = (typeof e === 'object' ? e : {}) as Partial<VercelPostgresError>
 
         console.error(maybeVercelPostgresError)
-        return {error: "En feil skjedde ved registrering, prøv igjen senere"};
+        return { error: 'En feil skjedde ved registrering, prøv igjen senere' }
     }
-    redirect(`/minside`);
+    redirect(`/minside`)
 }
 
 async function sjekkBrukerFinnes(brukernavn: string) {
@@ -63,37 +61,40 @@ async function sjekkBrukerFinnes(brukernavn: string) {
         SELECT *
         FROM brukere
         WHERE brukernavn = ${brukernavn}
-    `;
+    `
     if (eksisterendeBruker.rows[0]) {
-        throw {error: "Bruker finnes allerede"}
+        throw { error: 'Bruker finnes allerede' }
     }
 }
 
-function validerBrukernavnOgPassord(formData: FormData): { brukernavn: string, passord: string } {
-    const feilmelding = {error: "Ugyldig brukernavn eller passord"}
-    const brukernavn = formData.get("brukernavn");
+function validerBrukernavnOgPassord(formData: FormData): {
+    brukernavn: string
+    passord: string
+} {
+    const feilmelding = { error: 'Ugyldig brukernavn eller passord' }
+    const brukernavn = formData.get('brukernavn')
     if (
-        typeof brukernavn !== "string"
-        || brukernavn.length < 5
-        || brukernavn.length > 13
-        || !/^\d+$/.test(brukernavn)
+        typeof brukernavn !== 'string' ||
+        brukernavn.length < 5 ||
+        brukernavn.length > 13 ||
+        !/^\d+$/.test(brukernavn)
     ) {
         throw feilmelding
     }
-    const passord = formData.get("passord");
-    if (typeof passord !== "string" || passord.length < 6 || passord.length > 255) {
+    const passord = formData.get('passord')
+    if (typeof passord !== 'string' || passord.length < 6 || passord.length > 255) {
         throw feilmelding
     }
 
-    return {brukernavn, passord}
+    return { brukernavn, passord }
 }
 
-async function sjekkDraktnummer(formData: FormData): Promise<{ id: string, navn: string }> {
-    const draktnummer = formData.get("draktnummer");
-    if (typeof draktnummer !== "string") {
-        throw {error: "Draktnummer er ikke gyldig"}
+async function sjekkDraktnummer(formData: FormData): Promise<{ id: string; navn: string }> {
+    const draktnummer = formData.get('draktnummer')
+    if (typeof draktnummer !== 'string') {
+        throw { error: 'Draktnummer er ikke gyldig' }
     }
-    const eksisterendeSpiller = await sql<{ id: string, navn: string }>`
+    const eksisterendeSpiller = await sql<{ id: string; navn: string }>`
         SELECT id, navn
         FROM spillere
         WHERE id = ${draktnummer}
@@ -101,7 +102,7 @@ async function sjekkDraktnummer(formData: FormData): Promise<{ id: string, navn:
     const spiller = eksisterendeSpiller.rows[0]
 
     if (spiller == undefined) {
-        throw {error: "Draktnummer finnes ikke. Ta kontakt med admin."}
+        throw { error: 'Draktnummer finnes ikke. Ta kontakt med admin.' }
     }
     return spiller
 }

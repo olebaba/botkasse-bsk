@@ -29,3 +29,6 @@ dist-ssr
 
 Funksjonelt:
 /public/spillernavn.json
+
+Copilot:
+/.github/copilot-instructions.md

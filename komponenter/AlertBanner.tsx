@@ -1,10 +1,13 @@
-import React from 'react';
+import React from 'react'
 
 export enum AlertTypes {
-    ERROR = 'error' , WARNING = 'warning', INFO = 'info' , SUCCESS = 'success'
+    ERROR = 'error',
+    WARNING = 'warning',
+    INFO = 'info',
+    SUCCESS = 'success',
 }
 
-interface AlertProps{
+interface AlertProps {
     message: string
     type: AlertTypes
     onClose?: () => void
@@ -18,7 +21,7 @@ const AlertBanner = ({ message, type = AlertTypes.INFO, onClose, onClick }: Aler
         error: 'bg-red-100 text-red-800 border-red-400',
         warning: 'bg-yellow-100 text-yellow-800 border-yellow-400',
         info: 'bg-blue-100 text-blue-800 border-blue-400',
-    };
+    }
 
     return (
         <div
@@ -28,15 +31,12 @@ const AlertBanner = ({ message, type = AlertTypes.INFO, onClose, onClick }: Aler
         >
             <span>{message}</span>
             {onClose && (
-                <button
-                    onClick={onClose}
-                    className="text-lg font-bold ml-4 focus:outline-none"
-                >
+                <button onClick={onClose} className="text-lg font-bold ml-4 focus:outline-none">
                     &times;
                 </button>
             )}
         </div>
-    );
-};
+    )
+}
 
-export default AlertBanner;
+export default AlertBanner

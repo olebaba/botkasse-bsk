@@ -1,5 +1,5 @@
 interface BurgerKnappProps {
-    toggleMenu: () => void;
+    toggleMenu: () => void
 }
 
 export default function BurgerKnapp({ toggleMenu }: BurgerKnappProps) {
@@ -29,5 +29,5 @@ export default function BurgerKnapp({ toggleMenu }: BurgerKnappProps) {
                 />
             </svg>
         </button>
-    );
+    )
 }

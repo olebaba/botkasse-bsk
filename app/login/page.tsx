@@ -1,12 +1,12 @@
-import Link from "next/link";
-import {redirect} from "next/navigation";
-import {validateRequest} from "@/lib/auth/validateRequest.ts";
-import {login} from "@/lib/auth/login.ts";
+import Link from 'next/link'
+import { redirect } from 'next/navigation'
+import { validateRequest } from '@/lib/auth/validateRequest.ts'
+import { login } from '@/lib/auth/login.ts'
 
 export default async function Page() {
-    const {user} = await validateRequest();
+    const { user } = await validateRequest()
     if (user) {
-        return redirect("/minside");
+        return redirect('/minside')
     }
 
     return (
@@ -45,10 +45,11 @@ export default async function Page() {
                     </button>
                 </form>
                 <div className="text-blue-600 mt-8">
-                    <Link className="text-blue-600 mt-8" href="/signup">Registrere deg? Trykk her</Link>
+                    <Link className="text-blue-600 mt-8" href="/signup">
+                        Registrere deg? Trykk her
+                    </Link>
                 </div>
             </div>
         </div>
-    );
+    )
 }
-

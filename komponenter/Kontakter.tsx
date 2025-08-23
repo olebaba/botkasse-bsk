@@ -1,5 +1,5 @@
-import Telefonnummer from "@/komponenter/Telefonnummer.tsx";
-import Header from "@/komponenter/Header.tsx";
+import Telefonnummer from '@/komponenter/Telefonnummer.tsx'
+import Header from '@/komponenter/Header.tsx'
 
 export const Kontakter = () => {
     const personer = [
@@ -13,15 +13,15 @@ export const Kontakter = () => {
             <div className="overflow-x-auto">
                 <table className="min-w-full bg-white border border-gray-300">
                     <tbody>
-                    {personer.map((person, index) => (
-                        <tr key={index} className="border-b">
-                            <td className="font-bold text-gray-800">{person.rolle}</td>
-                            <td className="p-2">{person.navn}</td>
-                            <td className="p-2">
-                                <Telefonnummer nummer={person.nummer} />
-                            </td>
-                        </tr>
-                    ))}
+                        {personer.map((person, index) => (
+                            <tr key={index} className="border-b">
+                                <td className="font-bold text-gray-800">{person.rolle}</td>
+                                <td className="p-2">{person.navn}</td>
+                                <td className="p-2">
+                                    <Telefonnummer nummer={person.nummer} />
+                                </td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
             </div>
@@ -29,4 +29,4 @@ export const Kontakter = () => {
     )
 }
 
-export default Kontakter;
+export default Kontakter

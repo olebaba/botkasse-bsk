@@ -1,30 +1,30 @@
-import React from 'react';
-import classNames from "classnames";
+import React from 'react'
+import classNames from 'classnames'
 
 type HeaderProps = {
-    size: 'small' | 'medium' | 'large';
-    text: string;
-    className?: string;
-};
+    size: 'small' | 'medium' | 'large'
+    text: string
+    className?: string
+}
 
 const Header: React.FC<HeaderProps> = ({ size, text, className }) => {
-    let headerClass = '';
+    let headerClass = ''
 
     switch (size) {
         case 'small':
-            headerClass = 'text-lg font-semibold';
-            break;
+            headerClass = 'text-lg font-semibold'
+            break
         case 'medium':
-            headerClass = 'text-2xl font-bold';
-            break;
+            headerClass = 'text-2xl font-bold'
+            break
         case 'large':
-            headerClass = 'text-3xl font-extrabold';
-            break;
+            headerClass = 'text-3xl font-extrabold'
+            break
         default:
-            headerClass = 'text-xl';
+            headerClass = 'text-xl'
     }
 
-    return <h1 className={classNames(className, `${headerClass} text-gray-800 mb-4`)}>{text}</h1>;
-};
+    return <h1 className={classNames(className, `${headerClass} text-gray-800 mb-4`)}>{text}</h1>
+}
 
-export default Header;
+export default Header
