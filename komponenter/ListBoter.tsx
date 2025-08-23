@@ -22,7 +22,8 @@ export const ListBoter = ({
     if (spiller.boter?.length === 0) return null
 
     useEffect(() => {
-        setBoterForSpiller(spiller.boter)
+        const sorterBoter = [...spiller.boter].sort((a, b) => dayjs(a.dato).valueOf() - dayjs(b.dato).valueOf())
+        setBoterForSpiller(sorterBoter)
     }, [spiller])
 
     const handleMarkerBetalt = async (bot: Bot) => {
@@ -56,7 +57,7 @@ export const ListBoter = ({
             <tbody>
                 {boterForSpiller?.map((bot) => {
                     const forseelse = forseelser.find((f) => f.id.toString() == bot.forseelseId)
-                    const dato = `${dayjs(bot.dato).format('DD.MM')}`
+                    const dato = `${dayjs(bot.dato).format('DD.MM.YYYY')}`
                     return (
                         <tr key={bot.id} className="border-t border-gray-200">
                             <td className="py-2 px-4">{forseelse?.navn}</td>
