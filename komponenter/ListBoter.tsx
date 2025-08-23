@@ -19,6 +19,9 @@ export const ListBoter = ({
     visResultat?: (melding: string, type: AlertTypes) => void
 }) => {
     const [boterForSpiller, setBoterForSpiller] = useState<Bot[]>([])
+    const [visBetalte, setVisBetalte] = useState(false)
+    const ubetalteBoter = boterForSpiller.filter((bot) => !bot.erBetalt)
+    const betalteBoter = boterForSpiller.filter((bot) => bot.erBetalt)
     if (spiller.boter?.length === 0) return null
 
     useEffect(() => {
@@ -45,7 +48,7 @@ export const ListBoter = ({
 
     return (
         <div className="flex flex-col gap-2">
-            {boterForSpiller?.map((bot) => {
+            {ubetalteBoter.map((bot) => {
                 const forseelse = forseelser.find((f) => f.id.toString() == bot.forseelseId)
                 const dato = dayjs(bot.dato).format('DD.MM.YYYY')
                 return (
@@ -54,16 +57,46 @@ export const ListBoter = ({
                         <div><span className="font-medium">Dato:</span> {dato}</div>
                         <div><span className="font-medium">Beløp:</span> {bot.belop} kr</div>
                         <div>
-                            <span className={`font-semibold ${bot.erBetalt ? 'text-green-600' : 'text-red-600'}`}>{bot.erBetalt ? 'Betalt' : 'Ikke betalt'}</span>
+                            <span className="font-semibold text-red-600">Ikke betalt</span>
                         </div>
                         {erBotsjef && (
                             <div>
                                 <Knapp
-                                    className={bot.erBetalt ? 'bg-red-500 hover:bg-red-500' : ''}
-                                    tekst={bot.erBetalt ? 'Sett ubetalt' : 'Sett betalt'}
-                                    onClick={async () => {
-                                        await handleMarkerBetalt(bot)
-                                    }}
+                                    className={''}
+                                    tekst={'Sett betalt'}
+                                    onClick={() => handleMarkerBetalt(bot)}
+                                />
+                            </div>
+                        )}
+                    </div>
+                )
+            })}
+            {betalteBoter.length > 0 && (
+                <button
+                    className="text-blue-600 underline text-sm mt-2 self-start"
+                    onClick={e => { e.stopPropagation(); setVisBetalte((v) => !v) }}
+                    tabIndex={0}
+                >
+                    {visBetalte ? 'Skjul betalte bøter' : `Vis betalte bøter (${betalteBoter.length})`}
+                </button>
+            )}
+            {visBetalte && betalteBoter.map((bot) => {
+                const forseelse = forseelser.find((f) => f.id.toString() == bot.forseelseId)
+                const dato = dayjs(bot.dato).format('DD.MM.YYYY')
+                return (
+                    <div key={bot.id} className="bg-gray-100 rounded shadow border p-3 flex flex-col gap-1 opacity-80">
+                        <div className="font-semibold">{forseelse?.navn}</div>
+                        <div><span className="font-medium">Dato:</span> {dato}</div>
+                        <div><span className="font-medium">Beløp:</span> {bot.belop} kr</div>
+                        <div>
+                            <span className="font-semibold text-green-600">Betalt</span>
+                        </div>
+                        {erBotsjef && (
+                            <div>
+                                <Knapp
+                                    className={'bg-red-500 hover:bg-red-500'}
+                                    tekst={'Sett ubetalt'}
+                                    onClick={() => handleMarkerBetalt(bot)}
                                 />
                             </div>
                         )}
