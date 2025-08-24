@@ -12,7 +12,7 @@ export async function GET() {
     try {
         const { rows } = await sql<Forseelse>`SELECT * FROM forseelser`
         return new Response(JSON.stringify(rows), { status: 200 })
-    } catch (error) {
+    } catch {
         return new Response('Feil ved henting av forseelse', { status: 500 })
     }
 }
@@ -26,7 +26,7 @@ export async function POST(request: Request) {
       VALUES (${type}, ${standard_belop})
     `
         return new Response('Bot-type lagt til', { status: 200 })
-    } catch (error) {
+    } catch {
         return new Response('Kunne ikke legge til forseelse', { status: 500 })
     }
 }

@@ -1,6 +1,6 @@
 import { sql } from '@vercel/postgres'
 
-export async function bulkInsert(tableName: string, records: any[]): Promise<void> {
+export async function bulkInsert<T extends Record<string, unknown>>(tableName: string, records: T[]): Promise<void> {
     if (!records.length) return
     const columns = Object.keys(records[0])
 

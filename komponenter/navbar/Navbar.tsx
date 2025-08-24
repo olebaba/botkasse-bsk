@@ -10,12 +10,12 @@ export default async function Navbar() {
     const { user } = await validateRequest()
     const sideLenker: SideLenke[] = [
         { href: '/', label: 'Spilleres bøter' },
-        { href: `/${encodeURIComponent('bøter')}`, label: 'Oversikt typer bøter' },
+        { href: '/boter', label: 'Oversikt typer bøter' },
         { href: `/minside`, label: `${user ? 'Min side' : 'Lag bruker'}` },
     ]
     if (user?.type == 'admin') {
         sideLenker.push({
-            href: `/${encodeURIComponent('bøter')}/sjef`,
+            href: '/boter/sjef',
             label: 'Botsjef 🔐',
         })
     }

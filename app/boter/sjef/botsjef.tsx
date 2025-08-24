@@ -1,8 +1,8 @@
 'use client'
 import { useSpillere } from '@/hooks/useSpillere.ts'
 import { useForseelser } from '@/hooks/useForseelser.ts'
-import LeggTilBot from '@/app/b%C3%B8ter/sjef/legg-til-bot.tsx'
-import { MarkerBetalt } from '@/app/b%C3%B8ter/sjef/marker-betalt.tsx'
+import LeggTilBot from '@/app/boter/sjef/legg-til-bot.tsx'
+import { MarkerBetalt } from '@/app/boter/sjef/marker-betalt.tsx'
 import React from 'react'
 
 export const Botsjef = () => {

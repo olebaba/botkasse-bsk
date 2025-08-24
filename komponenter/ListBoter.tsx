@@ -19,12 +19,16 @@ export const ListBoter = ({
     visResultat?: (melding: string, type: AlertTypes) => void
 }) => {
     const [boterForSpiller, setBoterForSpiller] = useState<Bot[]>([])
-    if (spiller.boter?.length === 0) return null
+    const [visBetalte, setVisBetalte] = useState(false)
+    const ubetalteBoter = boterForSpiller.filter((bot) => !bot.erBetalt)
+    const betalteBoter = boterForSpiller.filter((bot) => bot.erBetalt)
 
     useEffect(() => {
         const sorterBoter = [...spiller.boter].sort((a, b) => dayjs(a.dato).valueOf() - dayjs(b.dato).valueOf())
         setBoterForSpiller(sorterBoter)
     }, [spiller])
+
+    if (spiller.boter?.length === 0) return null
 
     const handleMarkerBetalt = async (bot: Bot) => {
         if (!visResultat) return
@@ -44,45 +48,66 @@ export const ListBoter = ({
     }
 
     return (
-        <table className="w-full bg-white shadow-md rounded-md mb-4">
-            <thead>
-                <tr className="text-left text-sm md:text-base text-gray-700 bg-gray-100">
-                    <th className="py-2 px-4">Bot</th>
-                    <th className="py-2 px-4">Dato</th>
-                    <th className="py-2 px-4">Beløp</th>
-                    <th className="py-2 px-4">Status</th>
-                    {erBotsjef && <th className="py-2 px-4">Handling</th>}
-                </tr>
-            </thead>
-            <tbody>
-                {boterForSpiller?.map((bot) => {
-                    const forseelse = forseelser.find((f) => f.id.toString() == bot.forseelseId)
-                    const dato = `${dayjs(bot.dato).format('DD.MM.YYYY')}`
-                    return (
-                        <tr key={bot.id} className="border-t border-gray-200">
-                            <td className="py-2 px-4">{forseelse?.navn}</td>
-                            <td className="py-2 px-4">{dato}</td>
-                            <td className="py-2 px-4 text-right">{bot.belop}kr</td>
-                            <td className="py-2 px-4">
-                                <span className={`${bot.erBetalt ? 'text-green-600' : 'text-red-600'} font-semibold`}>
-                                    {bot.erBetalt ? 'Betalt' : 'Ikke betalt'}
-                                </span>
-                            </td>
-                            {erBotsjef && (
-                                <td className="py-2 px-4">
-                                    <Knapp
-                                        className={bot.erBetalt ? 'bg-red-500 hover:bg-red-500' : ''}
-                                        tekst={bot.erBetalt ? 'Sett ubetalt' : 'Sett betalt'}
-                                        onClick={async () => {
-                                            await handleMarkerBetalt(bot)
-                                        }}
-                                    />
-                                </td>
-                            )}
-                        </tr>
-                    )
-                })}
-            </tbody>
-        </table>
+        <div className="flex flex-col gap-2">
+            {ubetalteBoter.map((bot) => {
+                const forseelse = forseelser.find((f) => f.id.toString() == bot.forseelseId)
+                const dato = dayjs(bot.dato).format('DD.MM.YYYY')
+                return (
+                    <div key={bot.id} className="bg-white rounded shadow border p-3 flex flex-col gap-1">
+                        <div className="font-semibold">{forseelse?.navn}</div>
+                        <div><span className="font-medium">Dato:</span> {dato}</div>
+                        <div><span className="font-medium">Beløp:</span> {bot.belop} kr</div>
+                        <div>
+                            <span className="font-semibold text-red-600">Ikke betalt</span>
+                        </div>
+                        {erBotsjef && (
+                            <div>
+                                <Knapp
+                                    className={''}
+                                    tekst={'Sett betalt'}
+                                    onClick={() => handleMarkerBetalt(bot)}
+                                />
+                            </div>
+                        )}
+                    </div>
+                )
+            })}
+            {betalteBoter.length > 0 && (
+                <button
+                    className="text-blue-600 underline text-sm mt-2 self-start"
+                    onClick={e => { e.stopPropagation(); setVisBetalte((v) => !v) }}
+                    tabIndex={0}
+                >
+                    {visBetalte ? 'Skjul betalte bøter' : `Vis betalte bøter (${betalteBoter.length})`}
+                </button>
+            )}
+            {visBetalte && (
+                <div className="flex flex-col gap-2">
+                    {betalteBoter.map((bot) => {
+                        const forseelse = forseelser.find((f) => f.id.toString() == bot.forseelseId)
+                        const dato = dayjs(bot.dato).format('DD.MM.YYYY')
+                        return (
+                            <div key={bot.id} className="bg-gray-100 rounded shadow border p-3 flex flex-col gap-1 opacity-80">
+                                <div className="font-semibold">{forseelse?.navn}</div>
+                                <div><span className="font-medium">Dato:</span> {dato}</div>
+                                <div><span className="font-medium">Beløp:</span> {bot.belop} kr</div>
+                                <div>
+                                    <span className="font-semibold text-green-600">Betalt</span>
+                                </div>
+                                {erBotsjef && (
+                                    <div>
+                                        <Knapp
+                                            className={'bg-red-500 hover:bg-red-500'}
+                                            tekst={'Sett ubetalt'}
+                                            onClick={() => handleMarkerBetalt(bot)}
+                                        />
+                                    </div>
+                                )}
+                            </div>
+                        )
+                    })}
+                </div>
+            )}
+        </div>
     )
 }
