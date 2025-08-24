@@ -3,6 +3,7 @@ import { beregnSum, beregnSumMaaBetales, beregnSumNyeBoter } from '@/lib/botBere
 import { ListBoter } from '@/komponenter/ListBoter'
 import type { Spiller } from '@/lib/spillereService'
 import type { Forseelse } from '@/app/api/boter/typer/route'
+import dayjs from "@/lib/dayjs.ts";
 
 interface SpillerKortProps {
     spiller: Spiller
@@ -62,6 +63,9 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
         setSpillerVipps(spiller)
     }, [setSpillerVipps, spiller])
 
+    const denneMaaneden = dayjs().format('MMMM')
+    const nesteManed = dayjs().add(1, 'month').format('MMMM')
+
     return (
         <div ref={cardRef} className={getKortKlasser()}>
             <div
@@ -75,8 +79,8 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
                 <div className="flex flex-col md:flex-row md:items-center md:gap-4">
                     <h3 className="font-semibold text-lg">{spiller.navn}</h3>
                     <div className="flex flex-col md:flex-row md:gap-4">
-                        <span><span className="font-medium">Må betales:</span> {botStatistikk.maaBetales} kr</span>
-                        <span><span className="font-medium">Nye bøter:</span> {botStatistikk.nyeBoter} kr</span>
+                        <span><span className="font-medium">Må betales innen slutten av {nesteManed}:</span> {botStatistikk.maaBetales} kr</span>
+                        <span><span className="font-medium">Nye bøter i {denneMaaneden}:</span> {botStatistikk.nyeBoter} kr</span>
                     </div>
                 </div>
                 <span className={getStatusKnappKlasser()}>
