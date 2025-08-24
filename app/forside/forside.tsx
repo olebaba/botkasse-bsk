@@ -8,7 +8,7 @@ import type { User } from 'lucia'
 import { beregnSum } from '@/lib/botBeregning.ts'
 import Image from 'next/image'
 import new_release from '@/ikoner/new-release.svg'
-import React, { type FormEvent, useState } from 'react'
+import React, {type FormEvent, useEffect, useState} from 'react'
 import EnkelModal from '@/komponenter/EnkelModal.tsx'
 import { Input } from '@/komponenter/Input.tsx'
 import { Knapp } from '@/komponenter/Knapp.tsx'
@@ -23,9 +23,13 @@ export default function Forside({ bruker, gjestebrukerAction }: ForsideProps) {
     const { spillere } = useSpillere(true)
     const { forseelser } = useForseelser()
     const [error, setError] = useState<string | null>(null)
+    const [utgifter, setUtgifter] = useState<{ utgift: string; beløp: number; dato: string }[]>([])
+    const [laster, setLaster] = useState(true)
 
     const alleBetalteBoter = spillere.flatMap((s) => s.boter).filter((b) => b.erBetalt)
     const sumBetalteBoter: number = beregnSum(alleBetalteBoter)
+    const totalUtgifter = utgifter.reduce((sum, u) => sum + u.beløp, 0)
+    const gjenstaendeKasse = sumBetalteBoter - totalUtgifter
 
     const lagGjestebruker = async (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault()
@@ -41,6 +45,14 @@ export default function Forside({ bruker, gjestebrukerAction }: ForsideProps) {
             console.error('Signup failed:', error)
         }
     }
+
+    useEffect(() => {
+        setLaster(true)
+        fetch('/api/utgifter')
+            .then((res) => res.json())
+            .then((data) => setUtgifter(data))
+            .finally(() => setLaster(false))
+    }, [])
 
     if (!bruker) {
         return (
@@ -71,9 +83,12 @@ export default function Forside({ bruker, gjestebrukerAction }: ForsideProps) {
                 </div>
             </Link>
             <div className="flex flex-row">
-                <Header className="mt-2 mr-2" size="small" text={`Totalt innbetalt:`} />
-                {!sumBetalteBoter && <p className="mt-2 animate-spin-cool h-[20px] text-center object-cover">💰</p>}
-                {sumBetalteBoter > 0 && <Header className="mt-2" size="small" text={`${sumBetalteBoter} kr 💰`} />}
+                <Header className="mt-2 mr-2" size="small" text={`Beløp i lagkassen:`} />
+                {laster ? (
+                    <p className="mt-2 animate-spin-cool h-[20px] text-center object-cover">💰</p>
+                ) : (
+                    <Header className="mt-2" size="small" text={`${gjenstaendeKasse} kr 💰`} />
+                )}
             </div>
             <Header className="text-3xl font-bold text-center mb-6 mt-2" size="large" text="Spilleres bøter i BSK" />
             <SpillerBøter spillere={spillere} forseelser={forseelser} bruker={bruker} />
