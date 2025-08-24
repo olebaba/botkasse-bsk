@@ -23,12 +23,12 @@ export const ListBoter = ({
     const ubetalteBoter = boterForSpiller.filter((bot) => !bot.erBetalt)
     const betalteBoter = boterForSpiller.filter((bot) => bot.erBetalt)
 
-    if (spiller.boter?.length === 0) return null
-
     useEffect(() => {
         const sorterBoter = [...spiller.boter].sort((a, b) => dayjs(a.dato).valueOf() - dayjs(b.dato).valueOf())
         setBoterForSpiller(sorterBoter)
     }, [spiller])
+
+    if (spiller.boter?.length === 0) return null
 
     const handleMarkerBetalt = async (bot: Bot) => {
         if (!visResultat) return

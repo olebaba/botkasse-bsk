@@ -17,8 +17,10 @@ interface SpillerRadProps {
 }
 
 export const SpillerRad = ({ spiller, onClick, visRad }: SpillerRadProps) => {
-    if (visRad === false) return null
     const [pil, setPil] = useState<string>(dropdown_down)
+
+    if (visRad === false) return null
+
     const boter = spiller.boter
     if (!boter) return <Laster />
 

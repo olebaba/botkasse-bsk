@@ -1,5 +1,4 @@
 import React, { type ReactNode } from 'react'
-import { Knapp } from '@/komponenter/Knapp.tsx'
 
 interface SimpleModalProps {
     apen: boolean

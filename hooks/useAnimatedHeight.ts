@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect } from 'react'
 
-export const useAnimatedHeight = (isOpen: boolean, dependencies: any[]) => {
+export const useAnimatedHeight = <T = unknown>(isOpen: boolean, dependencies: T[]) => {
     const ref = useRef<HTMLDivElement>(null)
     const [height, setHeight] = useState(0)
 
@@ -14,6 +14,7 @@ export const useAnimatedHeight = (isOpen: boolean, dependencies: any[]) => {
                 setHeight(0)
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen, ...dependencies])
 
     return { ref, height }
