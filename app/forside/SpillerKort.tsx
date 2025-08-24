@@ -26,20 +26,22 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
         const boter = spiller.boter
         if (!boter) return { maaBetales: 0, nyeBoter: 0, alleBetalt: false, sumAlle: 0, sumBetalt: 0 }
 
+        const maaBetales = beregnSumMaaBetales(boter)
+
         return {
-            maaBetales: beregnSumMaaBetales(boter),
+            maaBetales,
             nyeBoter: beregnSumNyeBoter(boter),
-            alleBetalt: boter.length > 0 ? boter.every(b => b.erBetalt) : false,
+            alleBetalt: maaBetales === 0, // Alle påkrevde bøter er betalt hvis summen som må betales er 0
             sumAlle: beregnSum(boter),
             sumBetalt: beregnSum(boter.filter(b => b.erBetalt))
         }
     }, [spiller.boter])
 
     const getKortKlasser = useCallback(() => {
-        const base = 'bg-white rounded shadow border p-4 flex flex-col gap-2 transition-all duration-600'
-        const bakgrunn = botStatistikk.alleBetalt ? 'bg-green-50' : 'bg-red-50'
+        const base = 'rounded shadow border p-4 flex flex-col gap-2 transition-all duration-600'
+        const bakgrunn = botStatistikk.alleBetalt ? 'bg-green-100' : 'bg-red-200'
         const ring = merInfoOpen
-            ? 'ring-2 ring-blue-500 bg-blue-50'
+            ? 'ring-2 ring-blue-500'
             : 'hover:ring-1 hover:ring-blue-300 cursor-pointer'
 
         return `${base} ${bakgrunn} ${ring}`
