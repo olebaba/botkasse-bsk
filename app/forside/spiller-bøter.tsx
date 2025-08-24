@@ -9,6 +9,7 @@ import dayjs from '@/lib/dayjs.ts'
 import SpillerKort from './SpillerKort'
 import { useNavbarHeight } from '@/hooks/useNavbarHeight'
 import { useScrollToCard } from '@/hooks/useScrollToCard'
+import { beregnSumMaaBetales, beregnSumNyeBoter } from '@/lib/botBeregning'
 
 interface SpillerBøterProps {
     spillere: Spiller[]
@@ -16,10 +17,23 @@ interface SpillerBøterProps {
     bruker?: User
 }
 
+const sorteringsvalg = [
+    { verdi: 'alfabetisk', tekst: 'Alfabetisk (A-Å)' },
+    { verdi: 'antall', tekst: 'Antall bøter' },
+    { verdi: 'sum', tekst: 'Total sum bøter' },
+    { verdi: 'sumMaaBetales', tekst: 'Beløp må betales neste måned' },
+    { verdi: 'sumNyeBoter', tekst: 'Sum av nye bøter denne måneden' },
+]
+
+type Sortering = 'alfabetisk' | 'antall' | 'sum' | 'sumMaaBetales' | 'sumNyeBoter'
+type Retning = 'stigende' | 'synkende'
+
 export default function SpillerBøter({ spillere, forseelser }: SpillerBøterProps) {
     const [spillerVipps, setSpillerVipps] = useState<Spiller | undefined>(undefined)
     const [merInfoSpiller, setMerInfoSpiller] = useState<Spiller | undefined>(undefined)
     const [visAlleSesonger, setVisAlleSesonger] = useState(false)
+    const [sortering, setSortering] = useState<Sortering>('sumMaaBetales')
+    const [retning, setRetning] = useState<Retning>('synkende')
     const navbarHeight = useNavbarHeight()
     const { cardRefs, scrollToSpiller } = useScrollToCard(spillere, navbarHeight)
 
@@ -43,12 +57,37 @@ export default function SpillerBøter({ spillere, forseelser }: SpillerBøterPro
         }
     }, [merInfoSpiller, scrollToSpiller])
 
-    if (spillere.length === 0) return <Loading />
-
     const filtrerteSpillere: Spiller[] = visAlleSesonger
         ? spillere
         : spillere.filter((spiller) => spiller.visNavn)
 
+    const sorterteSpillere = useMemo(() => {
+        const spillereKopi = [...filtrerteSpillere]
+        spillereKopi.sort((a, b) => {
+            let sammenligning = 0
+            if (sortering === 'alfabetisk') {
+                sammenligning = a.navn.localeCompare(b.navn, 'no')
+            } else if (sortering === 'antall') {
+                sammenligning = a.boter.length - b.boter.length
+            } else if (sortering === 'sum') {
+                const sumA = a.boter.reduce((sum, bot) => sum + bot.belop, 0)
+                const sumB = b.boter.reduce((sum, bot) => sum + bot.belop, 0)
+                sammenligning = sumA - sumB
+            } else if (sortering === 'sumMaaBetales') {
+                const sumA = beregnSumMaaBetales(a.boter)
+                const sumB = beregnSumMaaBetales(b.boter)
+                sammenligning = sumA - sumB
+            } else if (sortering === 'sumNyeBoter') {
+                const sumA = beregnSumNyeBoter(a.boter)
+                const sumB = beregnSumNyeBoter(b.boter)
+                sammenligning = sumA - sumB
+            }
+            return retning === 'stigende' ? sammenligning : -sammenligning
+        })
+        return spillereKopi
+    }, [filtrerteSpillere, sortering, retning])
+
+    if (spillere.length === 0) return <Loading />
 
     return (
         <>
@@ -73,10 +112,31 @@ export default function SpillerBøter({ spillere, forseelser }: SpillerBøterPro
                 >
                     Alle sesonger
                 </button>
+                <div className="flex gap-2 items-center">
+                    <label htmlFor="sortering" className="text-sm">Sorter:</label>
+                    <select
+                        id="sortering"
+                        className="px-2 py-1 rounded border border-gray-300 text-sm"
+                        value={sortering}
+                        onChange={e => setSortering(e.target.value as Sortering)}
+                    >
+                        {sorteringsvalg.map(valg => (
+                            <option key={valg.verdi} value={valg.verdi}>{valg.tekst}</option>
+                        ))}
+                    </select>
+                    <button
+                        type="button"
+                        className="px-2 py-1 rounded border border-gray-300 text-sm"
+                        onClick={() => setRetning(r => r === 'stigende' ? 'synkende' : 'stigende')}
+                        title={retning === 'stigende' ? 'Sorter synkende' : 'Sorter stigende'}
+                    >
+                        {retning === 'stigende' ? '↑' : '↓'}
+                    </button>
+                </div>
             </div>
 
             <div className="space-y-4">
-                {filtrerteSpillere.map((spiller, idx) => (
+                {sorterteSpillere.map((spiller, idx) => (
                     <SpillerKort
                         key={spiller.id}
                         spiller={spiller}
