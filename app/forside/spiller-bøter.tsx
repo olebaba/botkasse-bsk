@@ -20,7 +20,6 @@ export default function SpillerBøter({ spillere, forseelser }: SpillerBøterPro
     const [spillerVipps, setSpillerVipps] = useState<Spiller | undefined>(undefined)
     const [merInfoSpiller, setMerInfoSpiller] = useState<Spiller | undefined>(undefined)
     const [visAlleSesonger, setVisAlleSesonger] = useState(false)
-
     const navbarHeight = useNavbarHeight()
     const { cardRefs, scrollToSpiller } = useScrollToCard(spillere, navbarHeight)
 
@@ -45,6 +44,11 @@ export default function SpillerBøter({ spillere, forseelser }: SpillerBøterPro
     }, [merInfoSpiller, scrollToSpiller])
 
     if (spillere.length === 0) return <Loading />
+
+    const filtrerteSpillere: Spiller[] = visAlleSesonger
+        ? spillere
+        : spillere.filter((spiller) => spiller.visNavn)
+
 
     return (
         <>
@@ -72,7 +76,7 @@ export default function SpillerBøter({ spillere, forseelser }: SpillerBøterPro
             </div>
 
             <div className="space-y-4">
-                {spillere.map((spiller, idx) => (
+                {filtrerteSpillere.map((spiller, idx) => (
                     <SpillerKort
                         key={spiller.id}
                         spiller={spiller}
