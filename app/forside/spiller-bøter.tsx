@@ -35,7 +35,6 @@ export default function SpillerBøter({ spillere, forseelser }: SpillerBøterPro
     const [sortering, setSortering] = useState<Sortering>('sumMaaBetales')
     const [retning, setRetning] = useState<Retning>('synkende')
     const navbarHeight = useNavbarHeight()
-    const { cardRefs, scrollToSpiller } = useScrollToCard(spillere, navbarHeight)
 
     const sesongTekst = useMemo(() => {
         const aar = dayjs().year()
@@ -50,12 +49,6 @@ export default function SpillerBøter({ spillere, forseelser }: SpillerBøterPro
             : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
         return `${base} ${variant}`
     }, [])
-
-    useEffect(() => {
-        if (merInfoSpiller) {
-            scrollToSpiller(merInfoSpiller)
-        }
-    }, [merInfoSpiller, scrollToSpiller])
 
     const filtrerteSpillere: Spiller[] = visAlleSesonger
         ? spillere
@@ -86,6 +79,15 @@ export default function SpillerBøter({ spillere, forseelser }: SpillerBøterPro
         })
         return spillereKopi
     }, [filtrerteSpillere, sortering, retning])
+
+    const { cardRefs, scrollToSpiller } = useScrollToCard(sorterteSpillere, navbarHeight)
+
+    useEffect(() => {
+        if (merInfoSpiller && cardRefs.current.length > 0) {
+            scrollToSpiller(merInfoSpiller)
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [merInfoSpiller, scrollToSpiller])
 
     if (spillere.length === 0) return <Loading />
 
