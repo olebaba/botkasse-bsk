@@ -1,5 +1,5 @@
 import React from 'react'
-import { Botsjef } from '@/app/b%C3%B8ter/sjef/botsjef.tsx'
+import { Botsjef } from '@/app/boter/sjef/botsjef.tsx'
 import { redirect } from 'next/navigation'
 import { validateRequest } from '@/lib/auth/validateRequest.ts'
 

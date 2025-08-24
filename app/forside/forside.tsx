@@ -64,7 +64,7 @@ export default function Forside({ bruker, gjestebrukerAction }: ForsideProps) {
     return (
         <div className="container mx-auto p-4 mt-24">
             <Header className="!mb-0" size="small" text="Hvilke bøter kan man få?" />
-            <Link href={encodeURIComponent('bøter')} className="text-blue-600 flex">
+            <Link href="boter" className="text-blue-600 flex">
                 Sjekk oversikt her
                 <div className="w-6 h-6 ml-1 bg-blue-500 text-white rounded-full flex items-center justify-center shadow-lg animate-bounce">
                     <Image alt="Nye bøter" src={new_release} />
