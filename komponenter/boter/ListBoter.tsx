@@ -6,22 +6,32 @@ import dayjs from '@/lib/dayjs.ts'
 import type { Forseelse } from '@/app/api/boter/typer/route.ts'
 import { AlertTypes } from '@/komponenter/ui/AlertBanner.tsx'
 import type { Bot } from '@/app/api/boter/[spiller_id]/route.ts'
+import { filtrerBoterForSesong, filtrerBoterForSpesifikkSesong } from '@/lib/botBeregning'
 
 export const ListBoter = ({
     forseelser,
     spiller,
     erBotsjef,
     visResultat,
+    visAlleSesonger = false,
+    valgdSesong,
 }: {
     forseelser: Forseelse[]
     spiller: Spiller
     erBotsjef: boolean
     visResultat?: (melding: string, type: AlertTypes) => void
+    visAlleSesonger?: boolean
+    valgdSesong?: string
 }) => {
     const [boterForSpiller, setBoterForSpiller] = useState<Bot[]>([])
     const [visBetalte, setVisBetalte] = useState(false)
-    const ubetalteBoter = boterForSpiller.filter((bot) => !bot.erBetalt)
-    const betalteBoter = boterForSpiller.filter((bot) => bot.erBetalt)
+
+    const filtrerteBoter = valgdSesong
+        ? filtrerBoterForSpesifikkSesong(boterForSpiller, valgdSesong)
+        : filtrerBoterForSesong(boterForSpiller, visAlleSesonger)
+
+    const ubetalteBoter = filtrerteBoter.filter((bot) => !bot.erBetalt)
+    const betalteBoter = filtrerteBoter.filter((bot) => bot.erBetalt)
 
     useEffect(() => {
         const sorterBoter = [...spiller.boter].sort((a, b) => dayjs(a.dato).valueOf() - dayjs(b.dato).valueOf())

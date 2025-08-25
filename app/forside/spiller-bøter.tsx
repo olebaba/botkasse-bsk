@@ -5,11 +5,15 @@ import VippsDialog from '@/komponenter/ui/vippsDialog.tsx'
 import type { User } from 'lucia'
 import Loading from '@/app/loading.tsx'
 import type { Forseelse } from '@/app/api/boter/typer/route.ts'
-import dayjs from '@/lib/dayjs.ts'
 import SpillerKort from './SpillerKort'
 import { useNavbarHeight } from '@/hooks/useNavbarHeight'
 import { useScrollToCard } from '@/hooks/useScrollToCard'
-import { beregnSumMaaBetales, beregnSumNyeBoter } from '@/lib/botBeregning'
+import {
+    beregnSumMaaBetalesForSesong,
+    beregnSumNyeBoterForSesong,
+    beregnSumForSesong,
+    hentSesongTekst,
+} from '@/lib/botBeregning'
 
 interface SpillerBøterProps {
     spillere: Spiller[]
@@ -37,9 +41,7 @@ export default function SpillerBøter({ spillere, forseelser }: SpillerBøterPro
     const navbarHeight = useNavbarHeight()
 
     const sesongTekst = useMemo(() => {
-        const aar = dayjs().year()
-        const nesteAar = dayjs().add(1, 'year').year()
-        return `${aar}/${nesteAar}`
+        return hentSesongTekst()
     }, [])
 
     const getKnappKlasser = useCallback((erAktiv: boolean) => {
@@ -59,22 +61,22 @@ export default function SpillerBøter({ spillere, forseelser }: SpillerBøterPro
             } else if (sortering === 'antall') {
                 sammenligning = a.boter.length - b.boter.length
             } else if (sortering === 'sum') {
-                const sumA = a.boter.reduce((sum, bot) => sum + bot.belop, 0)
-                const sumB = b.boter.reduce((sum, bot) => sum + bot.belop, 0)
+                const sumA = beregnSumForSesong(a.boter, visAlleSesonger)
+                const sumB = beregnSumForSesong(b.boter, visAlleSesonger)
                 sammenligning = sumA - sumB
             } else if (sortering === 'sumMaaBetales') {
-                const sumA = beregnSumMaaBetales(a.boter)
-                const sumB = beregnSumMaaBetales(b.boter)
+                const sumA = beregnSumMaaBetalesForSesong(a.boter, visAlleSesonger)
+                const sumB = beregnSumMaaBetalesForSesong(b.boter, visAlleSesonger)
                 sammenligning = sumA - sumB
             } else if (sortering === 'sumNyeBoter') {
-                const sumA = beregnSumNyeBoter(a.boter)
-                const sumB = beregnSumNyeBoter(b.boter)
+                const sumA = beregnSumNyeBoterForSesong(a.boter, visAlleSesonger)
+                const sumB = beregnSumNyeBoterForSesong(b.boter, visAlleSesonger)
                 sammenligning = sumA - sumB
             }
             return retning === 'stigende' ? sammenligning : -sammenligning
         })
         return spillereKopi
-    }, [filtrerteSpillere, sortering, retning])
+    }, [filtrerteSpillere, sortering, retning, visAlleSesonger])
 
     const { cardRefs, scrollToSpiller } = useScrollToCard(sorterteSpillere, navbarHeight)
 
@@ -145,6 +147,7 @@ export default function SpillerBøter({ spillere, forseelser }: SpillerBøterPro
                         setMerInfoSpiller={setMerInfoSpiller}
                         setSpillerVipps={setSpillerVipps}
                         forseelser={forseelser}
+                        visAlleSesonger={visAlleSesonger}
                     />
                 ))}
             </div>
