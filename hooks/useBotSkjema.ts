@@ -1,0 +1,88 @@
+import { useState, useEffect } from 'react'
+import dayjs from '@/lib/dayjs'
+import { lagBot } from '@/lib/forseelseService.ts'
+import { AlertTypes } from '@/komponenter/AlertBanner.tsx'
+
+export function useBotSkjema() {
+    const [valgteSpillere, setValgteSpillere] = useState<string[]>([])
+    const [belop, setBelop] = useState(0)
+    const [dato, setDato] = useState(dayjs().format('YYYY-MM-DD'))
+    const [forseelsesId, setForseelsesId] = useState('')
+    const [melding, setMelding] = useState<{
+        tekst: string
+        type: AlertTypes
+    } | null>(null)
+    const [erKampdag, setErKampdag] = useState(false)
+
+    useEffect(() => {
+        if (erKampdag) {
+            setBelop((b) => b * 2)
+        } else {
+            setBelop((b) => b / 2)
+        }
+    }, [erKampdag])
+
+    const handleSpillerToggle = (spillerId: string) => {
+        setValgteSpillere((prev) =>
+            prev.includes(spillerId)
+                ? prev.filter((id) => id !== spillerId)
+                : [...prev, spillerId]
+        )
+    }
+
+    const handleVelgAlle = (spillere: { id: string }[]) => {
+        setValgteSpillere(spillere.map((spiller) => spiller.id))
+    }
+
+    const handleFjernAlle = () => {
+        setValgteSpillere([])
+    }
+
+    const handleForseelseEndring = (forseelseId: string, nyttBelop: number) => {
+        setForseelsesId(forseelseId)
+        setBelop(nyttBelop)
+    }
+
+    const handleLeggTilBoter = async (e: React.FormEvent) => {
+        e.preventDefault()
+
+        if (valgteSpillere.length === 0 || !belop || !dato || !forseelsesId) {
+            setMelding({ tekst: 'Velg minst én spiller og fyll ut alle felter.', type: AlertTypes.ERROR })
+            return
+        }
+
+        try {
+            await Promise.all(
+                valgteSpillere.map((spillerId) => lagBot(spillerId, Number(belop), dato, forseelsesId))
+            )
+            setMelding({
+                tekst: `${valgteSpillere.length} bot(er) lagt til!`,
+                type: AlertTypes.SUCCESS,
+            })
+            setValgteSpillere([])
+        } catch (error) {
+            console.error(error)
+            setMelding({
+                tekst: 'Noe gikk galt, prøv igjen senere.',
+                type: AlertTypes.ERROR,
+            })
+        }
+    }
+
+    return {
+        valgteSpillere,
+        belop,
+        dato,
+        forseelsesId,
+        melding,
+        erKampdag,
+        setBelop,
+        setDato,
+        setErKampdag,
+        handleSpillerToggle,
+        handleVelgAlle,
+        handleFjernAlle,
+        handleForseelseEndring,
+        handleLeggTilBoter,
+    }
+}
