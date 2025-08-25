@@ -39,7 +39,7 @@ interface MobilMenyProps {
 
 const MobilMeny = ({ lenker, erAapen, lukkMeny }: MobilMenyProps) => (
     <div
-        className={`${erAapen ? 'block' : 'hidden'} sm:hidden bg-yellow-300 w-full absolute p-8 z-20`}
+        className={`${erAapen ? 'block' : 'hidden'} sm:hidden bg-yellow-300 w-full absolute p-8 z-60`}
         id="navbar-mobile"
     >
         <ul className="flex flex-col space-y-8 items-center">
@@ -66,7 +66,7 @@ export default function NavbarMeny({ sideLenker }: { sideLenker: SideLenke[] }) 
     }
 
     return (
-        <nav className="bg-yellow-300 border-b border-gray-200 fixed top-0 w-full z-10">
+        <nav className="bg-yellow-300 border-b border-gray-200 fixed top-0 w-full z-50">
             <div className="max-w-screen-xl flex justify-between items-center mx-auto p-4">
                 <Link href="/" className="flex items-center space-x-3">
                     <Logo />
