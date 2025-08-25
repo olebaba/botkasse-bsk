@@ -1,4 +1,4 @@
-import NavbarMeny from '@/komponenter/navbar/navbarMeny.tsx'
+import NavbarMeny from '@/komponenter/navigasjon/navbarMeny.tsx'
 import { validateRequest } from '@/lib/auth/validateRequest.ts'
 
 export interface SideLenke {

@@ -4,7 +4,7 @@ import React from 'react'
 import { SpeedInsights } from '@vercel/speed-insights/react'
 import { Analytics } from '@vercel/analytics/react'
 import manifest from '@/app/manifest.ts'
-import Navbar from '@/komponenter/navbar/Navbar.tsx'
+import Navbar from '@/komponenter/navigasjon/Navbar.tsx'
 
 export const metadata: Metadata = {
     title: 'Bækkelaget botkasse',

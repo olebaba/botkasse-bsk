@@ -1,6 +1,6 @@
 import React from 'react'
-import Header from '@/komponenter/Header.tsx'
-import { BetaltBotKort } from '@/komponenter/BotKort.tsx'
+import Header from '@/komponenter/ui/Header.tsx'
+import { BetaltBotKort } from '@/komponenter/boter/BotKort.tsx'
 import type { Spiller } from '@/lib/spillereService.ts'
 import type { Forseelse } from '@/app/api/boter/typer/route.ts'
 import type { Bot } from '@/app/api/boter/[spiller_id]/route.ts'

@@ -1,6 +1,6 @@
 import { useState, useMemo } from 'react'
 import { toggleBoterBetalt } from '@/lib/botService.ts'
-import { AlertTypes } from '@/komponenter/AlertBanner.tsx'
+import { AlertTypes } from '@/komponenter/ui/AlertBanner.tsx'
 import dayjs from '@/lib/dayjs.ts'
 import type { Spiller } from '@/lib/spillereService.ts'
 

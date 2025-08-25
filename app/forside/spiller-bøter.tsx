@@ -1,7 +1,7 @@
 'use client'
 import React, { useEffect, useState, useMemo, useCallback } from 'react'
 import { type Spiller } from '@/lib/spillereService.ts'
-import VippsDialog from '@/komponenter/vippsDialog.tsx'
+import VippsDialog from '@/komponenter/ui/vippsDialog.tsx'
 import type { User } from 'lucia'
 import Loading from '@/app/loading.tsx'
 import type { Forseelse } from '@/app/api/boter/typer/route.ts'

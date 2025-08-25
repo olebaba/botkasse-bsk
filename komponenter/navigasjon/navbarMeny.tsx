@@ -2,8 +2,8 @@
 import React, { useState } from 'react'
 import Link from 'next/link'
 import Logo from '@/ikoner/logo/logo.tsx'
-import BurgerKnapp from '@/komponenter/burger-knapp.tsx'
-import type { SideLenke } from '@/komponenter/navbar/Navbar.tsx'
+import BurgerKnapp from '@/komponenter/ui/burger-knapp.tsx'
+import type { SideLenke } from '@/komponenter/navigasjon/Navbar.tsx'
 
 interface NavbarProps {
     href: string

@@ -1,4 +1,4 @@
-import Header from '@/komponenter/Header.tsx'
+import Header from '@/komponenter/ui/Header.tsx'
 
 interface InputProps {
     tittel: string

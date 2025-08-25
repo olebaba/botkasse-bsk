@@ -1,13 +1,11 @@
-import * as React from 'react'
-import { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
-import type { Spiller } from '@/lib/spillereService.ts'
-import { generateVippsUrl } from '@/lib/vipps.ts'
-import dayjs from '@/lib/dayjs.ts'
-import EnkelModal from '@/komponenter/EnkelModal.tsx'
+import { generateVippsUrl } from '@/lib/vipps'
+import type { Spiller } from '@/lib/spillereService'
+import { Knapp } from '@/komponenter/ui/Knapp.tsx'
+import EnkelModal from '@/komponenter/ui/EnkelModal.tsx'
 import { beregnSumMaaBetales } from '@/lib/botBeregning.ts'
-import { Knapp } from '@/komponenter/Knapp.tsx'
-
+import dayjs from '@/lib/dayjs.ts'
 interface DialogProps {
     tittel: string
     spiller?: Spiller

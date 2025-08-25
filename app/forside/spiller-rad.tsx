@@ -1,5 +1,5 @@
 import type { Spiller } from '@/lib/spillereService.ts'
-import TabellData from '@/komponenter/TabellData.tsx'
+import TabellData from '@/komponenter/tabeller/TabellData.tsx'
 import React, { useState } from 'react'
 import { beregnSumNyeBoter, beregnSumMaaBetales } from '@/lib/botBeregning.ts'
 import Laster from '@/ikoner/laster.tsx'

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import dayjs from '@/lib/dayjs'
 import { lagBot } from '@/lib/forseelseService.ts'
-import { AlertTypes } from '@/komponenter/AlertBanner.tsx'
+import { AlertTypes } from '@/komponenter/ui/AlertBanner.tsx'
 
 export function useBotSkjema() {
     const [valgteSpillere, setValgteSpillere] = useState<string[]>([])

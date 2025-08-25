@@ -1,7 +1,7 @@
 'use client'
-import { BotListe } from '@/komponenter/botListe.tsx'
+import { BotListe } from '@/komponenter/boter/botListe.tsx'
 import { useEffect, useState } from 'react'
-import { Kontakter } from '@/komponenter/Kontakter.tsx'
+import { Kontakter } from '@/komponenter/spillere/Kontakter.tsx'
 import type { Forseelse } from '@/app/api/boter/typer/route.ts'
 import { fetchForseelser } from '@/lib/forseelseService.ts'
 

@@ -1,10 +1,10 @@
 import type { Spiller } from '@/lib/spillereService.ts'
-import { Knapp } from '@/komponenter/Knapp.tsx'
+import { Knapp } from '@/komponenter/ui/Knapp.tsx'
 import { toggleBoterBetalt } from '@/lib/botService.ts'
 import React, { useEffect, useState } from 'react'
 import dayjs from '@/lib/dayjs.ts'
 import type { Forseelse } from '@/app/api/boter/typer/route.ts'
-import { AlertTypes } from '@/komponenter/AlertBanner.tsx'
+import { AlertTypes } from '@/komponenter/ui/AlertBanner.tsx'
 import type { Bot } from '@/app/api/boter/[spiller_id]/route.ts'
 
 export const ListBoter = ({

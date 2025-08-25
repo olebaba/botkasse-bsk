@@ -1,6 +1,6 @@
 import React from 'react'
-import { Dropdown } from '@/komponenter/Dropdown.tsx'
-import { Knapp } from '@/komponenter/Knapp.tsx'
+import { Dropdown } from '@/komponenter/ui/Dropdown.tsx'
+import { Knapp } from '@/komponenter/ui/Knapp.tsx'
 import type { Forseelse } from '@/app/api/boter/typer/route.ts'
 
 interface BotSkjemaInputsProps {

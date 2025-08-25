@@ -1,6 +1,6 @@
 import React, { useMemo, useCallback } from 'react'
 import { beregnSum, beregnSumMaaBetales, beregnSumNyeBoter } from '@/lib/botBeregning'
-import { ListBoter } from '@/komponenter/ListBoter'
+import { ListBoter } from '@/komponenter/boter/ListBoter'
 import type { Spiller } from '@/lib/spillereService'
 import type { Forseelse } from '@/app/api/boter/typer/route'
 import dayjs from '@/lib/dayjs.ts'

@@ -1,7 +1,7 @@
 'use client'
 import React, { useState } from 'react'
 import type { Spiller } from '@/lib/spillereService.ts'
-import SpillerCombobox from '@/komponenter/SpillerCombobox.tsx'
+import SpillerCombobox from '@/komponenter/spillere/SpillerCombobox.tsx'
 
 interface SpillerVelgerProps {
     spillere: Spiller[]

@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
-import Header from '@/komponenter/Header.tsx'
+import Header from '@/komponenter/ui/Header.tsx'
 import { MinSideInfo } from '@/app/minside/min-side-info.tsx'
-import { Knapp } from '@/komponenter/Knapp.tsx'
+import { Knapp } from '@/komponenter/ui/Knapp.tsx'
 import { validateRequest } from '@/lib/auth/validateRequest.ts'
 import { logout } from '@/lib/auth/logout.ts'
 
