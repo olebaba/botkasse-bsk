@@ -48,36 +48,9 @@ export function filtrerBoterForSesong(boter: Bot[], visAlleSesonger: boolean = f
     return boter.filter((bot) => erISesong(dayjs(bot.dato), sesongStart, sesongSlutt))
 }
 
-export function beregnSumMaaBetalesForSesong(boter: Bot[], visAlleSesonger: boolean = false): number {
-    const filtrerteBoter = filtrerBoterForSesong(boter, visAlleSesonger)
-    const endOfLastMonth = dayjs().subtract(1, 'month').endOf('month')
-
-    return filtrerteBoter
-        .filter((bot) => !bot.erBetalt && dayjs(bot.dato).isBefore(endOfLastMonth))
-        .reduce((sum, bot) => sum + Number(bot.belop), 0)
-}
-
-export function beregnSumNyeBoterForSesong(boter: Bot[], visAlleSesonger: boolean = false): number {
-    const filtrerteBoter = filtrerBoterForSesong(boter, visAlleSesonger)
-    const endOfLastMonth = dayjs().subtract(1, 'month').endOf('month')
-    return filtrerteBoter
-        .filter((bot) => !bot.erBetalt && dayjs(bot.dato).isAfter(endOfLastMonth))
-        .reduce((sum, bot) => sum + Number(bot.belop), 0)
-}
-
-export function beregnSumForSesong(boter: Bot[], visAlleSesonger: boolean = false): number {
-    const filtrerteBoter = filtrerBoterForSesong(boter, visAlleSesonger)
-    return filtrerteBoter.reduce((sum, bot) => sum + Number(bot.belop), 0)
-}
-
-export function beregnSumBetaltForSesong(boter: Bot[], visAlleSesonger: boolean = false): number {
-    const filtrerteBoter = filtrerBoterForSesong(boter, visAlleSesonger)
-    return filtrerteBoter.filter((bot) => bot.erBetalt).reduce((sum, bot) => sum + Number(bot.belop), 0)
-}
-
+// Grunnleggende beregningsfunksjoner som ikke tar hensyn til sesong
 export function beregnSumMaaBetales(boter: Bot[]): number {
     const endOfLastMonth = dayjs().subtract(1, 'month').endOf('month')
-
     return boter
         .filter((bot) => !bot.erBetalt && dayjs(bot.dato).isBefore(endOfLastMonth))
         .reduce((sum, bot) => sum + Number(bot.belop), 0)
@@ -92,6 +65,52 @@ export function beregnSumNyeBoter(boter: Bot[]): number {
 
 export function beregnSum(boter: Bot[]): number {
     return boter.reduce((sum, bot) => sum + Number(bot.belop), 0)
+}
+
+export function beregnSumBetalt(boter: Bot[]): number {
+    return boter.filter((bot) => bot.erBetalt).reduce((sum, bot) => sum + Number(bot.belop), 0)
+}
+
+// Sesongavhengige beregningsfunksjoner
+export function beregnSumMaaBetalesForSesong(boter: Bot[], visAlleSesonger: boolean = false): number {
+    const filtrerteBoter = filtrerBoterForSesong(boter, visAlleSesonger)
+    return beregnSumMaaBetales(filtrerteBoter)
+}
+
+export function beregnSumNyeBoterForSesong(boter: Bot[], visAlleSesonger: boolean = false): number {
+    const filtrerteBoter = filtrerBoterForSesong(boter, visAlleSesonger)
+    return beregnSumNyeBoter(filtrerteBoter)
+}
+
+export function beregnSumForSesong(boter: Bot[], visAlleSesonger: boolean = false): number {
+    const filtrerteBoter = filtrerBoterForSesong(boter, visAlleSesonger)
+    return beregnSum(filtrerteBoter)
+}
+
+export function beregnSumBetaltForSesong(boter: Bot[], visAlleSesonger: boolean = false): number {
+    const filtrerteBoter = filtrerBoterForSesong(boter, visAlleSesonger)
+    return beregnSumBetalt(filtrerteBoter)
+}
+
+// Ny funksjon for spesifikk sesong - erstatter logikken i vippsDialog
+export function beregnSumMaaBetalesForSpesifikkSesong(boter: Bot[], sesongTekst: string): number {
+    const filtrerteBoter = filtrerBoterForSpesifikkSesong(boter, sesongTekst)
+    return beregnSumMaaBetales(filtrerteBoter)
+}
+
+// Fleksibel funksjon som håndterer alle sesongvalg
+export function beregnBelopForSesongvalg(
+    boter: Bot[],
+    visAlleSesonger: boolean = false,
+    valgtSesong: string = '',
+): number {
+    if (visAlleSesonger || valgtSesong === 'alle') {
+        return beregnSumMaaBetales(boter)
+    } else if (valgtSesong === '') {
+        return beregnSumMaaBetalesForSesong(boter, false)
+    } else {
+        return beregnSumMaaBetalesForSpesifikkSesong(boter, valgtSesong)
+    }
 }
 
 export function hentTilgjengeligeSesonger(boter: Bot[]): string[] {

@@ -4,7 +4,7 @@ import { generateVippsUrl } from '@/lib/vipps'
 import type { Spiller } from '@/lib/spillereService'
 import { Knapp } from '@/komponenter/ui/Knapp.tsx'
 import EnkelModal from '@/komponenter/ui/EnkelModal.tsx'
-import { beregnSumMaaBetales, filtrerBoterForSpesifikkSesong, hentSesongTekst } from '@/lib/botBeregning.ts'
+import { beregnBelopForSesongvalg } from '@/lib/botBeregning.ts'
 import dayjs from '@/lib/dayjs.ts'
 
 interface DialogProps {
@@ -16,7 +16,14 @@ interface DialogProps {
     valgtSesong?: string
 }
 
-const VippsDialog = ({ tittel, spiller, setSpiller, innhold, visAlleSesonger = false, valgtSesong = '' }: DialogProps) => {
+const VippsDialog = ({
+    tittel,
+    spiller,
+    setSpiller,
+    innhold,
+    visAlleSesonger = false,
+    valgtSesong = '',
+}: DialogProps) => {
     const router = useRouter()
     const [isModalOpen, setIsModalOpen] = useState(false)
 
@@ -31,39 +38,16 @@ const VippsDialog = ({ tittel, spiller, setSpiller, innhold, visAlleSesonger = f
 
     if (!spiller) return null
 
-    const beregnBelopForValgtSesong = (spiller: Spiller): number => {
-        if (!spiller.boter) return 0
-
-        let filtrerteBoter = spiller.boter
-
-        if (visAlleSesonger || valgtSesong === 'alle') {
-            // Bruk alle bøter
-            return beregnSumMaaBetales(spiller.boter)
-        } else if (valgtSesong === '') {
-            // Bruk gjeldende sesong
-            const gjeldendeSesong = hentSesongTekst()
-            filtrerteBoter = filtrerBoterForSpesifikkSesong(spiller.boter, gjeldendeSesong)
-        } else {
-            // Bruk spesifikk sesong
-            filtrerteBoter = filtrerBoterForSpesifikkSesong(spiller.boter, valgtSesong)
-        }
-
-        const endOfLastMonth = dayjs().subtract(1, 'month').endOf('month')
-        return filtrerteBoter
-            .filter((bot) => !bot.erBetalt && dayjs(bot.dato).isBefore(endOfLastMonth))
-            .reduce((sum, bot) => sum + Number(bot.belop), 0)
-    }
-
     const betalIVipps = (spiller: Spiller) => {
         const maaned = dayjs().add(-1, 'month').format('MMMM')
-        const belopKr = beregnBelopForValgtSesong(spiller)
+        const belopKr = beregnBelopForSesongvalg(spiller.boter || [], visAlleSesonger, valgtSesong)
         const belopOre = belopKr * 100
         const vippsUrl = generateVippsUrl('97513023', belopOre, `Bøter for måneden ${maaned}`)
         router.push(vippsUrl)
         setSpiller(undefined)
     }
 
-    const belopKr = beregnBelopForValgtSesong(spiller)
+    const belopKr = beregnBelopForSesongvalg(spiller.boter || [], visAlleSesonger, valgtSesong)
 
     return (
         <EnkelModal
