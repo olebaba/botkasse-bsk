@@ -1,8 +1,14 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import type { Forseelse } from '@/app/api/boter/typer/route.ts'
 import { useForseelseStatistikk } from '@/hooks/useForseelseStatistikk'
 import dayjs from '@/lib/dayjs.ts'
 import Header from '@/komponenter/ui/Header'
+import {
+    hentKortAnimasjonsklasser,
+    hentEmojiAnimasjonsklasser,
+    hentDotAnimasjonsklasser,
+    hentTekstKlasser,
+} from '@/lib/animasjoner'
 
 interface BotListeProps {
     forseelser: Forseelse[]
@@ -38,27 +44,61 @@ interface ForseelseKortProps {
 
 const ForseelseKort = ({ forseelse }: ForseelseKortProps) => {
     const [erUtvidet, setErUtvidet] = useState(false)
+    const [bounceAnimation, setBounceAnimation] = useState(false)
+    const [pingAnimation, setPingAnimation] = useState(false)
     const forseelseStatistikk = useForseelseStatistikk(erUtvidet ? forseelse.id : null)
     const erNy = dayjs(forseelse.oppdatert) > dayjs().subtract(2, 'weeks')
+    const bounceTimeout = useRef<NodeJS.Timeout | null>(null)
+    const pingTimeout = useRef<NodeJS.Timeout | null>(null)
 
     const firstSpaceIndex = forseelse.navn.indexOf(' ')
     const emoji = firstSpaceIndex > 0 ? forseelse.navn.slice(0, firstSpaceIndex) : forseelse.navn
     const tittel = firstSpaceIndex > 0 ? forseelse.navn.slice(firstSpaceIndex + 1) : ''
 
+    useEffect(() => {
+        if (erNy) {
+            setBounceAnimation(true)
+            setPingAnimation(true)
+
+            if (bounceTimeout.current) {
+                clearTimeout(bounceTimeout.current)
+            }
+            if (pingTimeout.current) {
+                clearTimeout(pingTimeout.current)
+            }
+
+            bounceTimeout.current = setTimeout(() => {
+                setBounceAnimation(false)
+            }, 3000)
+
+            pingTimeout.current = setTimeout(() => {
+                setPingAnimation(false)
+            }, 3000)
+        }
+    }, [erNy])
+
     return (
-        <div className="bg-white rounded-lg shadow-sm border border-gray-100 hover:shadow-md transition-all duration-200 overflow-hidden">
-            <div className="p-4 cursor-pointer" onClick={() => setErUtvidet(!erUtvidet)}>
+        <div
+            className={`rounded-lg shadow-sm border transition-all duration-200 overflow-hidden hover:shadow-md relative ${hentKortAnimasjonsklasser(erNy)}`}
+        >
+            {erNy && (
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 via-transparent to-blue-400/20 animate-pulse pointer-events-none"></div>
+            )}
+            <div className="p-4 cursor-pointer relative z-10" onClick={() => setErUtvidet(!erUtvidet)}>
                 <div className="flex items-center justify-between">
                     <div className="flex-1 min-w-0 pr-3">
                         <div className="flex items-center gap-3 mb-1">
-                            <div className="text-2xl flex-shrink-0">{emoji}</div>
-                            <Header size="small" text={tittel} className="text-gray-900 flex-1" as="h3" />
-                            {erNy && (
-                                <div className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-blue-100 text-blue-800 border border-blue-200 flex-shrink-0">
-                                    <div className="w-2 h-2 bg-blue-500 rounded-full mr-1.5"></div>
-                                    Ny
-                                </div>
-                            )}
+                            <div
+                                className={`text-2xl flex-shrink-0 relative ${hentEmojiAnimasjonsklasser(erNy, bounceAnimation)}`}
+                            >
+                                {emoji}
+                                {erNy && (
+                                    <div
+                                        className={`absolute -top-1 -right-1 w-3 h-3 bg-blue-500 rounded-full border-2 border-white shadow-lg ${hentDotAnimasjonsklasser(pingAnimation)}`}
+                                    ></div>
+                                )}
+                            </div>
+                            <Header size="small" text={tittel} className={`flex-1 ${hentTekstKlasser(erNy)}`} as="h3" />
                         </div>
                     </div>
 
