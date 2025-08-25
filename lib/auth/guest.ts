@@ -24,6 +24,11 @@ export async function guest(formData: FormData): Promise<ActionResult> {
             const typedBruker = gjestebruker.rows[0]
             const session = await lucia.createSession(typedBruker.id, {})
             const sessionCookie = lucia.createSessionCookie(session.id)
+
+            // Sett varighet på 1 år for gjestebruker
+            const ettAar = 60 * 60 * 24 * 365 // sekunder
+            sessionCookie.attributes.maxAge = ettAar
+            sessionCookie.attributes.expires = new Date(Date.now() + ettAar * 1000)
             ;(await cookies()).set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes)
         } else {
             return { error: 'Feil kode oppgitt.' }
