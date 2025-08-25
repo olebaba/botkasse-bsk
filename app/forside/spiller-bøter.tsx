@@ -33,7 +33,7 @@ type Sortering = 'alfabetisk' | 'antall' | 'sum' | 'sumMaaBetales' | 'sumNyeBote
 type Retning = 'stigende' | 'synkende'
 
 export default function SpillerBøter({ spillere, forseelser }: SpillerBøterProps) {
-    const [spillerVipps, setSpillerVipps] = useState<Spiller | undefined>(undefined)
+    const [spillerVipps, setSpillerVipps] = useState<{ spiller: Spiller; valgtSesong: string } | undefined>(undefined)
     const [merInfoSpiller, setMerInfoSpiller] = useState<Spiller | undefined>(undefined)
     const [visAlleSesonger, setVisAlleSesonger] = useState(false)
     const [sortering, setSortering] = useState<Sortering>('sumMaaBetales')
@@ -91,7 +91,13 @@ export default function SpillerBøter({ spillere, forseelser }: SpillerBøterPro
 
     return (
         <>
-            <VippsDialog tittel="Betal i vipps" spiller={spillerVipps} setSpiller={setSpillerVipps} />
+            <VippsDialog
+                tittel="Betal i vipps"
+                spiller={spillerVipps?.spiller}
+                setSpiller={(spiller) => setSpillerVipps(spiller ? { spiller, valgtSesong: '' } : undefined)}
+                visAlleSesonger={visAlleSesonger}
+                valgtSesong={spillerVipps?.valgtSesong}
+            />
 
             <div className="mb-4 flex gap-2 flex-wrap">
                 <button

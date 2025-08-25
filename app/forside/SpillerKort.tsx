@@ -21,7 +21,7 @@ interface SpillerKortProps {
     cardRef: (el: HTMLDivElement | null) => void
     merInfoOpen: boolean
     setMerInfoSpiller: (s: Spiller | undefined) => void
-    setSpillerVipps: (s: Spiller) => void
+    setSpillerVipps: (spillerInfo: { spiller: Spiller; valgtSesong: string }) => void
     forseelser: Forseelse[]
     visAlleSesonger: boolean
 }
@@ -94,9 +94,9 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
     const handleVippsBetaling = useCallback(
         (e?: React.MouseEvent) => {
             e?.stopPropagation()
-            setSpillerVipps(spiller)
+            setSpillerVipps({ spiller, valgtSesong })
         },
-        [setSpillerVipps, spiller],
+        [setSpillerVipps, spiller, valgtSesong],
     )
 
     const denneMaaneden = dayjs().format('MMMM')
