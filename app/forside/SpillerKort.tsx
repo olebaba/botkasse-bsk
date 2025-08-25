@@ -128,7 +128,7 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
                 <Knapp
                     variant="secondary"
                     className="text-xs px-2 py-1 mt-2 md:mt-0"
-                    tekst={merInfoOpen ? 'Åpen' : 'Trykk for mer info'}
+                    tekst={merInfoOpen ? 'Skjul' : 'Trykk for mer info'}
                 />
             </div>
 
