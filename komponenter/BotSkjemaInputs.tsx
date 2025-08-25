@@ -82,7 +82,7 @@ export default function BotSkjemaInputs({
                 />
             </div>
 
-            <Knapp tekst={`Legg til ${valgteSpillere.length} bot(er)`} />
+            <Knapp tekst={`Legg til ${valgteSpillere.length} ${valgteSpillere.length === 1 ? 'bot' : 'bøter'}`} />
         </>
     )
 }

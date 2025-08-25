@@ -44,15 +44,11 @@ export default function SpillerBøter({ spillere, forseelser }: SpillerBøterPro
 
     const getKnappKlasser = useCallback((erAktiv: boolean) => {
         const base = 'px-4 py-2 rounded whitespace-nowrap transition-colors'
-        const variant = erAktiv
-            ? 'bg-blue-600 text-white'
-            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+        const variant = erAktiv ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
         return `${base} ${variant}`
     }, [])
 
-    const filtrerteSpillere: Spiller[] = visAlleSesonger
-        ? spillere
-        : spillere.filter((spiller) => spiller.visNavn)
+    const filtrerteSpillere: Spiller[] = visAlleSesonger ? spillere : spillere.filter((spiller) => spiller.visNavn)
 
     const sorterteSpillere = useMemo(() => {
         const spillereKopi = [...filtrerteSpillere]
@@ -86,18 +82,14 @@ export default function SpillerBøter({ spillere, forseelser }: SpillerBøterPro
         if (merInfoSpiller && cardRefs.current.length > 0) {
             scrollToSpiller(merInfoSpiller)
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [merInfoSpiller, scrollToSpiller])
 
     if (spillere.length === 0) return <Loading />
 
     return (
         <>
-            <VippsDialog
-                tittel="Betal i vipps"
-                spiller={spillerVipps}
-                setSpiller={setSpillerVipps}
-            />
+            <VippsDialog tittel="Betal i vipps" spiller={spillerVipps} setSpiller={setSpillerVipps} />
 
             <div className="mb-4 flex gap-2 flex-wrap">
                 <button
@@ -115,21 +107,25 @@ export default function SpillerBøter({ spillere, forseelser }: SpillerBøterPro
                     Alle sesonger
                 </button>
                 <div className="flex gap-2 items-center">
-                    <label htmlFor="sortering" className="text-sm">Sorter:</label>
+                    <label htmlFor="sortering" className="text-sm">
+                        Sorter:
+                    </label>
                     <select
                         id="sortering"
                         className="px-2 py-1 rounded border border-gray-300 text-sm"
                         value={sortering}
-                        onChange={e => setSortering(e.target.value as Sortering)}
+                        onChange={(e) => setSortering(e.target.value as Sortering)}
                     >
-                        {sorteringsvalg.map(valg => (
-                            <option key={valg.verdi} value={valg.verdi}>{valg.tekst}</option>
+                        {sorteringsvalg.map((valg) => (
+                            <option key={valg.verdi} value={valg.verdi}>
+                                {valg.tekst}
+                            </option>
                         ))}
                     </select>
                     <button
                         type="button"
                         className="px-2 py-1 rounded border border-gray-300 text-sm"
-                        onClick={() => setRetning(r => r === 'stigende' ? 'synkende' : 'stigende')}
+                        onClick={() => setRetning((r) => (r === 'stigende' ? 'synkende' : 'stigende'))}
                         title={retning === 'stigende' ? 'Sorter synkende' : 'Sorter stigende'}
                     >
                         {retning === 'stigende' ? '↑' : '↓'}
@@ -142,7 +138,9 @@ export default function SpillerBøter({ spillere, forseelser }: SpillerBøterPro
                     <SpillerKort
                         key={spiller.id}
                         spiller={spiller}
-                        cardRef={el => { cardRefs.current[idx] = el }}
+                        cardRef={(el) => {
+                            cardRefs.current[idx] = el
+                        }}
                         merInfoOpen={merInfoSpiller === spiller}
                         setMerInfoSpiller={setMerInfoSpiller}
                         setSpillerVipps={setSpillerVipps}

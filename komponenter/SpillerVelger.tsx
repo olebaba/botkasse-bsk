@@ -17,24 +17,23 @@ export default function SpillerVelger({
 }: SpillerVelgerProps) {
     const [soketerm, setSoketerm] = useState('')
 
-    const filtreteSpillere = spillere.filter(spiller =>
-        spiller.navn.toLowerCase().includes(soketerm.toLowerCase()) ||
-        spiller.draktnummer?.toString().includes(soketerm)
+    const filtreteSpillere = spillere.filter(
+        (spiller) =>
+            spiller.navn.toLowerCase().includes(soketerm.toLowerCase()) ||
+            spiller.draktnummer?.toString().includes(soketerm),
     )
 
     const handleVelgAlleFiltrerte = () => {
         const nyeSpillere = filtreteSpillere
-            .filter(spiller => !valgteSpillere.includes(spiller.id))
-            .map(spiller => spiller.id)
+            .filter((spiller) => !valgteSpillere.includes(spiller.id))
+            .map((spiller) => spiller.id)
 
-        nyeSpillere.forEach(spillerId => onSpillerToggleAction(spillerId))
+        nyeSpillere.forEach((spillerId) => onSpillerToggleAction(spillerId))
     }
 
     return (
         <div className="mb-4">
-            <label className="block text-gray-700 font-bold mb-2">
-                Velg spillere ({valgteSpillere.length} valgt)
-            </label>
+            <label className="block text-gray-700 font-bold mb-2">Velg spillere ({valgteSpillere.length} valgt)</label>
 
             <div className="mb-3">
                 <input
@@ -65,12 +64,13 @@ export default function SpillerVelger({
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2 max-h-80 overflow-y-auto border rounded p-3 bg-gray-50">
                 {filtreteSpillere.length === 0 ? (
-                    <div className="col-span-full text-center text-gray-500 py-4">
-                        Ingen spillere funnet
-                    </div>
+                    <div className="col-span-full text-center text-gray-500 py-4">Ingen spillere funnet</div>
                 ) : (
                     filtreteSpillere.map((spiller) => (
-                        <label key={spiller.id} className="flex items-center space-x-2 cursor-pointer p-2 hover:bg-white rounded">
+                        <label
+                            key={spiller.id}
+                            className="flex items-center space-x-2 cursor-pointer p-2 hover:bg-white rounded"
+                        >
                             <input
                                 type="checkbox"
                                 checked={valgteSpillere.includes(spiller.id)}

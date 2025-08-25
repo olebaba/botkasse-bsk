@@ -55,18 +55,18 @@ export const ListBoter = ({
                 return (
                     <div key={bot.id} className="bg-white rounded shadow border p-3 flex flex-col gap-1">
                         <div className="font-semibold">{forseelse?.navn}</div>
-                        <div><span className="font-medium">Dato:</span> {dato}</div>
-                        <div><span className="font-medium">Beløp:</span> {bot.belop} kr</div>
+                        <div>
+                            <span className="font-medium">Dato:</span> {dato}
+                        </div>
+                        <div>
+                            <span className="font-medium">Beløp:</span> {bot.belop} kr
+                        </div>
                         <div>
                             <span className="font-semibold text-red-600">Ikke betalt</span>
                         </div>
                         {erBotsjef && (
                             <div>
-                                <Knapp
-                                    className={''}
-                                    tekst={'Sett betalt'}
-                                    onClick={() => handleMarkerBetalt(bot)}
-                                />
+                                <Knapp className={''} tekst={'Sett betalt'} onClick={() => handleMarkerBetalt(bot)} />
                             </div>
                         )}
                     </div>
@@ -75,7 +75,10 @@ export const ListBoter = ({
             {betalteBoter.length > 0 && (
                 <button
                     className="text-blue-600 underline text-sm mt-2 self-start"
-                    onClick={e => { e.stopPropagation(); setVisBetalte((v) => !v) }}
+                    onClick={(e) => {
+                        e.stopPropagation()
+                        setVisBetalte((v) => !v)
+                    }}
                     tabIndex={0}
                 >
                     {visBetalte ? 'Skjul betalte bøter' : `Vis betalte bøter (${betalteBoter.length})`}
@@ -87,10 +90,17 @@ export const ListBoter = ({
                         const forseelse = forseelser.find((f) => f.id.toString() == bot.forseelseId)
                         const dato = dayjs(bot.dato).format('DD.MM.YYYY')
                         return (
-                            <div key={bot.id} className="bg-gray-100 rounded shadow border p-3 flex flex-col gap-1 opacity-80">
+                            <div
+                                key={bot.id}
+                                className="bg-gray-100 rounded shadow border p-3 flex flex-col gap-1 opacity-80"
+                            >
                                 <div className="font-semibold">{forseelse?.navn}</div>
-                                <div><span className="font-medium">Dato:</span> {dato}</div>
-                                <div><span className="font-medium">Beløp:</span> {bot.belop} kr</div>
+                                <div>
+                                    <span className="font-medium">Dato:</span> {dato}
+                                </div>
+                                <div>
+                                    <span className="font-medium">Beløp:</span> {bot.belop} kr
+                                </div>
                                 <div>
                                     <span className="font-semibold text-green-600">Betalt</span>
                                 </div>

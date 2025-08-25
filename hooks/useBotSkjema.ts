@@ -24,9 +24,7 @@ export function useBotSkjema() {
 
     const handleSpillerToggle = (spillerId: string) => {
         setValgteSpillere((prev) =>
-            prev.includes(spillerId)
-                ? prev.filter((id) => id !== spillerId)
-                : [...prev, spillerId]
+            prev.includes(spillerId) ? prev.filter((id) => id !== spillerId) : [...prev, spillerId],
         )
     }
 
@@ -52,9 +50,7 @@ export function useBotSkjema() {
         }
 
         try {
-            await Promise.all(
-                valgteSpillere.map((spillerId) => lagBot(spillerId, Number(belop), dato, forseelsesId))
-            )
+            await Promise.all(valgteSpillere.map((spillerId) => lagBot(spillerId, Number(belop), dato, forseelsesId)))
             setMelding({
                 tekst: `${valgteSpillere.length} bot(er) lagt til!`,
                 type: AlertTypes.SUCCESS,
