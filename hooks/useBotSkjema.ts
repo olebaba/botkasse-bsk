@@ -38,7 +38,8 @@ export function useBotSkjema() {
 
     const handleForseelseEndring = (forseelseId: string, nyttBelop: number) => {
         setForseelsesId(forseelseId)
-        setBelop(nyttBelop)
+        // Hvis kampdag er aktivt, dobler vi det nye beløpet
+        setBelop(erKampdag ? nyttBelop * 2 : nyttBelop)
     }
 
     const handleLeggTilBoter = async (e: React.FormEvent) => {
