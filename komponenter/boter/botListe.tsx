@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import type { Forseelse } from '@/app/api/boter/typer/route.ts'
+import { useForseelseStatistikk } from '@/hooks/useForseelseStatistikk'
 import dayjs from '@/lib/dayjs.ts'
 import Header from '@/komponenter/ui/Header'
 
@@ -37,6 +38,7 @@ interface ForseelseKortProps {
 
 const ForseelseKort = ({ forseelse }: ForseelseKortProps) => {
     const [erUtvidet, setErUtvidet] = useState(false)
+    const forseelseStatistikk = useForseelseStatistikk(erUtvidet ? forseelse.id : null)
     const erNy = dayjs(forseelse.oppdatert) > dayjs().subtract(2, 'weeks')
 
     const firstSpaceIndex = forseelse.navn.indexOf(' ')
@@ -89,10 +91,72 @@ const ForseelseKort = ({ forseelse }: ForseelseKortProps) => {
 
             {erUtvidet && (
                 <div className="px-4 pb-4 border-t border-gray-100 bg-gray-50">
-                    <div className="pt-3 space-y-3">
+                    <div className="pt-3 space-y-4">
                         <div className="text-gray-600 leading-relaxed">{forseelse.beskrivelse}</div>
                         <div className="text-sm text-gray-500">
                             Sist oppdatert: {dayjs(forseelse.oppdatert).format('DD.MM.YYYY')}
+                        </div>
+
+                        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-200">
+                            <Header size="small" text="Statistikk" className="text-gray-800 mb-3" as="h4" />
+                            {forseelseStatistikk.laster ? (
+                                <div className="text-center text-gray-500 py-2">Laster statistikk...</div>
+                            ) : forseelseStatistikk.feil ? (
+                                <div className="text-center text-red-500 py-2">Kunne ikke laste statistikk</div>
+                            ) : forseelseStatistikk.statistikk ? (
+                                <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+                                    <div className="bg-white rounded-lg p-3 border border-blue-200">
+                                        <div className="text-center">
+                                            <div className="text-xl font-bold text-blue-700">
+                                                {forseelseStatistikk.statistikk.antallBoter}
+                                            </div>
+                                            <div className="text-xs text-gray-600 font-medium">Antall bøter</div>
+                                        </div>
+                                    </div>
+                                    <div className="bg-white rounded-lg p-3 border border-red-200">
+                                        <div className="text-center">
+                                            <div className="text-xl font-bold text-red-700">
+                                                {forseelseStatistikk.statistikk.totaltBelop.toLocaleString('nb-NO')}
+                                            </div>
+                                            <div className="text-xs text-gray-600 font-medium">Total (kr)</div>
+                                        </div>
+                                    </div>
+                                    <div className="bg-white rounded-lg p-3 border border-green-200">
+                                        <div className="text-center">
+                                            <div className="text-xl font-bold text-green-700">
+                                                {forseelseStatistikk.statistikk.innsamletBelop.toLocaleString('nb-NO')}
+                                            </div>
+                                            <div className="text-xs text-gray-600 font-medium">Innsamlet (kr)</div>
+                                        </div>
+                                    </div>
+                                    <div className="bg-white rounded-lg p-3 border border-orange-200">
+                                        <div className="text-center">
+                                            {forseelseStatistikk.statistikk.spillerMedFlestBoter ? (
+                                                <>
+                                                    <div className="text-sm font-bold text-orange-700">
+                                                        {forseelseStatistikk.statistikk.spillerMedFlestBoter.navn}
+                                                    </div>
+                                                    <div className="text-xs text-gray-600 font-medium">
+                                                        Flest (
+                                                        {
+                                                            forseelseStatistikk.statistikk.spillerMedFlestBoter
+                                                                .antallBoter
+                                                        }
+                                                        )
+                                                    </div>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <div className="text-sm font-bold text-gray-500">-</div>
+                                                    <div className="text-xs text-gray-600 font-medium">Ingen bøter</div>
+                                                </>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : (
+                                <div className="text-center text-gray-500 py-2">Ingen statistikk tilgjengelig</div>
+                            )}
                         </div>
                     </div>
                 </div>
