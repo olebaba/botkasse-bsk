@@ -26,7 +26,7 @@ export default function LeggTilBot({ spillere, forseelser }: { spillere: Spiller
 
     return (
         <div className="container mx-auto p-4 mt-28">
-            <Header size="medium" text="Legg til bot for flere spillere" />
+            <Header size="medium" text="Legg til bot for spillere" />
             {melding && <AlertBanner message={melding.tekst} type={melding.type} />}
             <form onSubmit={handleLeggTilBoter}>
                 <SpillerVelger
