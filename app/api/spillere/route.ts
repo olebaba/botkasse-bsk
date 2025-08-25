@@ -8,6 +8,7 @@ interface SpillerRow {
     id: number
     navn: string
     vis_navn: boolean
+    draktnummer?: number
 }
 
 interface BotRow {
@@ -31,6 +32,7 @@ export async function GET(request: NextRequest) {
             id: String(row.id),
             navn: row.navn,
             visNavn: row.vis_navn,
+            draktnummer: row.id, // ID er draktnummeret
             boter: [],
         }))
 

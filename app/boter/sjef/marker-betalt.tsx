@@ -1,48 +1,80 @@
 'use client'
-import { ListBoter } from '@/komponenter/ListBoter.tsx'
-import { Dropdown } from '@/komponenter/Dropdown.tsx'
-import React, { useState } from 'react'
-import type { Spiller } from '@/lib/spillereService.ts'
+import React from 'react'
 import Header from '@/komponenter/Header.tsx'
+import AlertBanner from '@/komponenter/AlertBanner.tsx'
+import SpillerCombobox from '@/komponenter/SpillerCombobox.tsx'
+import { UbetalteBoterSeksjon } from '@/komponenter/UbetalteBoterSeksjon.tsx'
+import { BetalteBoterSeksjon } from '@/komponenter/BetalteBoterSeksjon.tsx'
+import { SpillerStatus } from '@/komponenter/SpillerStatus.tsx'
+import { useBoterBehandling } from '@/hooks/useBoterBehandling.ts'
+import type { Spiller } from '@/lib/spillereService.ts'
 import type { Forseelse } from '@/app/api/boter/typer/route.ts'
-import AlertBanner, { AlertTypes } from '@/komponenter/AlertBanner.tsx'
 
 export const MarkerBetalt = ({ spillere, forseelser }: { spillere: Spiller[]; forseelser: Forseelse[] }) => {
-    const [valgtSpiller, setValgspiller] = useState<Spiller>()
-    const [melding, setMelding] = useState<{
-        tekst: string
-        type: AlertTypes
-    } | null>(null)
+    const {
+        valgtSpiller,
+        valgteBoter,
+        visBetalteBøter,
+        melding,
+        ubetalteBoter,
+        betalteBoter,
+        totalBelop,
+        setVisBetalteBøter,
+        handleSpillerValg,
+        handleBotToggle,
+        handleVelgToggle,
+        handleMarkerBetalt,
+        handleMarkerUbetalt,
+    } = useBoterBehandling()
 
-    const handterResultat = (melding: string, type: AlertTypes) => {
-        setMelding({ tekst: melding, type: type })
-    }
+    const erAlleValgt = valgteBoter.size === ubetalteBoter.length
 
     return (
-        <div className="mx-auto p-4">
+        <div className="mx-auto p-4 space-y-6">
             <Header size="medium" text="Marker betalt bot" />
             {melding && <AlertBanner message={melding.tekst} type={melding.type} />}
-            <Dropdown
-                id={'spillere'}
-                label={'Velg spiller'}
-                options={spillere}
-                placeholder={'Velg en spiller'}
-                onChange={(e) => {
-                    const spiller = spillere.find((spiller) => spiller.id == e.target.value)
-                    setValgspiller(spiller)
-                }}
-            />
+
+            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+                <SpillerCombobox
+                    spillere={spillere}
+                    valgtSpiller={valgtSpiller}
+                    onSpillerValgAction={handleSpillerValg}
+                    placeholder="Søk på navn eller draktnummer..."
+                    label="Søk og velg spiller"
+                />
+            </div>
+
+            {valgtSpiller && ubetalteBoter.length > 0 && (
+                <UbetalteBoterSeksjon
+                    valgtSpiller={valgtSpiller}
+                    ubetalteBoter={ubetalteBoter}
+                    valgteBoter={valgteBoter}
+                    totalBelop={totalBelop}
+                    erAlleValgt={erAlleValgt}
+                    forseelser={forseelser}
+                    onBotToggle={handleBotToggle}
+                    onVelgToggle={handleVelgToggle}
+                    onMarkerBetalt={handleMarkerBetalt}
+                />
+            )}
+
+            {valgtSpiller && betalteBoter.length > 0 && (
+                <BetalteBoterSeksjon
+                    valgtSpiller={valgtSpiller}
+                    betalteBoter={betalteBoter}
+                    visBetalteBøter={visBetalteBøter}
+                    forseelser={forseelser}
+                    onToggleVis={() => setVisBetalteBøter(!visBetalteBøter)}
+                    onMarkerUbetalt={handleMarkerUbetalt}
+                />
+            )}
+
             {valgtSpiller && (
-                <>
-                    <Header size={'small'} text={`Bøter for spiller ${valgtSpiller.draktnummer}`} />
-                    <ListBoter
-                        key={valgtSpiller.draktnummer}
-                        forseelser={forseelser}
-                        spiller={valgtSpiller}
-                        erBotsjef={true}
-                        visResultat={handterResultat}
-                    />
-                </>
+                <SpillerStatus
+                    valgtSpiller={valgtSpiller}
+                    harUbetalteBoter={ubetalteBoter.length > 0}
+                    harBetalteBoter={betalteBoter.length > 0}
+                />
             )}
         </div>
     )
