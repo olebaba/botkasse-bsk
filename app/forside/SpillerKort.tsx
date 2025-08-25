@@ -9,6 +9,10 @@ import {
     hentSesongTekst,
 } from '@/lib/botBeregning'
 import { ListBoter } from '@/komponenter/boter/ListBoter'
+import { Knapp } from '@/komponenter/ui/Knapp'
+import { Select } from '@/komponenter/ui/Select'
+import Header from '@/komponenter/ui/Header'
+import { Liste, ListeElement } from '@/komponenter/ui/Liste'
 import type { Spiller } from '@/lib/spillereService'
 import type { Forseelse } from '@/app/api/boter/typer/route'
 import dayjs from '@/lib/dayjs.ts'
@@ -32,7 +36,7 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
     forseelser,
     visAlleSesonger,
 }) => {
-    const [valgdSesong, setValgdSesong] = useState<string>('')
+    const [valgtSesong, setValgtSesong] = useState<string>('')
 
     const tilgjengeligeSesonger = useMemo(() => {
         return hentTilgjengeligeSesonger(spiller.boter || [])
@@ -53,16 +57,16 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
         }
     }, [spiller.boter, visAlleSesonger])
 
-    const valgdSesongStatistikk = useMemo(() => {
-        if (!valgdSesong || !spiller.boter) return null
+    const valgtSesongStatistikk = useMemo(() => {
+        if (!valgtSesong || !spiller.boter) return null
 
-        const filtrerteBoter = filtrerBoterForSpesifikkSesong(spiller.boter, valgdSesong)
+        const filtrerteBoter = filtrerBoterForSpesifikkSesong(spiller.boter, valgtSesong)
         return {
             sumAlle: filtrerteBoter.reduce((sum, bot) => sum + Number(bot.belop), 0),
             sumBetalt: filtrerteBoter.filter((bot) => bot.erBetalt).reduce((sum, bot) => sum + Number(bot.belop), 0),
             antallBoter: filtrerteBoter.length,
         }
-    }, [spiller.boter, valgdSesong])
+    }, [spiller.boter, valgtSesong])
 
     const getKortKlasser = useCallback(() => {
         const base = 'rounded shadow border p-4 flex flex-col gap-2 transition-all duration-600'
@@ -72,20 +76,13 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
         return `${base} ${bakgrunn} ${ring}`
     }, [botStatistikk.alleBetalt, merInfoOpen])
 
-    const getStatusKnappKlasser = useCallback(() => {
-        const base = 'text-xs px-2 py-1 rounded mt-2 md:mt-0'
-        const variant = merInfoOpen ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700'
-
-        return `${base} ${variant}`
-    }, [merInfoOpen])
-
     const handleToggleInfo = useCallback(() => {
         setMerInfoSpiller(merInfoOpen ? undefined : spiller)
     }, [merInfoOpen, setMerInfoSpiller, spiller])
 
     const handleVippsBetaling = useCallback(
-        (e: React.MouseEvent) => {
-            e.stopPropagation()
+        (e?: React.MouseEvent) => {
+            e?.stopPropagation()
             setSpillerVipps(spiller)
         },
         [setSpillerVipps, spiller],
@@ -105,7 +102,7 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
                 aria-expanded={merInfoOpen}
             >
                 <div className="flex flex-col md:flex-row md:items-center md:gap-4">
-                    <h3 className="font-semibold text-lg">{spiller.navn}</h3>
+                    <Header size="small" text={spiller.navn} as="h3" className="mb-0" />
                     <div className="flex flex-col md:flex-row md:gap-4">
                         <span>
                             <span className="font-medium">Må betales innen slutten av {nesteManed}:</span>{' '}
@@ -117,7 +114,11 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
                         </span>
                     </div>
                 </div>
-                <span className={getStatusKnappKlasser()}>{merInfoOpen ? 'Åpen' : 'Trykk for mer info'}</span>
+                <Knapp
+                    variant="secondary"
+                    className="text-xs px-2 py-1 mt-2 md:mt-0"
+                    tekst={merInfoOpen ? 'Åpen' : 'Trykk for mer info'}
+                />
             </div>
 
             {merInfoOpen && (
@@ -136,11 +137,10 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
                                     <label htmlFor={`sesong-${spiller.id}`} className="font-medium text-sm">
                                         Vis sesong:
                                     </label>
-                                    <select
+                                    <Select
                                         id={`sesong-${spiller.id}`}
-                                        className="px-2 py-1 rounded border border-gray-300 text-sm"
-                                        value={valgdSesong}
-                                        onChange={(e) => setValgdSesong(e.target.value)}
+                                        value={valgtSesong}
+                                        onChange={(e) => setValgtSesong(e.target.value)}
                                     >
                                         <option value="">Gjeldende sesong</option>
                                         {tilgjengeligeSesonger.map((sesong) => (
@@ -148,37 +148,42 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
                                                 {sesong} {sesong === hentSesongTekst() ? '(gjeldende)' : ''}
                                             </option>
                                         ))}
-                                    </select>
+                                    </Select>
                                 </div>
 
-                                {valgdSesongStatistikk && (
-                                    <div className="bg-blue-50 rounded p-2 text-sm space-y-1">
-                                        <p>
-                                            <span className="font-medium">Sesong {valgdSesong}:</span>
-                                        </p>
-                                        <p>• Antall bøter: {valgdSesongStatistikk.antallBoter}</p>
-                                        <p>• Sum bøter: {valgdSesongStatistikk.sumAlle} kroner</p>
-                                        <p>• Betalt: {valgdSesongStatistikk.sumBetalt} kroner</p>
+                                {valgtSesongStatistikk && (
+                                    <div className="bg-blue-50 rounded p-2 text-sm">
+                                        <p className="font-medium mb-1">Sesong {valgtSesong}:</p>
+                                        <Liste variant="disc" className="text-sm">
+                                            <ListeElement>
+                                                Antall bøter: {valgtSesongStatistikk.antallBoter}
+                                            </ListeElement>
+                                            <ListeElement>
+                                                Sum bøter: {valgtSesongStatistikk.sumAlle} kroner
+                                            </ListeElement>
+                                            <ListeElement>
+                                                Betalt: {valgtSesongStatistikk.sumBetalt} kroner
+                                            </ListeElement>
+                                        </Liste>
                                     </div>
                                 )}
                             </div>
                         )}
                     </div>
 
-                    <button
-                        className="bg-vipps-orange hover:bg-vipps-orange-dark text-white rounded px-3 py-2 mb-2 transition-colors"
+                    <Knapp
+                        variant="vipps"
+                        className="px-3 py-2 mb-2"
                         onClick={handleVippsBetaling}
-                        type="button"
-                    >
-                        Betal bøter i Vipps
-                    </button>
+                        tekst="Betal bøter i Vipps"
+                    />
 
                     <ListBoter
                         forseelser={forseelser}
                         erBotsjef={false}
                         spiller={spiller}
                         visAlleSesonger={visAlleSesonger}
-                        valgdSesong={valgdSesong}
+                        valgdSesong={valgtSesong}
                     />
                 </div>
             )}

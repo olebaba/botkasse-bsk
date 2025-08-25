@@ -5,9 +5,10 @@ type HeaderProps = {
     size: 'small' | 'medium' | 'large'
     text: string
     className?: string
+    as?: 'h1' | 'h2' | 'h3' | 'h4' | 'h5' | 'h6'
 }
 
-const Header: React.FC<HeaderProps> = ({ size, text, className }) => {
+const Header: React.FC<HeaderProps> = ({ size, text, className, as: Tag = 'h1' }) => {
     let headerClass = ''
 
     switch (size) {
@@ -24,7 +25,7 @@ const Header: React.FC<HeaderProps> = ({ size, text, className }) => {
             headerClass = 'text-xl'
     }
 
-    return <h1 className={classNames(className, `${headerClass} text-gray-800 mb-4`)}>{text}</h1>
+    return <Tag className={classNames(className, `${headerClass} text-gray-800`)}>{text}</Tag>
 }
 
 export default Header
