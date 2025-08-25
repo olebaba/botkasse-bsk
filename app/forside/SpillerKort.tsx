@@ -12,7 +12,6 @@ import { ListBoter } from '@/komponenter/boter/ListBoter'
 import { Knapp } from '@/komponenter/ui/Knapp'
 import { Select } from '@/komponenter/ui/Select'
 import Header from '@/komponenter/ui/Header'
-import { Liste, ListeElement } from '@/komponenter/ui/Liste'
 import type { Spiller } from '@/lib/spillereService'
 import type { Forseelse } from '@/app/api/boter/typer/route'
 import dayjs from '@/lib/dayjs.ts'
@@ -44,23 +43,35 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
 
     const botStatistikk = useMemo(() => {
         const boter = spiller.boter
-        if (!boter) return { maaBetales: 0, nyeBoter: 0, alleBetalt: false, sumAlle: 0, sumBetalt: 0 }
+        if (!boter) return { maaBetales: 0, nyeBoter: 0, alleBetalt: false, sumAlle: 0, sumBetalt: 0, antallBoter: 0 }
 
         const maaBetales = beregnSumMaaBetalesForSesong(boter, visAlleSesonger)
 
         return {
             maaBetales,
             nyeBoter: beregnSumNyeBoterForSesong(boter, visAlleSesonger),
-            alleBetalt: maaBetales === 0, // Alle påkrevde bøter er betalt hvis summen som må betales er 0
-            sumAlle: beregnSum(boter), // Alltid vis alle bøter uansett sesong
+            alleBetalt: maaBetales === 0,
+            sumAlle: beregnSum(boter),
             sumBetalt: beregnSumBetaltForSesong(boter, visAlleSesonger),
+            antallBoter: boter.length,
         }
     }, [spiller.boter, visAlleSesonger])
 
-    const valgtSesongStatistikk = useMemo(() => {
-        if (!valgtSesong || !spiller.boter) return null
+    const sesongStatistikk = useMemo(() => {
+        if (!spiller.boter) return { sumAlle: 0, sumBetalt: 0, antallBoter: 0 }
 
-        const filtrerteBoter = filtrerBoterForSpesifikkSesong(spiller.boter, valgtSesong)
+        let filtrerteBoter = spiller.boter
+
+        if (valgtSesong === 'alle') {
+            // Vis alle sesonger
+        } else if (valgtSesong === '') {
+            // Vis gjeldende sesong (default)
+            const gjeldendeSesong = hentSesongTekst()
+            filtrerteBoter = filtrerBoterForSpesifikkSesong(spiller.boter, gjeldendeSesong)
+        } else {
+            filtrerteBoter = filtrerBoterForSpesifikkSesong(spiller.boter, valgtSesong)
+        }
+
         return {
             sumAlle: filtrerteBoter.reduce((sum, bot) => sum + Number(bot.belop), 0),
             sumBetalt: filtrerteBoter.filter((bot) => bot.erBetalt).reduce((sum, bot) => sum + Number(bot.belop), 0),
@@ -123,52 +134,61 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
 
             {merInfoOpen && (
                 <div className="mt-2 bg-yellow-50 rounded p-2" onClick={(e) => e.stopPropagation()}>
-                    <div className="mb-2 space-y-1">
-                        <p>
-                            <span className="font-medium">Sum alle bøter:</span> {botStatistikk.sumAlle} kroner
-                        </p>
-                        <p>
-                            <span className="font-medium">Betalt denne sesongen:</span> {botStatistikk.sumBetalt} kroner
-                        </p>
+                    <div className="mb-2 space-y-3">
+                        <div className="flex items-center gap-2">
+                            <label htmlFor={`sesong-${spiller.id}`} className="font-medium text-sm">
+                                Vis sesong:
+                            </label>
+                            <Select
+                                id={`sesong-${spiller.id}`}
+                                value={valgtSesong}
+                                onChange={(e) => setValgtSesong(e.target.value)}
+                            >
+                                <option value="">Gjeldende sesong</option>
+                                <option value="alle">Alle sesonger</option>
+                                {tilgjengeligeSesonger.map((sesong) => (
+                                    <option key={sesong} value={sesong}>
+                                        {sesong} {sesong === hentSesongTekst() ? '(gjeldende)' : ''}
+                                    </option>
+                                ))}
+                            </Select>
+                        </div>
 
-                        {tilgjengeligeSesonger.length > 0 && (
-                            <div className="mt-3 space-y-2">
-                                <div className="flex items-center gap-2">
-                                    <label htmlFor={`sesong-${spiller.id}`} className="font-medium text-sm">
-                                        Vis sesong:
-                                    </label>
-                                    <Select
-                                        id={`sesong-${spiller.id}`}
-                                        value={valgtSesong}
-                                        onChange={(e) => setValgtSesong(e.target.value)}
-                                    >
-                                        <option value="">Gjeldende sesong</option>
-                                        {tilgjengeligeSesonger.map((sesong) => (
-                                            <option key={sesong} value={sesong}>
-                                                {sesong} {sesong === hentSesongTekst() ? '(gjeldende)' : ''}
-                                            </option>
-                                        ))}
-                                    </Select>
-                                </div>
-
-                                {valgtSesongStatistikk && (
-                                    <div className="bg-blue-50 rounded p-2 text-sm">
-                                        <p className="font-medium mb-1">Sesong {valgtSesong}:</p>
-                                        <Liste variant="disc" className="text-sm">
-                                            <ListeElement>
-                                                Antall bøter: {valgtSesongStatistikk.antallBoter}
-                                            </ListeElement>
-                                            <ListeElement>
-                                                Sum bøter: {valgtSesongStatistikk.sumAlle} kroner
-                                            </ListeElement>
-                                            <ListeElement>
-                                                Betalt: {valgtSesongStatistikk.sumBetalt} kroner
-                                            </ListeElement>
-                                        </Liste>
+                        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-200">
+                            <h4 className="font-semibold text-gray-800 mb-3 text-center">
+                                {valgtSesong === 'alle'
+                                    ? 'Statistikk for alle sesonger'
+                                    : valgtSesong === ''
+                                      ? `Statistikk for ${hentSesongTekst()} (gjeldende)`
+                                      : `Statistikk for ${valgtSesong}`}
+                            </h4>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                <div className="bg-white rounded-lg p-3 shadow-sm border">
+                                    <div className="text-center">
+                                        <div className="text-2xl font-bold text-blue-600">
+                                            {sesongStatistikk.antallBoter}
+                                        </div>
+                                        <div className="text-sm text-gray-600 font-medium">Antall bøter</div>
                                     </div>
-                                )}
+                                </div>
+                                <div className="bg-white rounded-lg p-3 shadow-sm border">
+                                    <div className="text-center">
+                                        <div className="text-2xl font-bold text-red-600">
+                                            {sesongStatistikk.sumAlle}
+                                        </div>
+                                        <div className="text-sm text-gray-600 font-medium">Sum bøter (kr)</div>
+                                    </div>
+                                </div>
+                                <div className="bg-white rounded-lg p-3 shadow-sm border">
+                                    <div className="text-center">
+                                        <div className="text-2xl font-bold text-green-600">
+                                            {sesongStatistikk.sumBetalt}
+                                        </div>
+                                        <div className="text-sm text-gray-600 font-medium">Betalt (kr)</div>
+                                    </div>
+                                </div>
                             </div>
-                        )}
+                        </div>
                     </div>
 
                     <Knapp
@@ -183,7 +203,7 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
                         erBotsjef={false}
                         spiller={spiller}
                         visAlleSesonger={visAlleSesonger}
-                        valgdSesong={valgtSesong}
+                        valgdSesong={valgtSesong === 'alle' ? '' : valgtSesong}
                     />
                 </div>
             )}
