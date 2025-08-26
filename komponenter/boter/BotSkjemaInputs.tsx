@@ -9,10 +9,12 @@ interface BotSkjemaInputsProps {
     dato: string
     erKampdag: boolean
     valgteSpillere: string[]
+    kommentar: string
     onForseelseEndring: (forseelseId: string, nyttBelop: number) => void
     onBelopEndring: (belop: number) => void
     onDatoEndring: (dato: string) => void
     onKampdagEndring: (erKampdag: boolean) => void
+    onKommentarEndring: (kommentar: string) => void
     onLeggTilBoter: () => void
 }
 
@@ -22,10 +24,12 @@ export default function BotSkjemaInputs({
     dato,
     erKampdag,
     valgteSpillere,
+    kommentar,
     onForseelseEndring,
     onBelopEndring,
     onDatoEndring,
     onKampdagEndring,
+    onKommentarEndring,
     onLeggTilBoter,
 }: BotSkjemaInputsProps) {
     return (
@@ -90,6 +94,20 @@ export default function BotSkjemaInputs({
                             className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
                         />
                     </div>
+                </div>
+
+                <div>
+                    <label className="block text-gray-700 font-semibold mb-2" htmlFor="kommentar">
+                        Kommentar
+                    </label>
+                    <textarea
+                        id="kommentar"
+                        value={kommentar}
+                        onChange={(e) => onKommentarEndring(e.target.value)}
+                        className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                        rows={3}
+                        placeholder="Skriv en kommentar..."
+                    />
                 </div>
             </div>
 

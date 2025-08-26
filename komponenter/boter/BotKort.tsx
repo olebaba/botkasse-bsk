@@ -35,6 +35,11 @@ export const UbetaltBotKort = ({ bot, forseelse, erValgt, onToggle }: BotKortPro
                         <div className="text-sm text-gray-600 mt-1">
                             <span className="font-medium">Dato:</span> {dato}
                         </div>
+                        {bot.kommentar && (
+                            <div className="text-sm text-gray-600 mt-1">
+                                <span className="font-medium">Kommentar:</span> {bot.kommentar}
+                            </div>
+                        )}
                         <div className="text-red-600 font-medium text-sm mt-1">Ikke betalt</div>
                     </div>
                 </div>
@@ -55,6 +60,11 @@ export const BetaltBotKort = ({ bot, forseelse, onMarkerUbetalt }: BotKortProps)
                     <div className="text-sm text-gray-600 mt-1">
                         <span className="font-medium">Dato:</span> {dato}
                     </div>
+                    {bot.kommentar && (
+                        <div className="text-sm text-gray-600 mt-1">
+                            <span className="font-medium">Kommentar:</span> {bot.kommentar}
+                        </div>
+                    )}
                     <div className="text-green-600 font-medium text-sm mt-1">Betalt</div>
                 </div>
                 <div className="flex items-center space-x-3">

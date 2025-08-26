@@ -8,7 +8,12 @@ type Params = {
 
 export async function POST(request: Request, props: { params: Promise<Params> }) {
     const params = await props.params
-    const { beløp, dato, forseelsesId }: { beløp: number; dato: string; forseelsesId: number } = await request.json()
+    const {
+        beløp,
+        dato,
+        forseelsesId,
+        kommentar,
+    }: { beløp: number; dato: string; forseelsesId: number; kommentar?: string } = await request.json()
     const spiller_id = parseInt(params.spiller_id, 10)
 
     if (!spiller_id || !beløp || !dato || !forseelsesId) {
@@ -17,8 +22,8 @@ export async function POST(request: Request, props: { params: Promise<Params> })
 
     try {
         await sql`
-            INSERT INTO bøter (spiller_id, beløp, dato, forseelse_id, er_betalt)
-            VALUES (${spiller_id}, ${beløp}, ${dato}, ${forseelsesId}, false)
+            INSERT INTO bøter (spiller_id, beløp, dato, forseelse_id, er_betalt, kommentar)
+            VALUES (${spiller_id}, ${beløp}, ${dato}, ${forseelsesId}, false, ${kommentar || null})
         `
 
         await sql`
@@ -51,11 +56,12 @@ export interface Bot {
     dato: Dayjs
     forseelseId: string
     erBetalt: boolean
+    kommentar?: string
 }
 
 async function hentBoterForSpillerId(spiller_id: number): Promise<Bot[]> {
     const { rows } = await sql`
-        SELECT id, bøter.spiller_id, beløp, dato, forseelse_id, er_betalt
+        SELECT id, bøter.spiller_id, beløp, dato, forseelse_id, er_betalt, kommentar
         FROM bøter
         WHERE spiller_id = ${spiller_id}
     `
@@ -66,5 +72,6 @@ async function hentBoterForSpillerId(spiller_id: number): Promise<Bot[]> {
         dato: row.dato,
         forseelseId: row.forseelse_id,
         erBetalt: row.er_betalt,
+        kommentar: row.kommentar,
     }))
 }

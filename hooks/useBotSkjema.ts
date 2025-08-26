@@ -8,6 +8,7 @@ export function useBotSkjema() {
     const [belop, setBelop] = useState(0)
     const [dato, setDato] = useState(dayjs().format('YYYY-MM-DD'))
     const [forseelsesId, setForseelsesId] = useState('')
+    const [kommentar, setKommentar] = useState('')
     const [melding, setMelding] = useState<{
         tekst: string
         type: AlertTypes
@@ -53,12 +54,17 @@ export function useBotSkjema() {
         }
 
         try {
-            await Promise.all(valgteSpillere.map((spillerId) => lagBot(spillerId, Number(belop), dato, forseelsesId)))
+            await Promise.all(
+                valgteSpillere.map((spillerId) =>
+                    lagBot(spillerId, Number(belop), dato, forseelsesId, kommentar || undefined),
+                ),
+            )
             setMelding({
                 tekst: `${valgteSpillere.length + ' ' + (valgteSpillere.length === 1 ? 'bot' : 'bøter')} lagt til!`,
                 type: AlertTypes.SUCCESS,
             })
             setValgteSpillere([])
+            setKommentar('')
         } catch (error) {
             console.error(error)
             setMelding({
@@ -73,11 +79,13 @@ export function useBotSkjema() {
         belop,
         dato,
         forseelsesId,
+        kommentar,
         melding,
         erKampdag,
         setBelop,
         setDato,
         setErKampdag,
+        setKommentar,
         handleSpillerToggle,
         handleVelgAlle,
         handleFjernAlle,

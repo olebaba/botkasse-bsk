@@ -15,9 +15,11 @@ export default function LeggTilBot({ spillere, forseelser }: { spillere: Spiller
         dato,
         melding,
         erKampdag,
+        kommentar,
         setBelop,
         setDato,
         setErKampdag,
+        setKommentar,
         handleSpillerToggle,
         handleFjernAlle,
         handleForseelseEndring,
@@ -41,10 +43,12 @@ export default function LeggTilBot({ spillere, forseelser }: { spillere: Spiller
                     dato={dato}
                     erKampdag={erKampdag}
                     valgteSpillere={valgteSpillere}
+                    kommentar={kommentar}
                     onForseelseEndring={handleForseelseEndring}
                     onBelopEndring={setBelop}
                     onDatoEndring={setDato}
                     onKampdagEndring={setErKampdag}
+                    onKommentarEndring={setKommentar}
                     onLeggTilBoter={handleLeggTilBoter}
                 />
             </div>

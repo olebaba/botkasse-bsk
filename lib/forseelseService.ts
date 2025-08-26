@@ -10,7 +10,13 @@ export const fetchForseelser = async (): Promise<Forseelse[]> => {
     return await response.json()
 }
 
-export const lagBot = async (spillerId: string, beløp: number, dato: string, forseelsesId: string) => {
+export const lagBot = async (
+    spillerId: string,
+    beløp: number,
+    dato: string,
+    forseelsesId: string,
+    kommentar?: string,
+) => {
     const response = await fetch('/api/boter/' + spillerId, {
         method: 'POST',
         headers: {
@@ -20,6 +26,7 @@ export const lagBot = async (spillerId: string, beløp: number, dato: string, fo
             beløp,
             dato,
             forseelsesId,
+            kommentar,
         }),
     })
 
