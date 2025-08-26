@@ -87,4 +87,6 @@
 
 .animate-spin-cool {
   animation: spin-cool 1s linear infinite;
+  display: inline-block;
+  transform-origin: center center;
 }
