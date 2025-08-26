@@ -30,7 +30,7 @@ export const MarkerBetalt = ({ spillere, forseelser }: { spillere: Spiller[]; fo
     const erAlleValgt = valgteBoter.size === ubetalteBoter.length
 
     return (
-        <div className="mx-auto p-4 space-y-6">
+        <div className="container mx-auto p-4 space-y-6">
             <Header size="medium" text="Marker betalt bot" />
             {melding && <AlertBanner message={melding.tekst} type={melding.type} />}
 
