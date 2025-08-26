@@ -7,12 +7,13 @@ import { validateRequest } from '@/lib/auth/validateRequest.ts'
 
 export async function signup(formData: FormData): Promise<ActionResult> {
     'use server'
-    const cookieStore = await cookies()
     try {
         // Først logg ut eksisterende session (inkludert gjest)
         const { session: eksisterendeSession } = await validateRequest()
         if (eksisterendeSession) {
             await lucia.invalidateSession(eksisterendeSession.id)
+            const blankCookie = lucia.createBlankSessionCookie()
+            ;(await cookies()).set(blankCookie.name, blankCookie.value, blankCookie.attributes)
         }
 
         let brukernavn, passord
@@ -53,7 +54,7 @@ export async function signup(formData: FormData): Promise<ActionResult> {
 
         const session = await lucia.createSession(typedBruker.id, {})
         const sessionCookie = lucia.createSessionCookie(session.id)
-        cookieStore.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes)
+        ;(await cookies()).set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes)
     } catch (e) {
         const maybeVercelPostgresError = (typeof e === 'object' ? e : {}) as Partial<VercelPostgresError>
 

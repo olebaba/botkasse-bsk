@@ -12,6 +12,8 @@ export async function login(formData: FormData): Promise<void> {
         const { session: eksisterendeSession } = await validateRequest()
         if (eksisterendeSession) {
             await lucia.invalidateSession(eksisterendeSession.id)
+            const blankCookie = lucia.createBlankSessionCookie()
+            ;(await cookies()).set(blankCookie.name, blankCookie.value, blankCookie.attributes)
         }
 
         const brukernavn = formData.get('brukernavn')
@@ -62,7 +64,6 @@ export async function login(formData: FormData): Promise<void> {
         ;(await cookies()).set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes)
     } catch (e) {
         const maybeVercelPostgresError = (typeof e === 'object' ? e : {}) as Partial<VercelPostgresError>
-
         console.error(maybeVercelPostgresError)
     }
     redirect(`/minside`)
