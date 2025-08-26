@@ -8,9 +8,18 @@ interface KnappProps {
     className?: string
     type?: 'button' | 'submit' | 'reset'
     variant?: 'primary' | 'vipps' | 'secondary'
+    disabled?: boolean
 }
 
-export const Knapp = ({ tekst, children, onClick, className, type = 'button', variant = 'primary' }: KnappProps) => {
+export const Knapp = ({
+    tekst,
+    children,
+    onClick,
+    className,
+    type = 'button',
+    variant = 'primary',
+    disabled,
+}: KnappProps) => {
     const getVariantClassName = () => {
         switch (variant) {
             case 'vipps':
@@ -22,10 +31,10 @@ export const Knapp = ({ tekst, children, onClick, className, type = 'button', va
         }
     }
 
-    const defaultClassName = `px-4 py-2 rounded transition-colors focus:outline-none focus:ring-2 focus:ring-opacity-50 ${getVariantClassName()}`
+    const defaultClassName = `px-4 py-2 rounded transition-colors focus:outline-none focus:ring-2 focus:ring-opacity-50 ${getVariantClassName()} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`
 
     return (
-        <button type={type} className={classNames(defaultClassName, className)} onClick={onClick}>
+        <button type={type} className={classNames(defaultClassName, className)} onClick={onClick} disabled={disabled}>
             {children || tekst}
         </button>
     )

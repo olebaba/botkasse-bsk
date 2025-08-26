@@ -82,7 +82,7 @@ export const MinSideClient = ({ user, logoutAction }: MinSideClientProps) => {
                             {initialer}
                         </div>
                     )}
-                    <Header className="mb-4 text-center" size="large" text={erGjest ? 'Gjestbruker' : 'Min side'} />
+                    <Header className="mb-4 text-center" size="large" text={erGjest ? 'Gjestebruker' : 'Min side'} />
                     <div className="w-full mb-6 space-y-6">
                         {erGjest ? (
                             <>
