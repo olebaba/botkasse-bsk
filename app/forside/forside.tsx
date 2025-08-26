@@ -4,7 +4,6 @@ import Link from 'next/link'
 import Image from 'next/image'
 import SpillerBøter from '@/app/forside/spiller-bøter.tsx'
 import GjesteTilgangModal from '@/app/forside/components/GjesteTilgangModal.tsx'
-import LagkasseDisplay from '@/app/forside/components/LagkasseDisplay.tsx'
 import { useSpillere } from '@/hooks/useSpillere.ts'
 import { useForseelser } from '@/hooks/useForseelser.ts'
 import { useUtgifter } from '@/hooks/useUtgifter.ts'
@@ -38,16 +37,37 @@ const Forside = ({ bruker, gjestebrukerAction }: ForsideProps) => {
     }
 
     return (
-        <div className="container mx-auto p-4 mt-24">
-            <Header className="!mb-0" size="small" text="Hvilke bøter kan man få?" />
-            <Link href="/boter" className="text-blue-600 flex items-center">
-                Sjekk oversikt her
-                <div className="w-6 h-6 ml-1 bg-blue-500 text-white rounded-full flex items-center justify-center shadow-lg animate-bounce">
-                    <Image alt="Nye bøter" src={new_release} />
+        <div className="container mx-auto p-4 mt-28">
+            <div className="mb-6">
+                <Link
+                    href="/boter"
+                    className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium"
+                >
+                    <span>Se alle typer bøter</span>
+                    <div className="w-4 h-4 bg-blue-500 text-white rounded-full flex items-center justify-center animate-bounce">
+                        <Image alt="Nye bøter" src={new_release} className="w-2 h-2" />
+                    </div>
+                </Link>
+            </div>
+
+            <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                        <span className={`text-2xl ${lasterKasseBeregning ? 'animate-spin-cool' : ''}`}>💰</span>
+                        <p className="font-medium text-gray-900">Lagkassen</p>
+                    </div>
+                    <div>
+                        {
+                            <p className="text-3xl font-bold text-green-600">
+                                {lasterKasseBeregning ? 'Laster...' : kasseBeregning + ' kr'}
+                            </p>
+                        }
+                    </div>
                 </div>
-            </Link>
-            <LagkasseDisplay gjenstaendeKasse={kasseBeregning} laster={lasterKasseBeregning} />
-            <Header className="text-3xl font-bold text-center mb-6 mt-2" size="large" text="Spilleres bøter i BSK" />
+            </div>
+
+            <Header className="mb-4" size="medium" text="Spilleres bøter" />
+
             <SpillerBøter spillere={spillere} forseelser={forseelser} bruker={bruker} />
         </div>
     )
