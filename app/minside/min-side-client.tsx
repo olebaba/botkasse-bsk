@@ -21,7 +21,7 @@ const hentInitialer = (spillerNavn?: string) => {
     return 'B'
 }
 
-interface MinSideClientProps {
+export interface MinSideClientProps {
     user: User
     logoutAction: () => Promise<void>
 }
@@ -82,7 +82,7 @@ export const MinSideClient = ({ user, logoutAction }: MinSideClientProps) => {
                             {initialer}
                         </div>
                     )}
-                    <Header className="mb-4 text-center" size="large" text={erGjest ? 'Gjestebruker' : 'Min side'} />
+                    <Header className="mb-4 text-center" size="large" text={erGjest ? 'Gjestbruker' : 'Min side'} />
                     <div className="w-full mb-6 space-y-6">
                         {erGjest ? (
                             <>
@@ -97,7 +97,8 @@ export const MinSideClient = ({ user, logoutAction }: MinSideClientProps) => {
                     {!erGjest && (
                         <form action={logoutAction} className="w-full">
                             <Knapp
-                                tekst={'Logg ut'}
+                                tekst="Logg ut"
+                                type="submit"
                                 className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-colors duration-200"
                             />
                         </form>

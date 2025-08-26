@@ -3,11 +3,18 @@ import { hash } from '@node-rs/argon2'
 import { sql } from '@vercel/postgres'
 import { redirect } from 'next/navigation'
 import { type ActionResult, type Bruker, lucia, type VercelPostgresError } from '@/lib/auth/authConfig.ts'
+import { validateRequest } from '@/lib/auth/validateRequest.ts'
 
 export async function signup(formData: FormData): Promise<ActionResult> {
     'use server'
     const cookieStore = await cookies()
     try {
+        // Først logg ut eksisterende session (inkludert gjest)
+        const { session: eksisterendeSession } = await validateRequest()
+        if (eksisterendeSession) {
+            await lucia.invalidateSession(eksisterendeSession.id)
+        }
+
         let brukernavn, passord
 
         try {

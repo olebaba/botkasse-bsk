@@ -3,10 +3,17 @@ import { verify } from '@node-rs/argon2'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { type Bruker, lucia, type VercelPostgresError } from '@/lib/auth/authConfig.ts'
+import { validateRequest } from '@/lib/auth/validateRequest.ts'
 
 export async function login(formData: FormData): Promise<void> {
     'use server'
     try {
+        // Først logg ut eksisterende session (inkludert gjest)
+        const { session: eksisterendeSession } = await validateRequest()
+        if (eksisterendeSession) {
+            await lucia.invalidateSession(eksisterendeSession.id)
+        }
+
         const brukernavn = formData.get('brukernavn')
         if (
             typeof brukernavn !== 'string' ||
@@ -49,6 +56,7 @@ export async function login(formData: FormData): Promise<void> {
             }
         }
 
+        // Opprett ny session for den autentiserte brukeren
         const session = await lucia.createSession(typedBruker.id, {})
         const sessionCookie = lucia.createSessionCookie(session.id)
         ;(await cookies()).set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes)
