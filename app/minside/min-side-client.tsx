@@ -8,6 +8,7 @@ import type { User } from 'lucia'
 import ios_share from '@/ikoner/ios-share.svg'
 import add_to_home_chrome from '@/ikoner/add-to-home-screen-chrome.svg'
 import Image from 'next/image'
+import Link from 'next/link'
 
 const hentInitialer = (spillerNavn?: string) => {
     if (spillerNavn && spillerNavn.trim().length > 0) {
@@ -43,6 +44,21 @@ const LagreSomAppSeksjon = () => (
     </div>
 )
 
+const OpprettBrukerSeksjon = () => (
+    <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl shadow p-6 border border-blue-200 dark:border-blue-700">
+        <Header size="medium" className="mb-3" text="Opprett bruker" />
+        <p className="text-gray-700 dark:text-gray-300 mb-4 text-sm leading-relaxed">
+            Som registrert bruker får du lettere tilgang til dine egne bøter og kan oppdatere informasjon din.
+        </p>
+        <Link href="/signup">
+            <Knapp
+                tekst="Registrer deg her"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold transition-colors duration-200"
+            />
+        </Link>
+    </div>
+)
+
 export const MinSideClient = ({ user, logoutAction }: MinSideClientProps) => {
     const erGjest = user?.type === 'gjest'
     const { spillerInfo, loading } = useSpillerInfo(!erGjest ? (user?.id ?? '') : '')
@@ -66,9 +82,16 @@ export const MinSideClient = ({ user, logoutAction }: MinSideClientProps) => {
                             {initialer}
                         </div>
                     )}
-                    <Header className="mb-4 text-center" size="large" text={erGjest ? "Gjestebruker" : "Min side"} />
-                    <div className="w-full mb-6">
-                        {erGjest ? <LagreSomAppSeksjon /> : <MinSideInfo bruker={user} spillerInfo={spillerInfo} />}
+                    <Header className="mb-4 text-center" size="large" text={erGjest ? 'Gjestebruker' : 'Min side'} />
+                    <div className="w-full mb-6 space-y-6">
+                        {erGjest ? (
+                            <>
+                                <OpprettBrukerSeksjon />
+                                <LagreSomAppSeksjon />
+                            </>
+                        ) : (
+                            <MinSideInfo bruker={user} spillerInfo={spillerInfo} />
+                        )}
                     </div>
                     {!erGjest && <div className="w-full border-t border-gray-200 dark:border-gray-700 my-6" />}
                     {!erGjest && (

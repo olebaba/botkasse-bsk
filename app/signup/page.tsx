@@ -6,8 +6,7 @@ import { signup } from '@/lib/auth/signup.ts'
 
 export default async function Page() {
     const { user } = await validateRequest()
-    if (user) {
-        console.log(user)
+    if (user && user.type !== 'gjest') {
         return redirect('/minside')
     }
     return (
