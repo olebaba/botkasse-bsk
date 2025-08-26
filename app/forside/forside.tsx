@@ -4,10 +4,10 @@ import Link from 'next/link'
 import Image from 'next/image'
 import SpillerBøter from '@/app/forside/spiller-bøter.tsx'
 import GjesteTilgangModal from '@/app/forside/components/GjesteTilgangModal.tsx'
+import AnimertTeller from '@/app/forside/components/AnimertTeller.tsx'
 import { useSpillere } from '@/hooks/useSpillere.ts'
 import { useForseelser } from '@/hooks/useForseelser.ts'
 import { useUtgifter } from '@/hooks/useUtgifter.ts'
-import { useAnimertTelling } from '@/hooks/useAnimertTelling.ts'
 import Header from '@/komponenter/ui/Header.tsx'
 import { beregnSum } from '@/lib/botBeregning.ts'
 import new_release from '@/ikoner/new-release.svg'
@@ -33,9 +33,6 @@ const Forside = ({ bruker, gjestebrukerAction }: ForsideProps) => {
 
     const lasterKasseBeregning = lasterSpillere || lasterUtgifter
 
-    const målBeløp = lasterKasseBeregning ? 1500 : kasseBeregning
-    const animertBeløp = useAnimertTelling(målBeløp, 1200)
-
     if (!bruker) {
         return <GjesteTilgangModal gjestebrukerAction={gjestebrukerAction} />
     }
@@ -51,7 +48,7 @@ const Forside = ({ bruker, gjestebrukerAction }: ForsideProps) => {
                         <p className="font-medium text-gray-900">Lagkassen</p>
                     </div>
                     <div>
-                        <p className="text-3xl font-bold text-green-600">{`${animertBeløp} kr`}</p>
+                        <AnimertTeller målVerdi={kasseBeregning} laster={lasterKasseBeregning} />
                     </div>
                 </div>
             </div>

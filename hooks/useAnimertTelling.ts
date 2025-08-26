@@ -1,22 +1,44 @@
 import { useEffect, useState, useRef } from 'react'
 
-export const useAnimertTelling = (målVerdi: number, varighet: number = 1500) => {
-    const [gjeldendeTall, setGjeldendeTall] = useState(0)
-    const animasjonsIdRef = useRef<number | null>(null)
-    const mountedRef = useRef(false)
+let globalAnimationStarted = false
 
-    useEffect(() => {
-        if (!mountedRef.current) {
-            mountedRef.current = true
+export const useAnimertTelling = (målVerdi: number, varighet: number = 1500) => {
+    const [visningsVerdi, setVisningsVerdi] = useState(0)
+    const animasjonsIdRef = useRef<NodeJS.Timeout | null>(null)
+
+    // Start animasjonen umiddelbart ved første hook-kall
+    if (!globalAnimationStarted && målVerdi > 0) {
+        globalAnimationStarted = true
+
+        const startTid = Date.now()
+
+        const animasjon = () => {
+            const forløptTid = Date.now() - startTid
+            const fremgang = Math.min(forløptTid / varighet, 1)
+
+            const easedFremgang = 1 - Math.pow(1 - fremgang, 3)
+            const nyttTall = Math.floor(målVerdi * easedFremgang)
+
+            setVisningsVerdi(nyttTall)
+
+            if (fremgang < 1) {
+                setTimeout(animasjon, 16)
+            } else {
+                setVisningsVerdi(målVerdi)
+            }
         }
 
-        // Stopp eksisterende animasjon
+        // Start umiddelbart uten timeout
+        animasjon()
+    }
+
+    useEffect(() => {
         if (animasjonsIdRef.current) {
-            cancelAnimationFrame(animasjonsIdRef.current)
+            clearTimeout(animasjonsIdRef.current)
         }
 
         const startTid = Date.now()
-        const startVerdi = gjeldendeTall
+        const startVerdi = visningsVerdi
 
         const animasjon = () => {
             const forløptTid = Date.now() - startTid
@@ -25,25 +47,23 @@ export const useAnimertTelling = (målVerdi: number, varighet: number = 1500) =>
             const easedFremgang = 1 - Math.pow(1 - fremgang, 3)
             const nyttTall = Math.floor(startVerdi + (målVerdi - startVerdi) * easedFremgang)
 
-            setGjeldendeTall(nyttTall)
+            setVisningsVerdi(nyttTall)
 
             if (fremgang < 1) {
-                animasjonsIdRef.current = requestAnimationFrame(animasjon)
+                animasjonsIdRef.current = setTimeout(animasjon, 16)
             } else {
-                setGjeldendeTall(målVerdi)
-                animasjonsIdRef.current = null
+                setVisningsVerdi(målVerdi)
             }
         }
 
-        // Start umiddelbart
-        animasjonsIdRef.current = requestAnimationFrame(animasjon)
+        animasjonsIdRef.current = setTimeout(animasjon, 0)
 
         return () => {
             if (animasjonsIdRef.current) {
-                cancelAnimationFrame(animasjonsIdRef.current)
+                clearTimeout(animasjonsIdRef.current)
             }
         }
-    }, [målVerdi, varighet, gjeldendeTall])
+    }, [målVerdi, varighet, visningsVerdi])
 
-    return gjeldendeTall
+    return visningsVerdi
 }
