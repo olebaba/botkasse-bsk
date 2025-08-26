@@ -3,47 +3,22 @@ import { hash } from '@node-rs/argon2'
 import { sql } from '@vercel/postgres'
 import { redirect } from 'next/navigation'
 import { type ActionResult, type Bruker, lucia, type VercelPostgresError } from '@/lib/auth/authConfig.ts'
-import { validateRequest } from '@/lib/auth/validateRequest.ts'
 
 export async function signup(formData: FormData): Promise<ActionResult> {
     'use server'
+
     try {
-        // Først logg ut eksisterende session (inkludert gjest)
-        const { session: eksisterendeSession } = await validateRequest()
-        if (eksisterendeSession) {
-            await lucia.invalidateSession(eksisterendeSession.id)
-            const blankCookie = lucia.createBlankSessionCookie()
-            ;(await cookies()).set(blankCookie.name, blankCookie.value, blankCookie.attributes)
-        }
+        const { brukernavn, passord } = validerBrukernavnOgPassord(formData)
 
-        let brukernavn, passord
+        await sjekkBrukerFinnes(brukernavn)
+        const spiller = await sjekkDraktnummer(formData)
 
-        try {
-            ;({ brukernavn, passord } = validerBrukernavnOgPassord(formData))
-        } catch (error) {
-            console.error(error)
-            return error as ActionResult
-        }
         const passwordHash = await hash(passord, {
             memoryCost: 19456,
             timeCost: 2,
             outputLen: 32,
             parallelism: 1,
         })
-
-        try {
-            await sjekkBrukerFinnes(brukernavn)
-        } catch (error) {
-            console.error(error)
-            return error as ActionResult
-        }
-        let spiller
-        try {
-            spiller = await sjekkDraktnummer(formData)
-        } catch (error) {
-            console.error(error)
-            return error as ActionResult
-        }
 
         const registrertBruker = await sql<Bruker>`
             INSERT INTO brukere (brukernavn, passord, spiller_id, type)
@@ -54,14 +29,20 @@ export async function signup(formData: FormData): Promise<ActionResult> {
 
         const session = await lucia.createSession(typedBruker.id, {})
         const sessionCookie = lucia.createSessionCookie(session.id)
-        ;(await cookies()).set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes)
+        const cookieStore = await cookies()
+        cookieStore.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes)
     } catch (e) {
-        const maybeVercelPostgresError = (typeof e === 'object' ? e : {}) as Partial<VercelPostgresError>
-
-        console.error(maybeVercelPostgresError)
-        return { error: 'En feil skjedde ved registrering, prøv igjen senere' }
+        console.error('Signup feil:', e)
+        if (e instanceof Error && e.message.includes('finnes allerede')) {
+            return { error: 'Bruker finnes allerede' }
+        }
+        if (e instanceof Error && e.message.includes('Draktnummer')) {
+            return { error: e.message }
+        }
+        return { error: 'Registrering feilet, prøv igjen senere' }
     }
-    redirect(`/minside`)
+
+    redirect('/minside')
 }
 
 async function sjekkBrukerFinnes(brukernavn: string) {
