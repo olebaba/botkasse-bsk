@@ -1,24 +1,15 @@
 import { redirect } from 'next/navigation'
-import Header from '@/komponenter/ui/Header.tsx'
-import { MinSideInfo } from '@/app/minside/min-side-info.tsx'
-import { Knapp } from '@/komponenter/ui/Knapp.tsx'
 import { validateRequest } from '@/lib/auth/validateRequest.ts'
 import { logout } from '@/lib/auth/logout.ts'
+import { MinSideClient } from './min-side-client.tsx'
 
-export default async function MinSide() {
+const MinSide = async () => {
     const { user } = await validateRequest()
     if (!user) {
         return redirect('/login')
     }
-    return (
-        <div className="text-center">
-            <Header className="mt-24" size="large" text="Min side" />
-            <MinSideInfo bruker={user} />
-            {user.type != 'gjest' && (
-                <form className="mt-8" action={logout}>
-                    <Knapp tekst={'Logg ut'} />
-                </form>
-            )}
-        </div>
-    )
+
+    return <MinSideClient user={user} logoutAction={logout} />
 }
+
+export default MinSide

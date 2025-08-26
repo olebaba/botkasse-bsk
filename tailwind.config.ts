@@ -1,6 +1,7 @@
 import type { Config } from 'tailwindcss'
 
 const config: Config = {
+    darkMode: 'class',
     content: [
         './komponenter/**/*.{js,ts,jsx,tsx,mdx}',
         './ikoner/**/*.{js,ts,jsx,tsx,mdx}',
