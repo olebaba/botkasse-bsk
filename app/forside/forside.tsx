@@ -20,7 +20,7 @@ interface ForsideProps {
 }
 
 const Forside = ({ bruker, gjestebrukerAction }: ForsideProps) => {
-    const { spillere } = useSpillere(true)
+    const { spillere, loading: lasterSpillere } = useSpillere(true)
     const { forseelser } = useForseelser()
     const { utgifter, laster: lasterUtgifter } = useUtgifter()
 
@@ -30,6 +30,8 @@ const Forside = ({ bruker, gjestebrukerAction }: ForsideProps) => {
         const totalUtgifter = utgifter.reduce((sum, u) => sum + u.beløp, 0)
         return sumBetalteBoter - totalUtgifter
     }, [spillere, utgifter])
+
+    const lasterKasseBeregning = lasterSpillere || lasterUtgifter
 
     if (!bruker) {
         return <GjesteTilgangModal gjestebrukerAction={gjestebrukerAction} />
@@ -44,7 +46,7 @@ const Forside = ({ bruker, gjestebrukerAction }: ForsideProps) => {
                     <Image alt="Nye bøter" src={new_release} />
                 </div>
             </Link>
-            <LagkasseDisplay gjenstaendeKasse={kasseBeregning} laster={lasterUtgifter} />
+            <LagkasseDisplay gjenstaendeKasse={kasseBeregning} laster={lasterKasseBeregning} />
             <Header className="text-3xl font-bold text-center mb-6 mt-2" size="large" text="Spilleres bøter i BSK" />
             <SpillerBøter spillere={spillere} forseelser={forseelser} bruker={bruker} />
         </div>
