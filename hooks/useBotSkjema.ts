@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import dayjs from '@/lib/dayjs'
 import { lagBot } from '@/lib/forseelseService.ts'
 import { AlertTypes } from '@/komponenter/ui/AlertBanner.tsx'
@@ -42,8 +42,10 @@ export function useBotSkjema() {
         setBelop(erKampdag ? nyttBelop * 2 : nyttBelop)
     }
 
-    const handleLeggTilBoter = async (e: React.FormEvent) => {
-        e.preventDefault()
+    const handleLeggTilBoter = async (e?: React.FormEvent) => {
+        if (e) {
+            e.preventDefault()
+        }
 
         if (valgteSpillere.length === 0 || !belop || !dato || !forseelsesId) {
             setMelding({ tekst: 'Velg minst én spiller og fyll ut alle felter.', type: AlertTypes.ERROR })
@@ -53,7 +55,7 @@ export function useBotSkjema() {
         try {
             await Promise.all(valgteSpillere.map((spillerId) => lagBot(spillerId, Number(belop), dato, forseelsesId)))
             setMelding({
-                tekst: `${valgteSpillere.length} bot(er) lagt til!`,
+                tekst: `${valgteSpillere.length + ' ' + (valgteSpillere.length === 1 ? 'bot' : 'bøter')} lagt til!`,
                 type: AlertTypes.SUCCESS,
             })
             setValgteSpillere([])

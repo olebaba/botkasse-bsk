@@ -13,6 +13,7 @@ interface BotSkjemaInputsProps {
     onBelopEndring: (belop: number) => void
     onDatoEndring: (dato: string) => void
     onKampdagEndring: (erKampdag: boolean) => void
+    onLeggTilBoter: () => void
 }
 
 export default function BotSkjemaInputs({
@@ -25,6 +26,7 @@ export default function BotSkjemaInputs({
     onBelopEndring,
     onDatoEndring,
     onKampdagEndring,
+    onLeggTilBoter,
 }: BotSkjemaInputsProps) {
     return (
         <div className="space-y-6 bg-white p-6 rounded-lg shadow-sm border border-gray-200">
@@ -92,7 +94,12 @@ export default function BotSkjemaInputs({
             </div>
 
             <div className="pt-4 border-t border-gray-200">
-                <Knapp tekst={`Legg til ${valgteSpillere.length} ${valgteSpillere.length === 1 ? 'bot' : 'bøter'}`} />
+                <Knapp
+                    tekst={`Legg til ${valgteSpillere.length} ${valgteSpillere.length === 1 ? 'bot' : 'bøter'}`}
+                    onClick={() => {
+                        onLeggTilBoter()
+                    }}
+                />
             </div>
         </div>
     )

@@ -28,7 +28,7 @@ export default function LeggTilBot({ spillere, forseelser }: { spillere: Spiller
         <div className="container mx-auto p-4 mt-28">
             <Header size="medium" text="Legg til bot for spillere" />
             {melding && <AlertBanner message={melding.tekst} type={melding.type} />}
-            <form onSubmit={handleLeggTilBoter}>
+            <div>
                 <SpillerVelger
                     spillere={spillere}
                     valgteSpillere={valgteSpillere}
@@ -45,8 +45,9 @@ export default function LeggTilBot({ spillere, forseelser }: { spillere: Spiller
                     onBelopEndring={setBelop}
                     onDatoEndring={setDato}
                     onKampdagEndring={setErKampdag}
+                    onLeggTilBoter={handleLeggTilBoter}
                 />
-            </form>
+            </div>
         </div>
     )
 }
