@@ -14,11 +14,11 @@ export const metadata: Metadata = {
         description: 'Oversikt over bøter for spillere i bsk sitt A-lag',
         images: 'https://5bxxn0af98q9ysmf.public.blob.vercel-storage.com/ikoner/bsk-logo-full-stor-icgelOv4C6VMPTJ76EXCsDVhOhWCXo',
         type: 'website',
-        url: 'https://botkasse-bsk.vercel.app/',
+        url: 'https://bsk.botkasse.no/',
         siteName: 'Bækkelaget botkasse',
     },
     twitter: {
-        site: 'https://botkasse-bsk.vercel.app/',
+        site: 'https://bsk.botkasse.no/',
         card: 'summary_large_image',
         title: 'Bækkelaget botkasse',
         images: [
