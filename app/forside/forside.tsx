@@ -1,13 +1,15 @@
 'use client'
-import { useMemo } from 'react'
+import { useMemo, useState } from 'react'
 import Link from 'next/link'
 import Image from 'next/image'
 import SpillerBøter from '@/app/forside/spiller-bøter.tsx'
 import GjesteTilgangModal from '@/app/forside/components/GjesteTilgangModal.tsx'
 import AnimertTeller from '@/app/forside/components/AnimertTeller.tsx'
+import SpillerKort from '@/app/forside/SpillerKort'
 import { useSpillere } from '@/hooks/useSpillere.ts'
 import { useForseelser } from '@/hooks/useForseelser.ts'
 import { useUtgifter } from '@/hooks/useUtgifter.ts'
+import { useFavorittSpiller } from '@/hooks/useFavorittSpiller'
 import Header from '@/komponenter/ui/Header.tsx'
 import { beregnSum } from '@/lib/botBeregning.ts'
 import new_release from '@/ikoner/new-release.svg'
@@ -23,6 +25,20 @@ const Forside = ({ bruker, gjestebrukerAction }: ForsideProps) => {
     const { spillere, loading: lasterSpillere } = useSpillere(true)
     const { forseelser } = useForseelser()
     const { utgifter, laster: lasterUtgifter } = useUtgifter()
+    const { favorittSpillerId, settFavorittSpiller, erFavoritt } = useFavorittSpiller()
+    const [prioritertSpillerMerInfo, setPrioritertSpillerMerInfo] = useState(false)
+
+    const favorittSpiller = useMemo(() => {
+        if (!favorittSpillerId) return null
+        return spillere.find((spiller) => spiller.id === favorittSpillerId) || null
+    }, [spillere, favorittSpillerId])
+
+    const egenSpiller = useMemo(() => {
+        if (!bruker?.spiller_id) return null
+        return spillere.find((spiller) => spiller.id === String(bruker.spiller_id)) || null
+    }, [spillere, bruker?.spiller_id])
+
+    const prioritertSpiller = bruker && bruker.type !== 'gjest' ? egenSpiller : favorittSpiller
 
     const kasseBeregning = useMemo(() => {
         const alleBetalteBoter = spillere.flatMap((s) => s.boter).filter((b) => b.erBetalt)
@@ -65,7 +81,26 @@ const Forside = ({ bruker, gjestebrukerAction }: ForsideProps) => {
                 </Link>
             </div>
 
-            <Header className="mb-4" size="medium" text="Spilleres bøter" />
+            {prioritertSpiller && (
+                <div className="mb-6">
+                    <SpillerKort
+                        spiller={prioritertSpiller}
+                        cardRef={() => {}}
+                        merInfoOpen={prioritertSpillerMerInfo}
+                        setMerInfoSpiller={() => setPrioritertSpillerMerInfo((prev) => !prev)}
+                        setSpillerVipps={() => {}}
+                        forseelser={forseelser}
+                        visAlleSesonger={false}
+                        erFavoritt={erFavoritt(prioritertSpiller.id)}
+                        settFavorittSpiller={settFavorittSpiller}
+                        erEgenSpiller={prioritertSpiller.id === String(bruker?.spiller_id)}
+                        bruker={bruker}
+                        favorittSpillerId={favorittSpillerId}
+                    />
+                </div>
+            )}
+
+            <Header className="mb-4" size="medium" text="Alle spilleres bøter" />
 
             <SpillerBøter spillere={spillere} forseelser={forseelser} bruker={bruker} />
         </div>

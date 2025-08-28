@@ -23,7 +23,6 @@ interface SpillerBøterProps {
 }
 
 const sorteringsvalg = [
-    { verdi: 'favoritt', tekst: 'Favoritt øverst' },
     { verdi: 'alfabetisk', tekst: 'Alfabetisk (A-Å)' },
     { verdi: 'antall', tekst: 'Antall bøter' },
     { verdi: 'sum', tekst: 'Total sum bøter' },
@@ -31,14 +30,14 @@ const sorteringsvalg = [
     { verdi: 'sumNyeBoter', tekst: 'Sum av nye bøter denne måneden' },
 ]
 
-type Sortering = 'favoritt' | 'alfabetisk' | 'antall' | 'sum' | 'sumMaaBetales' | 'sumNyeBoter'
+type Sortering = 'alfabetisk' | 'antall' | 'sum' | 'sumMaaBetales' | 'sumNyeBoter'
 type Retning = 'stigende' | 'synkende'
 
 export default function SpillerBøter({ spillere, forseelser, bruker }: SpillerBøterProps) {
     const [spillerVipps, setSpillerVipps] = useState<{ spiller: Spiller; valgtSesong: string } | undefined>(undefined)
     const [merInfoSpiller, setMerInfoSpiller] = useState<Spiller | undefined>(undefined)
     const [visAlleSesonger, setVisAlleSesonger] = useState(false)
-    const [sortering, setSortering] = useState<Sortering>('favoritt')
+    const [sortering, setSortering] = useState<Sortering>('alfabetisk')
     const [retning, setRetning] = useState<Retning>('synkende')
     const navbarHeight = useNavbarHeight()
     const { favorittSpillerId, settFavorittSpiller, erFavoritt } = useFavorittSpiller()
@@ -59,19 +58,7 @@ export default function SpillerBøter({ spillere, forseelser, bruker }: SpillerB
         const spillereKopi = [...filtrerteSpillere]
         spillereKopi.sort((a, b) => {
             let sammenligning = 0
-            if (sortering === 'favoritt') {
-                // For innlogget bruker: deres spiller først
-                if (bruker?.spiller_id) {
-                    const brukerSpillerId = String(bruker.spiller_id)
-                    if (a.id === brukerSpillerId && b.id !== brukerSpillerId) return -1
-                    if (b.id === brukerSpillerId && a.id !== brukerSpillerId) return 1
-                }
-                // For gjestebruker: favoritt spiller først
-                if (a.id === favorittSpillerId && b.id !== favorittSpillerId) return -1
-                if (b.id === favorittSpillerId && a.id !== favorittSpillerId) return 1
-                // Hvis ingen er favoritt eller begge er favoritt, sorter alfabetisk
-                sammenligning = a.navn.localeCompare(b.navn, 'no')
-            } else if (sortering === 'alfabetisk') {
+            if (sortering === 'alfabetisk') {
                 sammenligning = a.navn.localeCompare(b.navn, 'no')
             } else if (sortering === 'antall') {
                 sammenligning = a.boter.length - b.boter.length
@@ -91,7 +78,7 @@ export default function SpillerBøter({ spillere, forseelser, bruker }: SpillerB
             return retning === 'stigende' ? sammenligning : -sammenligning
         })
         return spillereKopi
-    }, [filtrerteSpillere, sortering, retning, visAlleSesonger, favorittSpillerId, bruker?.spiller_id])
+    }, [filtrerteSpillere, sortering, retning, visAlleSesonger])
 
     const { cardRefs, scrollToSpiller } = useScrollToCard(sorterteSpillere, navbarHeight)
 
