@@ -7,7 +7,6 @@ import type { Forseelse } from '@/app/api/boter/typer/route.ts'
 import SpillerKort from './SpillerKort'
 import { useNavbarHeight } from '@/hooks/useNavbarHeight'
 import { useScrollToCard } from '@/hooks/useScrollToCard'
-import { useFavorittSpiller } from '@/hooks/useFavorittSpiller'
 import {
     beregnSumMaaBetalesForSesong,
     beregnSumNyeBoterForSesong,
@@ -20,6 +19,9 @@ interface SpillerBøterProps {
     spillere: Spiller[]
     forseelser: Forseelse[]
     bruker?: User
+    favorittSpillerId: string | null
+    settFavorittSpiller: (spillerId: string | null) => void
+    erFavoritt: (spillerId: string) => boolean
 }
 
 const sorteringsvalg = [
@@ -33,14 +35,20 @@ const sorteringsvalg = [
 type Sortering = 'alfabetisk' | 'antall' | 'sum' | 'sumMaaBetales' | 'sumNyeBoter'
 type Retning = 'stigende' | 'synkende'
 
-export default function SpillerBøter({ spillere, forseelser, bruker }: SpillerBøterProps) {
+export default function SpillerBøter({
+    spillere,
+    forseelser,
+    bruker,
+    favorittSpillerId,
+    settFavorittSpiller,
+    erFavoritt,
+}: SpillerBøterProps) {
     const [spillerVipps, setSpillerVipps] = useState<{ spiller: Spiller; valgtSesong: string } | undefined>(undefined)
     const [merInfoSpiller, setMerInfoSpiller] = useState<Spiller | undefined>(undefined)
     const [visAlleSesonger, setVisAlleSesonger] = useState(false)
     const [sortering, setSortering] = useState<Sortering>('alfabetisk')
     const [retning, setRetning] = useState<Retning>('stigende')
     const navbarHeight = useNavbarHeight()
-    const { favorittSpillerId, settFavorittSpiller, erFavoritt } = useFavorittSpiller()
 
     const sesongTekst = useMemo(() => {
         return hentSesongTekst()

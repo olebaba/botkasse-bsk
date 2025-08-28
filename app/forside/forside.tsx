@@ -29,16 +29,21 @@ const Forside = ({ bruker, gjestebrukerAction }: ForsideProps) => {
     const [prioritertSpillerMerInfo, setPrioritertSpillerMerInfo] = useState(false)
 
     const favorittSpiller = useMemo(() => {
-        if (!favorittSpillerId) return null
+        if (!favorittSpillerId || spillere.length === 0) return null
         return spillere.find((spiller) => spiller.id === favorittSpillerId) || null
     }, [spillere, favorittSpillerId])
 
     const egenSpiller = useMemo(() => {
-        if (!bruker?.spiller_id) return null
+        if (!bruker?.spiller_id || spillere.length === 0) return null
         return spillere.find((spiller) => spiller.id === String(bruker.spiller_id)) || null
     }, [spillere, bruker?.spiller_id])
 
-    const prioritertSpiller = bruker && bruker.type !== 'gjest' ? egenSpiller : favorittSpiller
+    const prioritertSpiller = useMemo(() => {
+        if (bruker && bruker.type !== 'gjest') {
+            return egenSpiller
+        }
+        return favorittSpiller
+    }, [bruker, egenSpiller, favorittSpiller])
 
     const kasseBeregning = useMemo(() => {
         const alleBetalteBoter = spillere.flatMap((s) => s.boter).filter((b) => b.erBetalt)
@@ -102,7 +107,14 @@ const Forside = ({ bruker, gjestebrukerAction }: ForsideProps) => {
 
             <Header className="mb-4" size="medium" text="Alle spilleres bøter" />
 
-            <SpillerBøter spillere={spillere} forseelser={forseelser} bruker={bruker} />
+            <SpillerBøter
+                spillere={spillere}
+                forseelser={forseelser}
+                bruker={bruker}
+                favorittSpillerId={favorittSpillerId}
+                settFavorittSpiller={settFavorittSpiller}
+                erFavoritt={erFavoritt}
+            />
         </div>
     )
 }
