@@ -38,7 +38,7 @@ export default function SpillerBøter({ spillere, forseelser, bruker }: SpillerB
     const [merInfoSpiller, setMerInfoSpiller] = useState<Spiller | undefined>(undefined)
     const [visAlleSesonger, setVisAlleSesonger] = useState(false)
     const [sortering, setSortering] = useState<Sortering>('alfabetisk')
-    const [retning, setRetning] = useState<Retning>('synkende')
+    const [retning, setRetning] = useState<Retning>('stigende')
     const navbarHeight = useNavbarHeight()
     const { favorittSpillerId, settFavorittSpiller, erFavoritt } = useFavorittSpiller()
 
