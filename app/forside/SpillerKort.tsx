@@ -15,6 +15,8 @@ import Header from '@/komponenter/ui/Header'
 import type { Spiller } from '@/lib/spillereService'
 import type { Forseelse } from '@/app/api/boter/typer/route'
 import dayjs from '@/lib/dayjs.ts'
+import type { User } from 'lucia'
+import Sjerneikon from '@/ikoner/Sjerneikon'
 
 interface SpillerKortProps {
     spiller: Spiller
@@ -24,6 +26,11 @@ interface SpillerKortProps {
     setSpillerVipps: (spillerInfo: { spiller: Spiller; valgtSesong: string }) => void
     forseelser: Forseelse[]
     visAlleSesonger: boolean
+    erFavoritt: boolean
+    settFavorittSpiller: (spillerId: string | null) => void
+    erEgenSpiller: boolean
+    bruker?: User
+    favorittSpillerId: string | null
 }
 
 const SpillerKort: React.FC<SpillerKortProps> = ({
@@ -34,6 +41,11 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
     setSpillerVipps,
     forseelser,
     visAlleSesonger,
+    erFavoritt,
+    settFavorittSpiller,
+    erEgenSpiller,
+    bruker,
+    favorittSpillerId,
 }) => {
     const [valgtSesong, setValgtSesong] = useState<string>('')
 
@@ -83,9 +95,11 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
         const base = 'rounded shadow border p-4 flex flex-col gap-2 transition-all duration-600'
         const bakgrunn = botStatistikk.alleBetalt ? 'bg-green-100' : 'bg-red-200'
         const ring = merInfoOpen ? 'ring-2 ring-blue-500' : 'hover:ring-1 hover:ring-blue-300 cursor-pointer'
+        const favorittBorder = erFavoritt ? 'ring-2 ring-yellow-400' : ''
+        const egenSpillerBorder = erEgenSpiller ? 'ring-2 ring-blue-400 bg-blue-50' : ''
 
-        return `${base} ${bakgrunn} ${ring}`
-    }, [botStatistikk.alleBetalt, merInfoOpen])
+        return `${base} ${egenSpillerBorder || bakgrunn} ${ring} ${favorittBorder}`
+    }, [botStatistikk.alleBetalt, merInfoOpen, erFavoritt, erEgenSpiller])
 
     const handleToggleInfo = useCallback(() => {
         setMerInfoSpiller(merInfoOpen ? undefined : spiller)
@@ -99,8 +113,26 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
         [setSpillerVipps, spiller, valgtSesong],
     )
 
+    const handleToggleFavoritt = useCallback(
+        (e: React.MouseEvent) => {
+            e.stopPropagation()
+            settFavorittSpiller(erFavoritt ? null : spiller.id)
+        },
+        [erFavoritt, settFavorittSpiller, spiller.id],
+    )
+
     const denneMaaneden = dayjs().format('MMMM')
     const nesteManed = dayjs().add(1, 'month').format('MMMM')
+
+    // Vis stjerne logikk
+    const visSjerne = useMemo(() => {
+        // Hvis ekte innlogget bruker (ikke gjest): kun vis blå stjerne på egen spiller
+        if (bruker && bruker.type !== 'gjest') {
+            return erEgenSpiller
+        }
+        // Hvis gjestebruker: vis stjerne kun hvis denne spilleren er favoritt ELLER ingen favoritt er valgt
+        return erFavoritt || !favorittSpillerId
+    }, [bruker, erEgenSpiller, erFavoritt, favorittSpillerId])
 
     return (
         <div ref={cardRef} className={getKortKlasser()}>
@@ -113,7 +145,27 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
                 aria-expanded={merInfoOpen}
             >
                 <div className="flex flex-col md:flex-row md:items-center md:gap-4">
-                    <Header size="small" text={spiller.navn} as="h3" className="mb-0" />
+                    <div className="flex items-center gap-2">
+                        <Header size="small" text={spiller.navn} as="h3" className="mb-0" />
+                        {visSjerne && (
+                            <>
+                                {erEgenSpiller ? (
+                                    <div title="Din spiller" aria-label="Din spiller">
+                                        <Sjerneikon type="egen" />
+                                    </div>
+                                ) : (
+                                    <button
+                                        onClick={handleToggleFavoritt}
+                                        className="hover:scale-110 transition-all duration-200 hover:bg-yellow-100 rounded-full p-1 border border-transparent hover:border-yellow-300 focus:outline-none focus:ring-2 focus:ring-yellow-300"
+                                        title={erFavoritt ? 'Fjern fra favoritter' : 'Legg til som favoritt'}
+                                        aria-label={erFavoritt ? 'Fjern fra favoritter' : 'Legg til som favoritt'}
+                                    >
+                                        <Sjerneikon type={erFavoritt ? 'favoritt' : 'tom'} />
+                                    </button>
+                                )}
+                            </>
+                        )}
+                    </div>
                     <div className="flex flex-col md:flex-row md:gap-4">
                         <span>
                             <span className="font-medium">Må betales innen slutten av {nesteManed}:</span>{' '}

@@ -28,6 +28,7 @@ export const lucia = new Lucia(adapter, {
         return {
             brukernavn: attributes.brukernavn,
             type: attributes.type,
+            spiller_id: attributes.spiller_id,
         }
     },
 })
@@ -41,6 +42,7 @@ declare module 'lucia' {
     interface DatabaseUserAttributes {
         brukernavn: string
         type: 'admin' | 'bruker' | 'gjest'
+        spiller_id: string | null
     }
 }
 
@@ -53,4 +55,5 @@ export interface Bruker {
     brukernavn: string
     passord?: string
     type: 'admin' | 'bruker' | 'gjest'
+    spiller_id?: string | null
 }
