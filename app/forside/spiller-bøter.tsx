@@ -1,7 +1,6 @@
 'use client'
 import React, { useEffect, useState, useMemo, useCallback } from 'react'
 import { type Spiller } from '@/lib/spillereService.ts'
-import VippsDialog from '@/komponenter/ui/vippsDialog.tsx'
 import Loading from '@/app/loading.tsx'
 import type { Forseelse } from '@/app/api/boter/typer/route.ts'
 import SpillerKort from './SpillerKort'
@@ -22,6 +21,7 @@ interface SpillerBøterProps {
     favorittSpillerId: string | null
     settFavorittSpiller: (spillerId: string | null) => void
     erFavoritt: (spillerId: string) => boolean
+    setVippsDialog: (vippsInfo: { spiller: Spiller; valgtSesong: string }) => void
 }
 
 const sorteringsvalg = [
@@ -42,8 +42,8 @@ export default function SpillerBøter({
     favorittSpillerId,
     settFavorittSpiller,
     erFavoritt,
+    setVippsDialog,
 }: SpillerBøterProps) {
-    const [spillerVipps, setSpillerVipps] = useState<{ spiller: Spiller; valgtSesong: string } | undefined>(undefined)
     const [merInfoSpiller, setMerInfoSpiller] = useState<Spiller | undefined>(undefined)
     const [visAlleSesonger, setVisAlleSesonger] = useState(false)
     const [sortering, setSortering] = useState<Sortering>('alfabetisk')
@@ -101,14 +101,6 @@ export default function SpillerBøter({
 
     return (
         <>
-            <VippsDialog
-                tittel="Betal i vipps"
-                spiller={spillerVipps?.spiller}
-                setSpiller={(spiller) => setSpillerVipps(spiller ? { spiller, valgtSesong: '' } : undefined)}
-                visAlleSesonger={visAlleSesonger}
-                valgtSesong={spillerVipps?.valgtSesong}
-            />
-
             <div className="mb-4 flex gap-2 flex-wrap">
                 <button
                     className={getKnappKlasser(!visAlleSesonger)}
@@ -161,7 +153,7 @@ export default function SpillerBøter({
                         }}
                         merInfoOpen={merInfoSpiller?.id === spiller.id}
                         setMerInfoSpiller={setMerInfoSpiller}
-                        setSpillerVipps={setSpillerVipps}
+                        setSpillerVipps={setVippsDialog}
                         forseelser={forseelser}
                         visAlleSesonger={visAlleSesonger}
                         erFavoritt={erFavoritt(spiller.id)}

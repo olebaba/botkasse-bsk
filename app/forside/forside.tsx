@@ -6,6 +6,7 @@ import SpillerBøter from '@/app/forside/spiller-bøter.tsx'
 import GjesteTilgangModal from '@/app/forside/components/GjesteTilgangModal.tsx'
 import AnimertTeller from '@/app/forside/components/AnimertTeller.tsx'
 import SpillerKort from '@/app/forside/SpillerKort'
+import VippsDialog from '@/komponenter/ui/vippsDialog.tsx'
 import { useSpillere } from '@/hooks/useSpillere.ts'
 import { useForseelser } from '@/hooks/useForseelser.ts'
 import { useUtgifter } from '@/hooks/useUtgifter.ts'
@@ -15,6 +16,7 @@ import { beregnSum } from '@/lib/botBeregning.ts'
 import new_release from '@/ikoner/new-release.svg'
 import type { User } from 'lucia'
 import type { ActionResult } from '@/lib/auth/authConfig.ts'
+import type { Spiller } from '@/lib/spillereService'
 
 interface ForsideProps {
     bruker?: User
@@ -27,6 +29,7 @@ const Forside = ({ bruker, gjestebrukerAction }: ForsideProps) => {
     const { utgifter, laster: lasterUtgifter } = useUtgifter()
     const { favorittSpillerId, settFavorittSpiller, erFavoritt } = useFavorittSpiller()
     const [prioritertSpillerMerInfo, setPrioritertSpillerMerInfo] = useState(false)
+    const [vippsDialog, setVippsDialog] = useState<{ spiller: Spiller; valgtSesong: string } | undefined>(undefined)
 
     const favorittSpiller = useMemo(() => {
         if (!favorittSpillerId || spillere.length === 0) return null
@@ -60,6 +63,14 @@ const Forside = ({ bruker, gjestebrukerAction }: ForsideProps) => {
 
     return (
         <div className="container mx-auto p-4 mt-28">
+            <VippsDialog
+                tittel="Betal bøter i vipps"
+                spiller={vippsDialog?.spiller}
+                setSpiller={(spiller) => setVippsDialog(spiller ? { spiller, valgtSesong: '' } : undefined)}
+                visAlleSesonger={false}
+                valgtSesong={vippsDialog?.valgtSesong}
+            />
+
             <Header size="large" text="BSK Botkasse" className="mb-6" />
 
             <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 mb-4">
@@ -93,7 +104,7 @@ const Forside = ({ bruker, gjestebrukerAction }: ForsideProps) => {
                         cardRef={() => {}}
                         merInfoOpen={prioritertSpillerMerInfo}
                         setMerInfoSpiller={() => setPrioritertSpillerMerInfo((prev) => !prev)}
-                        setSpillerVipps={() => {}}
+                        setSpillerVipps={setVippsDialog}
                         forseelser={forseelser}
                         visAlleSesonger={false}
                         erFavoritt={erFavoritt(prioritertSpiller.id)}
@@ -114,6 +125,7 @@ const Forside = ({ bruker, gjestebrukerAction }: ForsideProps) => {
                 favorittSpillerId={favorittSpillerId}
                 settFavorittSpiller={settFavorittSpiller}
                 erFavoritt={erFavoritt}
+                setVippsDialog={setVippsDialog}
             />
         </div>
     )
