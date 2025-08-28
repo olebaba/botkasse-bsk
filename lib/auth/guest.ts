@@ -9,7 +9,7 @@ export async function guest(formData: FormData): Promise<ActionResult> {
     'use server'
     try {
         const guestCode = formData.get('Skriv inn kode')
-        if (guestCode == process.env.GJESTEKODE) {
+        if (guestCode?.toString().toLowerCase() == process.env.GJESTEKODE?.toLowerCase()) {
             const passwordHash = await hash(randomUUID(), {
                 memoryCost: 19456,
                 timeCost: 2,
