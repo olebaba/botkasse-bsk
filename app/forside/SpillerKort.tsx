@@ -1,10 +1,11 @@
-import React, { useMemo, useCallback, useState } from 'react'
+import React, { useMemo, useCallback, useState, useEffect } from 'react'
 import {
     beregnSumBetaltForSesong,
     beregnSumMaaBetalesForSesong,
     beregnSumNyeBoterForSesong,
-    beregnSum,
+    beregnSumForSesong,
     hentTilgjengeligeSesonger,
+    filtrerBoterForSesong,
     filtrerBoterForSpesifikkSesong,
     hentSesongTekst,
 } from '@/lib/botBeregning'
@@ -49,6 +50,15 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
 }) => {
     const [valgtSesong, setValgtSesong] = useState<string>('')
 
+    // Synkroniser valgtSesong med visAlleSesonger
+    useEffect(() => {
+        if (visAlleSesonger) {
+            setValgtSesong('alle')
+        } else {
+            setValgtSesong('')
+        }
+    }, [visAlleSesonger])
+
     const tilgjengeligeSesonger = useMemo(() => {
         return hentTilgjengeligeSesonger(spiller.boter || [])
     }, [spiller.boter])
@@ -58,14 +68,15 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
         if (!boter) return { maaBetales: 0, nyeBoter: 0, alleBetalt: false, sumAlle: 0, sumBetalt: 0, antallBoter: 0 }
 
         const maaBetales = beregnSumMaaBetalesForSesong(boter, visAlleSesonger)
+        const filtrerteBoter = filtrerBoterForSesong(boter, visAlleSesonger)
 
         return {
             maaBetales,
             nyeBoter: beregnSumNyeBoterForSesong(boter, visAlleSesonger),
             alleBetalt: maaBetales === 0,
-            sumAlle: beregnSum(boter),
+            sumAlle: beregnSumForSesong(boter, visAlleSesonger),
             sumBetalt: beregnSumBetaltForSesong(boter, visAlleSesonger),
-            antallBoter: boter.length,
+            antallBoter: filtrerteBoter.length,
         }
     }, [spiller.boter, visAlleSesonger])
 
@@ -74,7 +85,7 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
 
         let filtrerteBoter = spiller.boter
 
-        if (valgtSesong === 'alle') {
+        if (visAlleSesonger || valgtSesong === 'alle') {
             // Vis alle sesonger
         } else if (valgtSesong === '') {
             // Vis gjeldende sesong (default)
@@ -89,7 +100,7 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
             sumBetalt: filtrerteBoter.filter((bot) => bot.erBetalt).reduce((sum, bot) => sum + Number(bot.belop), 0),
             antallBoter: filtrerteBoter.length,
         }
-    }, [spiller.boter, valgtSesong])
+    }, [spiller.boter, valgtSesong, visAlleSesonger])
 
     const getKortKlasser = useCallback(() => {
         const base = 'rounded shadow border p-4 flex flex-col gap-2 transition-all duration-600'
