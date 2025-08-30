@@ -13,6 +13,7 @@ import { ListBoter } from '@/komponenter/boter/ListBoter'
 import { Knapp } from '@/komponenter/ui/Knapp'
 import { Select } from '@/komponenter/ui/Select'
 import Header from '@/komponenter/ui/Header'
+import MetrikkBoks from '@/komponenter/ui/MetrikkBoks'
 import type { Spiller } from '@/lib/spillereService'
 import type { Forseelse } from '@/app/api/boter/typer/route'
 import dayjs from '@/lib/dayjs.ts'
@@ -133,15 +134,11 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
     )
 
     const denneMaaneden = dayjs().format('MMMM')
-    const nesteManed = dayjs().add(1, 'month').format('MMMM')
 
-    // Vis stjerne logikk
     const visSjerne = useMemo(() => {
-        // Hvis ekte innlogget bruker (ikke gjest): kun vis blå stjerne på egen spiller
         if (bruker && bruker.type !== 'gjest') {
             return erEgenSpiller
         }
-        // Hvis gjestebruker: vis stjerne kun hvis denne spilleren er favoritt ELLER ingen favoritt er valgt
         return erFavoritt || !favorittSpillerId
     }, [bruker, erEgenSpiller, erFavoritt, favorittSpillerId])
 
@@ -155,7 +152,7 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
                 aria-pressed={merInfoOpen}
                 aria-expanded={merInfoOpen}
             >
-                <div className="flex flex-col md:flex-row md:items-center md:gap-4">
+                <div className="flex flex-col md:flex-row md:items-center md:gap-4 flex-1">
                     <div className="flex items-center gap-2">
                         <Header size="small" text={spiller.navn} as="h3" className="mb-0" />
                         {visSjerne && (
@@ -177,20 +174,24 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
                             </>
                         )}
                     </div>
-                    <div className="flex flex-col md:flex-row md:gap-4">
-                        <span>
-                            <span className="font-medium">Må betales innen slutten av {nesteManed}:</span>{' '}
-                            {botStatistikk.maaBetales} kr
-                        </span>
-                        <span>
-                            <span className="font-medium">Nye bøter i {denneMaaneden}:</span> {botStatistikk.nyeBoter}{' '}
-                            kr
-                        </span>
+                    <div className="flex gap-2 mt-1 md:mt-0 md:ml-auto flex-1 md:flex-initial">
+                        <MetrikkBoks
+                            verdi={botStatistikk.maaBetales}
+                            tekst="kr å betale"
+                            farge="red"
+                            className="flex-1"
+                        />
+                        <MetrikkBoks
+                            verdi={botStatistikk.nyeBoter}
+                            tekst={denneMaaneden}
+                            farge="blue"
+                            className="flex-1"
+                        />
                     </div>
                 </div>
                 <Knapp
                     variant="secondary"
-                    className="text-xs px-2 py-1 mt-2 md:mt-0"
+                    className="text-xs px-2 py-1 mt-2 md:mt-0 md:ml-2"
                     tekst={merInfoOpen ? 'Skjul' : 'Trykk for mer info'}
                 />
             </div>
@@ -226,30 +227,9 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
                                       : `Statistikk for ${valgtSesong}`}
                             </h4>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                                <div className="bg-white rounded-lg p-3 shadow-sm border">
-                                    <div className="text-center">
-                                        <div className="text-2xl font-bold text-blue-600">
-                                            {sesongStatistikk.antallBoter}
-                                        </div>
-                                        <div className="text-sm text-gray-600 font-medium">Antall bøter</div>
-                                    </div>
-                                </div>
-                                <div className="bg-white rounded-lg p-3 shadow-sm border">
-                                    <div className="text-center">
-                                        <div className="text-2xl font-bold text-red-600">
-                                            {sesongStatistikk.sumAlle}
-                                        </div>
-                                        <div className="text-sm text-gray-600 font-medium">Sum bøter (kr)</div>
-                                    </div>
-                                </div>
-                                <div className="bg-white rounded-lg p-3 shadow-sm border">
-                                    <div className="text-center">
-                                        <div className="text-2xl font-bold text-green-600">
-                                            {sesongStatistikk.sumBetalt}
-                                        </div>
-                                        <div className="text-sm text-gray-600 font-medium">Betalt (kr)</div>
-                                    </div>
-                                </div>
+                                <MetrikkBoks verdi={sesongStatistikk.antallBoter} tekst="Antall bøter" farge="blue" />
+                                <MetrikkBoks verdi={sesongStatistikk.sumAlle} tekst="Sum bøter (kr)" farge="red" />
+                                <MetrikkBoks verdi={sesongStatistikk.sumBetalt} tekst="Betalt (kr)" farge="green" />
                             </div>
                         </div>
                     </div>
