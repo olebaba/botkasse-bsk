@@ -6,12 +6,8 @@ import type { Forseelse } from '@/app/api/boter/typer/route.ts'
 import SpillerKort from './SpillerKort'
 import { useNavbarHeight } from '@/hooks/useNavbarHeight'
 import { useScrollToCard } from '@/hooks/useScrollToCard'
-import {
-    beregnSumMaaBetalesForSesong,
-    beregnSumNyeBoterForSesong,
-    beregnSumForSesong,
-    hentSesongTekst,
-} from '@/lib/botBeregning'
+import { hentSesongTekst } from '@/lib/botBeregning'
+import { sorterSpillere, type Sortering, type Retning } from '@/lib/spillerSortering'
 import type { User } from 'lucia'
 
 interface SpillerBøterProps {
@@ -31,9 +27,6 @@ const sorteringsvalg = [
     { verdi: 'sumMaaBetales', tekst: 'Beløp må betales neste måned' },
     { verdi: 'sumNyeBoter', tekst: 'Sum av nye bøter denne måneden' },
 ]
-
-type Sortering = 'alfabetisk' | 'antall' | 'sum' | 'sumMaaBetales' | 'sumNyeBoter'
-type Retning = 'stigende' | 'synkende'
 
 export default function SpillerBøter({
     spillere,
@@ -63,29 +56,7 @@ export default function SpillerBøter({
     const filtrerteSpillere: Spiller[] = visAlleSesonger ? spillere : spillere.filter((spiller) => spiller.visNavn)
 
     const sorterteSpillere = useMemo(() => {
-        const spillereKopi = [...filtrerteSpillere]
-        spillereKopi.sort((a, b) => {
-            let sammenligning = 0
-            if (sortering === 'alfabetisk') {
-                sammenligning = a.navn.localeCompare(b.navn, 'no')
-            } else if (sortering === 'antall') {
-                sammenligning = a.boter.length - b.boter.length
-            } else if (sortering === 'sum') {
-                const sumA = beregnSumForSesong(a.boter, visAlleSesonger)
-                const sumB = beregnSumForSesong(b.boter, visAlleSesonger)
-                sammenligning = sumA - sumB
-            } else if (sortering === 'sumMaaBetales') {
-                const sumA = beregnSumMaaBetalesForSesong(a.boter, visAlleSesonger)
-                const sumB = beregnSumMaaBetalesForSesong(b.boter, visAlleSesonger)
-                sammenligning = sumA - sumB
-            } else if (sortering === 'sumNyeBoter') {
-                const sumA = beregnSumNyeBoterForSesong(a.boter, visAlleSesonger)
-                const sumB = beregnSumNyeBoterForSesong(b.boter, visAlleSesonger)
-                sammenligning = sumA - sumB
-            }
-            return retning === 'stigende' ? sammenligning : -sammenligning
-        })
-        return spillereKopi
+        return sorterSpillere(filtrerteSpillere, sortering, retning, visAlleSesonger)
     }, [filtrerteSpillere, sortering, retning, visAlleSesonger])
 
     const { cardRefs, scrollToSpiller } = useScrollToCard(sorterteSpillere, navbarHeight)
@@ -96,6 +67,22 @@ export default function SpillerBøter({
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [merInfoSpiller, scrollToSpiller])
+
+    const handleSorteringChange = (nySortering: Sortering) => {
+        setSortering(nySortering)
+        // Sett synkende som standard for numeriske verdier (høyeste først)
+        if (
+            nySortering === 'antall' ||
+            nySortering === 'sum' ||
+            nySortering === 'sumMaaBetales' ||
+            nySortering === 'sumNyeBoter'
+        ) {
+            setRetning('synkende')
+        } else {
+            // Alfabetisk sortering bruker stigende som standard
+            setRetning('stigende')
+        }
+    }
 
     if (spillere.length === 0) return <Loading />
 
@@ -124,7 +111,7 @@ export default function SpillerBøter({
                         id="sortering"
                         className="px-2 py-1 rounded border border-gray-300 text-sm"
                         value={sortering}
-                        onChange={(e) => setSortering(e.target.value as Sortering)}
+                        onChange={(e) => handleSorteringChange(e.target.value as Sortering)}
                     >
                         {sorteringsvalg.map((valg) => (
                             <option key={valg.verdi} value={valg.verdi}>
