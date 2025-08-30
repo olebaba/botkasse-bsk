@@ -23,10 +23,9 @@ export default function Page() {
 
     return (
         <div className="container mx-auto p-4 mt-28">
-            <Header size="large" text="Oversikt bøter" className="mb-6" />
+            <Header size="large" text={`Bøtesatser for ${gjeldendeSesong}`} className="mb-6" />
 
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
-                <p className="font-semibold text-blue-900 mb-3">Bøtesatser for sesongen {gjeldendeSesong}:</p>
                 <ul className="space-y-2 text-blue-800">
                     <li className="flex items-start gap-2">
                         <span className="text-blue-600">✍️</span>
