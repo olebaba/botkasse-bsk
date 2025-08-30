@@ -1,129 +1,63 @@
 import dayjs from '@/lib/dayjs.ts'
 import type { Bot } from '@/app/api/boter/[spiller_id]/route.ts'
 
-export function hentGjeldendeSesongStart(): dayjs.Dayjs {
+const SESONG_START_AUGUST_MAANED = 7
+
+interface SesongPeriode {
+    start: dayjs.Dayjs
+    slutt: dayjs.Dayjs
+}
+
+// === SESONG UTILITETER ===
+export const hentGjeldendeSesongStart = (): dayjs.Dayjs => {
     const naa = dayjs()
     const aar = naa.year()
 
-    // Hvis vi er før august, tilhører vi forrige sesong
-    if (naa.month() < 7) {
-        // August er måned 7 (0-indexert)
+    if (naa.month() < SESONG_START_AUGUST_MAANED) {
         return dayjs()
             .year(aar - 1)
-            .month(7)
+            .month(SESONG_START_AUGUST_MAANED)
             .date(1)
             .startOf('day')
     }
 
-    return dayjs().year(aar).month(7).date(1).startOf('day')
+    return dayjs().year(aar).month(SESONG_START_AUGUST_MAANED).date(1).startOf('day')
 }
 
-export function hentGjeldendeSesongSlutt(): dayjs.Dayjs {
+export const hentGjeldendeSesongSlutt = (): dayjs.Dayjs => {
     const sesongStart = hentGjeldendeSesongStart()
     return sesongStart.add(1, 'year').subtract(1, 'day').endOf('day')
 }
 
-export function hentSesongTekst(): string {
+export const hentSesongTekst = (): string => {
     const sesongStart = hentGjeldendeSesongStart()
     const startAar = sesongStart.year()
-    const sluttAar = startAar + 1
-    return `${startAar}/${sluttAar}`
+    return `${startAar}/${startAar + 1}`
 }
 
-export function erISesong(dato: dayjs.Dayjs, sesongStart?: dayjs.Dayjs, sesongSlutt?: dayjs.Dayjs): boolean {
+export const erISesong = (dato: dayjs.Dayjs, sesongStart?: dayjs.Dayjs, sesongSlutt?: dayjs.Dayjs): boolean => {
     const start = sesongStart || hentGjeldendeSesongStart()
     const slutt = sesongSlutt || hentGjeldendeSesongSlutt()
 
     return (dato.isAfter(start) || dato.isSame(start)) && (dato.isBefore(slutt) || dato.isSame(slutt))
 }
 
-export function filtrerBoterForSesong(boter: Bot[], visAlleSesonger: boolean = false): Bot[] {
-    if (visAlleSesonger) {
-        return boter
-    }
+const lagSesongPeriodeForSpesifikkSesong = (sesongTekst: string): SesongPeriode => {
+    const [startAarStr] = sesongTekst.split('/')
+    const startAar = parseInt(startAarStr, 10)
 
-    const sesongStart = hentGjeldendeSesongStart()
-    const sesongSlutt = hentGjeldendeSesongSlutt()
-
-    return boter.filter((bot) => erISesong(dayjs(bot.dato), sesongStart, sesongSlutt))
-}
-
-// Grunnleggende beregningsfunksjoner som ikke tar hensyn til sesong
-export function beregnSumMaaBetales(boter: Bot[]): number {
-    const endOfLastMonth = dayjs().subtract(1, 'month').endOf('month')
-    return boter
-        .filter((bot) => !bot.erBetalt && dayjs(bot.dato).isBefore(endOfLastMonth))
-        .reduce((sum, bot) => sum + Number(bot.belop), 0)
-}
-
-export function beregnSumNyeBoter(boter: Bot[]): number {
-    const endOfLastMonth = dayjs().subtract(1, 'month').endOf('month')
-    return boter
-        .filter((bot) => !bot.erBetalt && dayjs(bot.dato).isAfter(endOfLastMonth))
-        .reduce((sum, bot) => sum + Number(bot.belop), 0)
-}
-
-export function beregnSum(boter: Bot[]): number {
-    return boter.reduce((sum, bot) => sum + Number(bot.belop), 0)
-}
-
-export function beregnSumBetalt(boter: Bot[]): number {
-    return boter.filter((bot) => bot.erBetalt).reduce((sum, bot) => sum + Number(bot.belop), 0)
-}
-
-export function beregnAntallBoter(boter: Bot[]): number {
-    return boter.length
-}
-
-// Sesongavhengige beregningsfunksjoner
-export function beregnSumMaaBetalesForSesong(boter: Bot[], visAlleSesonger: boolean = false): number {
-    const filtrerteBoter = filtrerBoterForSesong(boter, visAlleSesonger)
-    return beregnSumMaaBetales(filtrerteBoter)
-}
-
-export function beregnSumNyeBoterForSesong(boter: Bot[], visAlleSesonger: boolean = false): number {
-    const filtrerteBoter = filtrerBoterForSesong(boter, visAlleSesonger)
-    return beregnSumNyeBoter(filtrerteBoter)
-}
-
-export function beregnSumForSesong(boter: Bot[], visAlleSesonger: boolean = false): number {
-    const filtrerteBoter = filtrerBoterForSesong(boter, visAlleSesonger)
-    return beregnSum(filtrerteBoter)
-}
-
-export function beregnSumBetaltForSesong(boter: Bot[], visAlleSesonger: boolean = false): number {
-    const filtrerteBoter = filtrerBoterForSesong(boter, visAlleSesonger)
-    return beregnSumBetalt(filtrerteBoter)
-}
-
-export function beregnAntallBoterForSesong(boter: Bot[], visAlleSesonger: boolean = false): number {
-    const filtrerteBoter = filtrerBoterForSesong(boter, visAlleSesonger)
-    return beregnAntallBoter(filtrerteBoter)
-}
-
-// Ny funksjon for spesifikk sesong - erstatter logikken i vippsDialog
-export function beregnSumMaaBetalesForSpesifikkSesong(boter: Bot[], sesongTekst: string): number {
-    const filtrerteBoter = filtrerBoterForSpesifikkSesong(boter, sesongTekst)
-    return beregnSumMaaBetales(filtrerteBoter)
-}
-
-// Fleksibel funksjon som håndterer alle sesongvalg
-export function beregnBelopForSesongvalg(
-    boter: Bot[],
-    visAlleSesonger: boolean = false,
-    valgtSesong: string = '',
-): number {
-    if (visAlleSesonger || valgtSesong === 'alle') {
-        return beregnSumMaaBetales(boter)
-    } else if (valgtSesong === '') {
-        return beregnSumMaaBetalesForSesong(boter, false)
-    } else {
-        return beregnSumMaaBetalesForSpesifikkSesong(boter, valgtSesong)
+    return {
+        start: dayjs().year(startAar).month(SESONG_START_AUGUST_MAANED).date(1).startOf('day'),
+        slutt: dayjs()
+            .year(startAar + 1)
+            .month(SESONG_START_AUGUST_MAANED - 1)
+            .endOf('month')
+            .endOf('day'),
     }
 }
 
-export function hentTilgjengeligeSesonger(boter: Bot[]): string[] {
-    if (!boter || boter.length === 0) return []
+export const hentTilgjengeligeSesonger = (boter: Bot[]): string[] => {
+    if (!boter?.length) return []
 
     const sesonger = new Set<string>()
 
@@ -131,31 +65,108 @@ export function hentTilgjengeligeSesonger(boter: Bot[]): string[] {
         const botDato = dayjs(bot.dato)
         const aar = botDato.year()
 
-        // Hvis boten er fra august eller senere, tilhører den sesongen som starter det året
-        if (botDato.month() >= 7) {
+        if (botDato.month() >= SESONG_START_AUGUST_MAANED) {
             sesonger.add(`${aar}/${aar + 1}`)
         } else {
-            // Hvis boten er fra før august, tilhører den forrige sesong
             sesonger.add(`${aar - 1}/${aar}`)
         }
     })
 
-    return Array.from(sesonger).sort().reverse() // Nyeste først
+    return Array.from(sesonger).sort().reverse()
 }
 
-export function filtrerBoterForSpesifikkSesong(boter: Bot[], sesongTekst: string): Bot[] {
-    const [startAarStr, sluttAarStr] = sesongTekst.split('/')
-    const startAar = parseInt(startAarStr, 10)
-    const sluttAar = parseInt(sluttAarStr, 10)
+// === FILTRERINGSFUNKSJONER ===
+export const filtrerBoterForSesong = (boter: Bot[], visAlleSesonger: boolean = false): Bot[] => {
+    if (visAlleSesonger) return boter
 
-    const sesongStart = dayjs().year(startAar).month(7).date(1).startOf('day') // August 1st
-    const sesongSlutt = dayjs().year(sluttAar).month(6).endOf('month').endOf('day') // July 31st
+    const sesongStart = hentGjeldendeSesongStart()
+    const sesongSlutt = hentGjeldendeSesongSlutt()
+
+    return boter.filter((bot) => erISesong(dayjs(bot.dato), sesongStart, sesongSlutt))
+}
+
+export const filtrerBoterForSpesifikkSesong = (boter: Bot[], sesongTekst: string): Bot[] => {
+    const { start, slutt } = lagSesongPeriodeForSpesifikkSesong(sesongTekst)
 
     return boter.filter((bot) => {
         const botDato = dayjs(bot.dato)
-        return (
-            (botDato.isAfter(sesongStart) || botDato.isSame(sesongStart)) &&
-            (botDato.isBefore(sesongSlutt) || botDato.isSame(sesongSlutt))
-        )
+        return (botDato.isAfter(start) || botDato.isSame(start)) && (botDato.isBefore(slutt) || botDato.isSame(slutt))
     })
+}
+
+// === GRUNNLEGGENDE BEREGNINGSFUNKSJONER ===
+const hentForrigeManedSlutt = () => dayjs().subtract(1, 'month').endOf('month')
+
+export const beregnSum = (boter: Bot[]): number => boter.reduce((sum, bot) => sum + Number(bot.belop), 0)
+
+export const beregnSumBetalt = (boter: Bot[]): number =>
+    boter.filter((bot) => bot.erBetalt).reduce((sum, bot) => sum + Number(bot.belop), 0)
+
+export const beregnSumMaaBetales = (boter: Bot[]): number => {
+    const forrigeManedSlutt = hentForrigeManedSlutt()
+    return boter
+        .filter((bot) => !bot.erBetalt && dayjs(bot.dato).isBefore(forrigeManedSlutt))
+        .reduce((sum, bot) => sum + Number(bot.belop), 0)
+}
+
+export const beregnSumNyeBoter = (boter: Bot[]): number => {
+    const forrigeManedSlutt = hentForrigeManedSlutt()
+    return boter
+        .filter((bot) => !bot.erBetalt && dayjs(bot.dato).isAfter(forrigeManedSlutt))
+        .reduce((sum, bot) => sum + Number(bot.belop), 0)
+}
+
+export const beregnAntallBoter = (boter: Bot[]): number => boter.length
+
+// === GENERISK BEREGNINGSHJELPER ===
+type BeregningsFunksjon = (boter: Bot[]) => number
+
+const beregnForSesong = (
+    boter: Bot[],
+    beregnFunksjon: BeregningsFunksjon,
+    visAlleSesonger: boolean = false,
+): number => {
+    const filtrerteBoter = filtrerBoterForSesong(boter, visAlleSesonger)
+    return beregnFunksjon(filtrerteBoter)
+}
+
+const beregnForSpesifikkSesong = (boter: Bot[], beregnFunksjon: BeregningsFunksjon, sesongTekst: string): number => {
+    const filtrerteBoter = filtrerBoterForSpesifikkSesong(boter, sesongTekst)
+    return beregnFunksjon(filtrerteBoter)
+}
+
+// === SESONGAVHENGIGE BEREGNINGSFUNKSJONER ===
+export const beregnSumForSesong = (boter: Bot[], visAlleSesonger: boolean = false): number =>
+    beregnForSesong(boter, beregnSum, visAlleSesonger)
+
+export const beregnSumBetaltForSesong = (boter: Bot[], visAlleSesonger: boolean = false): number =>
+    beregnForSesong(boter, beregnSumBetalt, visAlleSesonger)
+
+export const beregnSumMaaBetalesForSesong = (boter: Bot[], visAlleSesonger: boolean = false): number =>
+    beregnForSesong(boter, beregnSumMaaBetales, visAlleSesonger)
+
+export const beregnSumNyeBoterForSesong = (boter: Bot[], visAlleSesonger: boolean = false): number =>
+    beregnForSesong(boter, beregnSumNyeBoter, visAlleSesonger)
+
+export const beregnAntallBoterForSesong = (boter: Bot[], visAlleSesonger: boolean = false): number =>
+    beregnForSesong(boter, beregnAntallBoter, visAlleSesonger)
+
+export const beregnSumMaaBetalesForSpesifikkSesong = (boter: Bot[], sesongTekst: string): number =>
+    beregnForSpesifikkSesong(boter, beregnSumMaaBetales, sesongTekst)
+
+// === FLEKSIBLE BEREGNINGSFUNKSJONER ===
+export const beregnBelopForSesongvalg = (
+    boter: Bot[],
+    visAlleSesonger: boolean = false,
+    valgtSesong: string = '',
+): number => {
+    if (visAlleSesonger || valgtSesong === 'alle') {
+        return beregnSumMaaBetales(boter)
+    }
+
+    if (valgtSesong === '') {
+        return beregnSumMaaBetalesForSesong(boter, false)
+    }
+
+    return beregnSumMaaBetalesForSpesifikkSesong(boter, valgtSesong)
 }
