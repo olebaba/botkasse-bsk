@@ -1,5 +1,10 @@
 import type { Spiller } from './spillereService'
-import { beregnSumForSesong, beregnSumMaaBetalesForSesong, beregnSumNyeBoterForSesong } from './botBeregning'
+import {
+    beregnSumForSesong,
+    beregnSumMaaBetalesForSesong,
+    beregnSumNyeBoterForSesong,
+    beregnAntallBoterForSesong,
+} from './botBeregning'
 
 export type Sortering = 'alfabetisk' | 'antall' | 'sum' | 'sumMaaBetales' | 'sumNyeBoter'
 export type Retning = 'stigende' | 'synkende'
@@ -17,7 +22,9 @@ export const sorterSpillere = (
         if (sortering === 'alfabetisk') {
             sammenligning = a.navn.localeCompare(b.navn, 'no')
         } else if (sortering === 'antall') {
-            sammenligning = a.boter.length - b.boter.length
+            const antallA = beregnAntallBoterForSesong(a.boter, visAlleSesonger)
+            const antallB = beregnAntallBoterForSesong(b.boter, visAlleSesonger)
+            sammenligning = antallA - antallB
         } else if (sortering === 'sum') {
             const sumA = beregnSumForSesong(a.boter, visAlleSesonger)
             const sumB = beregnSumForSesong(b.boter, visAlleSesonger)

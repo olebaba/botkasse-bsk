@@ -71,6 +71,10 @@ export function beregnSumBetalt(boter: Bot[]): number {
     return boter.filter((bot) => bot.erBetalt).reduce((sum, bot) => sum + Number(bot.belop), 0)
 }
 
+export function beregnAntallBoter(boter: Bot[]): number {
+    return boter.length
+}
+
 // Sesongavhengige beregningsfunksjoner
 export function beregnSumMaaBetalesForSesong(boter: Bot[], visAlleSesonger: boolean = false): number {
     const filtrerteBoter = filtrerBoterForSesong(boter, visAlleSesonger)
@@ -90,6 +94,11 @@ export function beregnSumForSesong(boter: Bot[], visAlleSesonger: boolean = fals
 export function beregnSumBetaltForSesong(boter: Bot[], visAlleSesonger: boolean = false): number {
     const filtrerteBoter = filtrerBoterForSesong(boter, visAlleSesonger)
     return beregnSumBetalt(filtrerteBoter)
+}
+
+export function beregnAntallBoterForSesong(boter: Bot[], visAlleSesonger: boolean = false): number {
+    const filtrerteBoter = filtrerBoterForSesong(boter, visAlleSesonger)
+    return beregnAntallBoter(filtrerteBoter)
 }
 
 // Ny funksjon for spesifikk sesong - erstatter logikken i vippsDialog

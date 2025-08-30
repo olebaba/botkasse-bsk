@@ -24,8 +24,8 @@ const sorteringsvalg = [
     { verdi: 'alfabetisk', tekst: 'Alfabetisk (A-Å)' },
     { verdi: 'antall', tekst: 'Antall bøter' },
     { verdi: 'sum', tekst: 'Total sum bøter' },
-    { verdi: 'sumMaaBetales', tekst: 'Beløp må betales neste måned' },
-    { verdi: 'sumNyeBoter', tekst: 'Sum av nye bøter denne måneden' },
+    { verdi: 'sumMaaBetales', tekst: 'Beløp som må betales' },
+    { verdi: 'sumNyeBoter', tekst: 'Nye bøter denne måneden' },
 ]
 
 export default function SpillerBøter({
@@ -39,8 +39,8 @@ export default function SpillerBøter({
 }: SpillerBøterProps) {
     const [merInfoSpiller, setMerInfoSpiller] = useState<Spiller | undefined>(undefined)
     const [visAlleSesonger, setVisAlleSesonger] = useState(false)
-    const [sortering, setSortering] = useState<Sortering>('alfabetisk')
-    const [retning, setRetning] = useState<Retning>('stigende')
+    const [sortering, setSortering] = useState<Sortering>('sum')
+    const [retning, setRetning] = useState<Retning>('synkende')
     const navbarHeight = useNavbarHeight()
 
     const sesongTekst = useMemo(() => {
