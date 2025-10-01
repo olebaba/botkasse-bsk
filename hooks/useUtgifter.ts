@@ -15,7 +15,7 @@ export const useUtgifter = () => {
         const hentUtgifter = async () => {
             try {
                 setLaster(true)
-                const response = await fetch('/api/utgifter')
+                const response = await fetch('/api/utgifter', { next: { revalidate: 86400 } })
                 if (!response.ok) {
                     throw new Error('Kunne ikke hente utgifter')
                 }
