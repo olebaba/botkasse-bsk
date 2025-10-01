@@ -1,5 +1,4 @@
 import type { Spiller } from '@/lib/spillereService.ts'
-import { Knapp } from '@/komponenter/ui/Knapp.tsx'
 import { toggleBoterBetalt } from '@/lib/botService.ts'
 import React, { useEffect, useState } from 'react'
 import dayjs from '@/lib/dayjs.ts'
@@ -7,6 +6,7 @@ import type { Forseelse } from '@/app/api/boter/typer/route.ts'
 import { AlertTypes } from '@/komponenter/ui/AlertBanner.tsx'
 import type { Bot } from '@/app/api/boter/[spiller_id]/route.ts'
 import { filtrerBoterForSesong, filtrerBoterForSpesifikkSesong } from '@/lib/botBeregning'
+import BotBoks from '@/komponenter/boter/BotBoks'
 
 export const ListBoter = ({
     forseelser,
@@ -63,23 +63,15 @@ export const ListBoter = ({
                 const forseelse = forseelser.find((f) => f.id.toString() == bot.forseelseId)
                 const dato = dayjs(bot.dato).format('DD.MM.YYYY')
                 return (
-                    <div key={bot.id} className="bg-white rounded shadow border p-3 flex flex-col gap-1">
-                        <div className="font-semibold">{forseelse?.navn}</div>
-                        <div>
-                            <span className="font-medium">Dato:</span> {dato}
-                        </div>
-                        <div>
-                            <span className="font-medium">Beløp:</span> {bot.belop} kr
-                        </div>
-                        <div>
-                            <span className="font-semibold text-red-600">Ikke betalt</span>
-                        </div>
-                        {erBotsjef && (
-                            <div>
-                                <Knapp className={''} tekst={'Sett betalt'} onClick={() => handleMarkerBetalt(bot)} />
-                            </div>
-                        )}
-                    </div>
+                    <BotBoks
+                        key={bot.id}
+                        bot={bot}
+                        forseelse={forseelse}
+                        dato={dato}
+                        erBetalt={false}
+                        kanEndreStatus={erBotsjef}
+                        onToggleBetalt={() => handleMarkerBetalt(bot)}
+                    />
                 )
             })}
             {betalteBoter.length > 0 && (
@@ -100,30 +92,15 @@ export const ListBoter = ({
                         const forseelse = forseelser.find((f) => f.id.toString() == bot.forseelseId)
                         const dato = dayjs(bot.dato).format('DD.MM.YYYY')
                         return (
-                            <div
+                            <BotBoks
                                 key={bot.id}
-                                className="bg-gray-100 rounded shadow border p-3 flex flex-col gap-1 opacity-80"
-                            >
-                                <div className="font-semibold">{forseelse?.navn}</div>
-                                <div>
-                                    <span className="font-medium">Dato:</span> {dato}
-                                </div>
-                                <div>
-                                    <span className="font-medium">Beløp:</span> {bot.belop} kr
-                                </div>
-                                <div>
-                                    <span className="font-semibold text-green-600">Betalt</span>
-                                </div>
-                                {erBotsjef && (
-                                    <div>
-                                        <Knapp
-                                            className={'bg-red-500 hover:bg-red-500'}
-                                            tekst={'Sett ubetalt'}
-                                            onClick={() => handleMarkerBetalt(bot)}
-                                        />
-                                    </div>
-                                )}
-                            </div>
+                                bot={bot}
+                                forseelse={forseelse}
+                                dato={dato}
+                                erBetalt={true}
+                                kanEndreStatus={erBotsjef}
+                                onToggleBetalt={() => handleMarkerBetalt(bot)}
+                            />
                         )
                     })}
                 </div>
