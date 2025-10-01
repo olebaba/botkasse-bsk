@@ -4,13 +4,12 @@ import { NextResponse } from 'next/server'
 export async function POST(request: Request) {
     const { botIder }: { botIder: string[] } = await request.json()
 
-    try {
-        await sql`
-            UPDATE bøter
-            SET er_betalt = NOT er_betalt
-            WHERE id IN (${botIder.join(',')})
-        `
+    if (!botIder || botIder.length === 0) {
+        return NextResponse.json({ error: 'Ingen bøter valgt' }, { status: 400 })
+    }
 
+    try {
+        await sql.query('UPDATE bøter SET er_betalt = NOT er_betalt WHERE id = ANY($1::int[])', [botIder.map(Number)])
         return NextResponse.json({ message: 'Bøter markert som betalt' }, { status: 200 })
     } catch (e) {
         console.error(e)
