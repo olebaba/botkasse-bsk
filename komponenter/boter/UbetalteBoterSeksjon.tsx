@@ -5,6 +5,8 @@ import { UbetaltBotKort } from '@/komponenter/boter/BotKort.tsx'
 import type { Spiller } from '@/lib/spillereService.ts'
 import type { Forseelse } from '@/app/api/boter/typer/route.ts'
 import type { Bot } from '@/app/api/boter/[spiller_id]/route.ts'
+import dayjs from '@/lib/dayjs.ts'
+import { filtrerBoterForSesong } from '@/lib/botBeregning.ts'
 
 interface UbetalteBoterSeksjonProps {
     valgtSpiller: Spiller
@@ -42,7 +44,7 @@ export const UbetalteBoterSeksjon = ({
             </div>
 
             <div className="space-y-3">
-                {ubetalteBoter.map((bot) => {
+                {filtrerBoterForSesong(ubetalteBoter).map((bot) => {
                     const forseelse = forseelser.find((f) => f.id.toString() === bot.forseelseId)
                     return (
                         <UbetaltBotKort
