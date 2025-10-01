@@ -3,6 +3,7 @@ import { toggleBoterBetalt } from '@/lib/botService.ts'
 import { AlertTypes } from '@/komponenter/ui/AlertBanner.tsx'
 import dayjs from '@/lib/dayjs.ts'
 import type { Spiller } from '@/lib/spillereService.ts'
+import { filtrerBoterForSesong } from '@/lib/botBeregning.ts'
 
 export const useBoterBehandling = () => {
     const [valgtSpiller, setValgtSpiller] = useState<Spiller>()
@@ -12,20 +13,20 @@ export const useBoterBehandling = () => {
 
     const ubetalteBoter = useMemo(() => {
         if (!valgtSpiller) return []
-        return (
+        const alleUbetalteBoter =
             valgtSpiller.boter
                 ?.filter((bot) => !bot.erBetalt)
                 .sort((a, b) => dayjs(a.dato).valueOf() - dayjs(b.dato).valueOf()) || []
-        )
+        return filtrerBoterForSesong(alleUbetalteBoter)
     }, [valgtSpiller])
 
     const betalteBoter = useMemo(() => {
         if (!valgtSpiller) return []
-        return (
+        const alleBetalteBoter =
             valgtSpiller.boter
                 ?.filter((bot) => bot.erBetalt)
                 .sort((a, b) => dayjs(b.dato).valueOf() - dayjs(a.dato).valueOf()) || []
-        )
+        return filtrerBoterForSesong(alleBetalteBoter)
     }, [valgtSpiller])
 
     const totalBelop = useMemo(() => {
