@@ -34,9 +34,7 @@ export default function SpillerCombobox({
         )
     }, [spillere, søkeTerm])
 
-    const displayVerdi = valgtSpiller
-        ? `${valgtSpiller.navn}${valgtSpiller.draktnummer ? ` (#${valgtSpiller.draktnummer})` : ''}`
-        : søkeTerm
+    const displayVerdi = valgtSpiller ? valgtSpiller.navn : søkeTerm
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const verdi = e.target.value
