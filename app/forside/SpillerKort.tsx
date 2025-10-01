@@ -243,7 +243,7 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
 
                     <ListBoter
                         forseelser={forseelser}
-                        erBotsjef={false}
+                        erBotsjef={bruker?.type == 'admin'}
                         spiller={spiller}
                         visAlleSesonger={visAlleSesonger}
                         valgtSesong={valgtSesong === 'alle' ? '' : valgtSesong}
