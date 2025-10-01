@@ -246,7 +246,7 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
                         erBotsjef={false}
                         spiller={spiller}
                         visAlleSesonger={visAlleSesonger}
-                        valgdSesong={valgtSesong === 'alle' ? '' : valgtSesong}
+                        valgtSesong={valgtSesong === 'alle' ? '' : valgtSesong}
                     />
                 </div>
             )}

@@ -14,20 +14,20 @@ export const ListBoter = ({
     erBotsjef,
     visResultat,
     visAlleSesonger = false,
-    valgdSesong,
+    valgtSesong,
 }: {
     forseelser: Forseelse[]
     spiller: Spiller
     erBotsjef: boolean
     visResultat?: (melding: string, type: AlertTypes) => void
     visAlleSesonger?: boolean
-    valgdSesong?: string
+    valgtSesong?: string
 }) => {
     const [boterForSpiller, setBoterForSpiller] = useState<Bot[]>([])
     const [visBetalte, setVisBetalte] = useState(false)
 
-    const filtrerteBoter = valgdSesong
-        ? filtrerBoterForSpesifikkSesong(boterForSpiller, valgdSesong)
+    const filtrerteBoter = valgtSesong
+        ? filtrerBoterForSpesifikkSesong(boterForSpiller, valgtSesong)
         : filtrerBoterForSesong(boterForSpiller, visAlleSesonger)
 
     const ubetalteBoter = filtrerteBoter.filter((bot) => !bot.erBetalt)
