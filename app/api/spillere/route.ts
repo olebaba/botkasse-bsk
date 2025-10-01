@@ -18,6 +18,7 @@ interface BotRow {
     dato: string
     forseelse_id: number
     er_betalt: boolean
+    kommentar?: string
 }
 
 export async function GET(request: NextRequest) {
@@ -48,6 +49,7 @@ export async function GET(request: NextRequest) {
                 dato: dayjs(row.dato),
                 forseelseId: String(row.forseelse_id),
                 erBetalt: row.er_betalt,
+                kommentar: row.kommentar,
             }))
             const spillereMedBoter: Spiller[] = spillere.map((s) => {
                 return { ...s, boter: alleBoter.filter((bot) => bot.spillerId == s.id) }
