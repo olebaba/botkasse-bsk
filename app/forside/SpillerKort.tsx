@@ -19,6 +19,7 @@ import type { Forseelse } from '@/app/api/boter/typer/route'
 import dayjs from '@/lib/dayjs.ts'
 import type { User } from 'lucia'
 import Sjerneikon from '@/ikoner/Sjerneikon'
+import AlertBanner, { AlertTypes } from '@/komponenter/ui/AlertBanner.tsx'
 
 interface SpillerKortProps {
     spiller: Spiller
@@ -135,6 +136,15 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
 
     const denneMaaneden = dayjs().format('MMMM')
 
+    // lokal melding for å vise resultat fra child
+    const [melding, setMelding] = useState<{ tekst: string; type: AlertTypes } | null>(null)
+
+    const visResultat = (tekst: string, type: AlertTypes) => {
+        setMelding({ tekst, type })
+    }
+
+    const lukkMelding = () => setMelding(null)
+
     const visSjerne = useMemo(() => {
         if (bruker && bruker.type !== 'gjest') {
             return erEgenSpiller
@@ -245,9 +255,15 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
                         forseelser={forseelser}
                         erBotsjef={bruker?.type == 'admin'}
                         spiller={spiller}
+                        visResultatAction={visResultat}
                         visAlleSesonger={visAlleSesonger}
                         valgtSesong={valgtSesong === 'alle' ? '' : valgtSesong}
                     />
+                    {melding && (
+                        <div className="mt-2" onClick={(e) => e.stopPropagation()}>
+                            <AlertBanner message={melding.tekst} type={melding.type} onClose={lukkMelding} />
+                        </div>
+                    )}
                 </div>
             )}
         </div>

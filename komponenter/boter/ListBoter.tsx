@@ -1,3 +1,5 @@
+'use client'
+
 import type { Spiller } from '@/lib/spillereService.ts'
 import { toggleBoterBetalt } from '@/lib/botService.ts'
 import React, { useEffect, useState } from 'react'
@@ -12,14 +14,14 @@ export const ListBoter = ({
     forseelser,
     spiller,
     erBotsjef,
-    visResultat,
+    visResultatAction,
     visAlleSesonger = false,
     valgtSesong,
 }: {
     forseelser: Forseelse[]
     spiller: Spiller
     erBotsjef: boolean
-    visResultat?: (melding: string, type: AlertTypes) => void
+    visResultatAction: (melding: string, type: AlertTypes) => void
     visAlleSesonger?: boolean
     valgtSesong?: string
 }) => {
@@ -41,7 +43,6 @@ export const ListBoter = ({
     if (spiller.boter?.length === 0) return null
 
     const handleMarkerBetalt = async (bot: Bot) => {
-        if (!visResultat) return
         try {
             const oppdatertBot: Bot = {
                 ...bot,
@@ -50,10 +51,13 @@ export const ListBoter = ({
             const oppdaterteBoter = boterForSpiller.map((b) => (b.id === bot.id ? oppdatertBot : b))
             setBoterForSpiller(oppdaterteBoter)
             await toggleBoterBetalt([bot.id])
-            visResultat(!bot.erBetalt ? 'Markerte bot som betalt' : 'Markerte som ikke betalt', AlertTypes.SUCCESS)
+            visResultatAction(
+                !bot.erBetalt ? 'Markerte bot som betalt' : 'Markerte som ikke betalt',
+                AlertTypes.SUCCESS,
+            )
         } catch (error) {
             console.error(error)
-            visResultat('Noe gikk galt, ble ikke markert', AlertTypes.ERROR)
+            visResultatAction('Noe gikk galt, ble ikke markert', AlertTypes.ERROR)
         }
     }
 
