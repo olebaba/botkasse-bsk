@@ -12,7 +12,7 @@ interface GjesteTilgangModalProps {
 const GjesteTilgangModal = ({ gjestebrukerAction }: GjesteTilgangModalProps) => {
     const [error, setError] = useState<string | null>(null)
     const [lasterSkjema, setLasterSkjema] = useState(false)
-    const timeoutRef = useRef<NodeJS.Timeout>()
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null)
 
     useEffect(() => {
         return () => {
