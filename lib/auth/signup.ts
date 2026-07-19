@@ -2,7 +2,7 @@ import { cookies } from 'next/headers'
 import { hash } from '@node-rs/argon2'
 import { sql } from '@vercel/postgres'
 import { redirect } from 'next/navigation'
-import { type ActionResult, type Bruker, lucia, type VercelPostgresError } from '@/lib/auth/authConfig.ts'
+import { type ActionResult, type Bruker, lucia } from '@/lib/auth/authConfig.ts'
 
 export async function signup(formData: FormData): Promise<ActionResult> {
     'use server'

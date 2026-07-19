@@ -2,7 +2,7 @@ import { sql } from '@vercel/postgres'
 import { verify } from '@node-rs/argon2'
 import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
-import { type Bruker, lucia, type VercelPostgresError } from '@/lib/auth/authConfig.ts'
+import { type Bruker, lucia } from '@/lib/auth/authConfig.ts'
 
 export async function login(formData: FormData): Promise<void> {
     'use server'
@@ -46,7 +46,6 @@ export async function login(formData: FormData): Promise<void> {
         const sessionCookie = lucia.createSessionCookie(session.id)
         const cookieStore = await cookies()
         cookieStore.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes)
-
     } catch (e) {
         console.error('Login feil:', e)
         throw new Error('Pålogging feilet')
