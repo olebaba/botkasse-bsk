@@ -22,10 +22,6 @@ updates:
         update-types:
           - "minor"
           - "patch"
-    # Auto-commit minor/patch updates directly to main
-    auto-merge: true
-    rebase-strategy: "auto"
-    allow-multiple-dependency-updates: true
 
   # GitHub Actions used in workflows
   - package-ecosystem: "github-actions"
