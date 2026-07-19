@@ -55,7 +55,7 @@ describe('Spillersortering', () => {
 
     describe('Antall bøter sortering', () => {
         it('skal sortere etter antall bøter stigende', () => {
-            const sortert = sorterSpillere(testSpillere, 'antall', 'stigende')
+            const sortert = sorterSpillere(testSpillere, 'antall', 'stigende', true)
             const antall = sortert.map((s) => ({ navn: s.navn, antall: s.boter.length }))
 
             expect(antall[0].antall).toBe(1) // Bob
@@ -65,7 +65,7 @@ describe('Spillersortering', () => {
         })
 
         it('skal sortere etter antall bøter synkende', () => {
-            const sortert = sorterSpillere(testSpillere, 'antall', 'synkende')
+            const sortert = sorterSpillere(testSpillere, 'antall', 'synkende', true)
             const antall = sortert.map((s) => ({ navn: s.navn, antall: s.boter.length }))
 
             expect(antall[0].antall).toBe(4) // David
@@ -142,8 +142,8 @@ describe('Spillersortering', () => {
         })
 
         it('skal invertere rekkefølgen når retning endres', () => {
-            const stigende = sorterSpillere(testSpillere, 'antall', 'stigende')
-            const synkende = sorterSpillere(testSpillere, 'antall', 'synkende')
+            const stigende = sorterSpillere(testSpillere, 'antall', 'stigende', true)
+            const synkende = sorterSpillere(testSpillere, 'antall', 'synkende', true)
 
             const navnStigende = stigende.map((s) => s.navn)
             const navnSynkende = synkende.map((s) => s.navn)
