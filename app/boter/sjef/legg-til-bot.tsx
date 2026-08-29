@@ -18,8 +18,8 @@ export default function LeggTilBot({ spillere, forseelser }: { spillere: Spiller
         kommentar,
         setBelop,
         setDato,
-        setErKampdag,
         setKommentar,
+        handleErKampdagEndring,
         handleSpillerToggle,
         handleFjernAlle,
         handleForseelseEndring,
@@ -46,7 +46,7 @@ export default function LeggTilBot({ spillere, forseelser }: { spillere: Spiller
                     onForseelseEndring={handleForseelseEndring}
                     onBelopEndring={setBelop}
                     onDatoEndring={setDato}
-                    onKampdagEndring={setErKampdag}
+                    onKampdagEndring={handleErKampdagEndring}
                     onKommentarEndring={setKommentar}
                     onLeggTilBoter={handleLeggTilBoter}
                 />

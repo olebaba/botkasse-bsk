@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import dayjs from '@/lib/dayjs'
 import { lagBot } from '@/lib/forseelseService.ts'
 import { AlertTypes } from '@/komponenter/ui/AlertBanner.tsx'
@@ -15,13 +15,12 @@ export function useBotSkjema() {
     } | null>(null)
     const [erKampdag, setErKampdag] = useState(false)
 
-    useEffect(() => {
-        if (erKampdag) {
-            setBelop((b) => b * 2)
-        } else {
-            setBelop((b) => b / 2)
-        }
-    }, [erKampdag])
+    // Kampdag dobler beløpet. Justeres i selve toggle-handleren (ikke i en effekt)
+    // for å unngå at beløpet kan bli dobbelt-multiplisert ved gjentatte effekt-kjøringer.
+    const handleErKampdagEndring = (nyErKampdag: boolean) => {
+        setErKampdag(nyErKampdag)
+        setBelop((b) => (nyErKampdag ? b * 2 : b / 2))
+    }
 
     const handleSpillerToggle = (spillerId: string) => {
         setValgteSpillere((prev) =>
@@ -84,8 +83,8 @@ export function useBotSkjema() {
         erKampdag,
         setBelop,
         setDato,
-        setErKampdag,
         setKommentar,
+        handleErKampdagEndring,
         handleSpillerToggle,
         handleVelgAlle,
         handleFjernAlle,
