@@ -1,4 +1,5 @@
 import { sql } from '@vercel/postgres'
+import { krevAdmin, krevInnlogget } from '@/lib/auth/apiAuth.ts'
 
 export type Forseelse = {
     id: string
@@ -9,6 +10,9 @@ export type Forseelse = {
 }
 
 export async function GET() {
+    const auth = await krevInnlogget()
+    if ('error' in auth) return auth.error
+
     try {
         const { rows } = await sql<Forseelse>`SELECT * FROM forseelser`
         return new Response(JSON.stringify(rows), { status: 200 })
@@ -18,6 +22,9 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+    const auth = await krevAdmin()
+    if ('error' in auth) return auth.error
+
     try {
         const { type, standard_belop } = await request.json()
 

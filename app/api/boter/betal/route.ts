@@ -1,7 +1,11 @@
 import { sql } from '@vercel/postgres'
 import { NextResponse } from 'next/server'
+import { krevAdmin } from '@/lib/auth/apiAuth.ts'
 
 export async function POST(request: Request) {
+    const auth = await krevAdmin()
+    if ('error' in auth) return auth.error
+
     const { botIder }: { botIder: string[] } = await request.json()
 
     if (!botIder || botIder.length === 0) {

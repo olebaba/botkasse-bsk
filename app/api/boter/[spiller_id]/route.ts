@@ -1,12 +1,16 @@
 import { NextResponse } from 'next/server'
 import { sql } from '@vercel/postgres'
 import type { Dayjs } from 'dayjs'
+import { krevAdmin, krevInnlogget } from '@/lib/auth/apiAuth.ts'
 
 type Params = {
     spiller_id: string
 }
 
 export async function POST(request: Request, props: { params: Promise<Params> }) {
+    const auth = await krevAdmin()
+    if ('error' in auth) return auth.error
+
     const params = await props.params
     const {
         beløp,
@@ -39,6 +43,9 @@ export async function POST(request: Request, props: { params: Promise<Params> })
 }
 
 export async function GET(_request: Request, props: { params: Promise<Params> }) {
+    const auth = await krevInnlogget()
+    if ('error' in auth) return auth.error
+
     const params = await props.params
     const spillerId = parseInt(params.spiller_id, 10)
     if (isNaN(spillerId)) {
