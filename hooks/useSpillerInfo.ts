@@ -14,7 +14,6 @@ export function useSpillerInfo(brukerId: string) {
             setSpillerInfo(oppdaterteSpillere)
         }
 
-        setLoading(true)
         fetchSpillere().then(() => setLoading(false))
         // eslint-disable-next-line
     }, [])

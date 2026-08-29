@@ -7,7 +7,6 @@ export function useSpillere(medBoter: boolean) {
     const [error, setError] = useState<null | string>(null)
 
     useEffect(() => {
-        setLoading(true)
         const fetchSpillere = async () => {
             const spillere = await hentSpillere(medBoter)
             setSpillere(spillere)
