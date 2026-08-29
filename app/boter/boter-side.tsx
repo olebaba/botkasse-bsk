@@ -37,7 +37,10 @@ export const BoterSide = () => {
                     </li>
                     <li className="flex items-start gap-2">
                         <span className="text-blue-600">🧑‍⚖️</span>
-                        <span>Ved uenigheter avgjøres saken i en rettssak der botsjefen har det siste ordet</span>
+                        <span>
+                            Ved uenigheter avgjøres saken i en rettssak der botsjefen, kaptein (Erlend) og en utnevnt av
+                            spilleren som vil ta opp en sak er dommere
+                        </span>
                     </li>
                     <li className="flex items-start gap-2">
                         <span className="text-blue-600">🗓️</span>
