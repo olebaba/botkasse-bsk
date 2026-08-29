@@ -8,9 +8,6 @@ export const useForseelseStatistikk = (forseelseId: string | null) => {
 
     useEffect(() => {
         if (!forseelseId) {
-            setStatistikk(null)
-            setLaster(false)
-            setFeil(null)
             return
         }
 
