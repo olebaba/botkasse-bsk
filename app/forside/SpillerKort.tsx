@@ -1,4 +1,4 @@
-import React, { useMemo, useCallback, useState, useEffect } from 'react'
+import React, { useMemo, useCallback, useState } from 'react'
 import {
     beregnSumBetaltForSesong,
     beregnSumMaaBetalesForSesong,
@@ -52,14 +52,12 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
 }) => {
     const [valgtSesong, setValgtSesong] = useState<string>('')
 
-    // Synkroniser valgtSesong med visAlleSesonger
-    useEffect(() => {
-        if (visAlleSesonger) {
-            setValgtSesong('alle')
-        } else {
-            setValgtSesong('')
-        }
-    }, [visAlleSesonger])
+    // Synkroniser valgtSesong med visAlleSesonger under rendering, ikke i en effekt
+    const [forrigeVisAlleSesonger, setForrigeVisAlleSesonger] = useState(visAlleSesonger)
+    if (visAlleSesonger !== forrigeVisAlleSesonger) {
+        setForrigeVisAlleSesonger(visAlleSesonger)
+        setValgtSesong(visAlleSesonger ? 'alle' : '')
+    }
 
     const tilgjengeligeSesonger = useMemo(() => {
         return hentTilgjengeligeSesonger(spiller.boter || [])
