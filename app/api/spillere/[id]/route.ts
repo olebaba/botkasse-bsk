@@ -29,6 +29,13 @@ export async function GET(_request: Request, props: { params: Promise<Params> })
     `
     const brukerInfo = brukerQuery.rows[0]
 
+    if (!brukerInfo) {
+        console.error(`Fant ikke bruker med id ${brukerId}`)
+        return NextResponse.json(`Bruker med id ${brukerId} ikke funnet.`, {
+            status: 404,
+        })
+    }
+
     const spillerQuery = await sql<SpillerInfo>`
         SELECT *
         FROM spillere
