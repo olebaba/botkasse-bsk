@@ -2,7 +2,7 @@
 
 import type { Spiller } from '@/lib/spillereService.ts'
 import { toggleBoterBetalt } from '@/lib/botService.ts'
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import dayjs from '@/lib/dayjs.ts'
 import type { Forseelse } from '@/app/api/boter/typer/route.ts'
 import { AlertTypes } from '@/komponenter/ui/AlertBanner.tsx'
@@ -25,7 +25,9 @@ export const ListBoter = ({
     visAlleSesonger?: boolean
     valgtSesong?: string
 }) => {
-    const [boterForSpiller, setBoterForSpiller] = useState<Bot[]>([])
+    const sorterBoter = (boter: Bot[]) => [...boter].sort((a, b) => dayjs(a.dato).valueOf() - dayjs(b.dato).valueOf())
+
+    const [boterForSpiller, setBoterForSpiller] = useState<Bot[]>(() => sorterBoter(spiller.boter))
     const [visBetalte, setVisBetalte] = useState(false)
 
     const filtrerteBoter = valgtSesong
@@ -35,10 +37,12 @@ export const ListBoter = ({
     const ubetalteBoter = filtrerteBoter.filter((bot) => !bot.erBetalt)
     const betalteBoter = filtrerteBoter.filter((bot) => bot.erBetalt)
 
-    useEffect(() => {
-        const sorterBoter = [...spiller.boter].sort((a, b) => dayjs(a.dato).valueOf() - dayjs(b.dato).valueOf())
-        setBoterForSpiller(sorterBoter)
-    }, [spiller])
+    // Synkroniser boterForSpiller med spiller-prop under rendering, ikke i en effekt
+    const [forrigeSpiller, setForrigeSpiller] = useState(spiller)
+    if (spiller !== forrigeSpiller) {
+        setForrigeSpiller(spiller)
+        setBoterForSpiller(sorterBoter(spiller.boter))
+    }
 
     if (spiller.boter?.length === 0) return null
 
