@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server'
 import { sql } from '@vercel/postgres'
 import type { BrukerInfo } from '@/app/api/bruker/route.ts'
+import { krevEierEllerAdmin } from '@/lib/auth/apiAuth.ts'
 
 export type SpillerInfo = {
     id: string
@@ -17,6 +18,9 @@ type Params = {
 export async function GET(_request: Request, props: { params: Promise<Params> }) {
     const params = await props.params
     const brukerId = params.id
+
+    const auth = await krevEierEllerAdmin(brukerId)
+    if ('error' in auth) return auth.error
 
     const brukerQuery = await sql<BrukerInfo>`
         SELECT *
@@ -42,6 +46,9 @@ export async function GET(_request: Request, props: { params: Promise<Params> })
 export async function POST(request: Request, props: { params: Promise<Params> }) {
     const params = await props.params
     const id = params.id
+
+    const auth = await krevEierEllerAdmin(id)
+    if ('error' in auth) return auth.error
 
     const formData = await request.formData()
     const rawNavnVerdi = formData.get('Navn')

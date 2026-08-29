@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import type { Spiller } from '@/lib/spillereService'
 import type { Bot } from '@/app/api/boter/[spiller_id]/route.ts'
 import dayjs from '@/lib/dayjs'
+import { krevAdmin, krevInnlogget } from '@/lib/auth/apiAuth.ts'
 
 interface SpillerRow {
     id: number
@@ -22,6 +23,9 @@ interface BotRow {
 }
 
 export async function GET(request: NextRequest) {
+    const auth = await krevInnlogget()
+    if ('error' in auth) return auth.error
+
     const req = request.nextUrl.searchParams
     const medBoter: boolean = req.get('medBoter') == 'true'
     try {
@@ -64,6 +68,9 @@ export async function GET(request: NextRequest) {
 }
 
 export async function PATCH(request: Request) {
+    const auth = await krevAdmin()
+    if ('error' in auth) return auth.error
+
     const { spiller_id, totalSum, erBetalt } = await request.json()
 
     try {

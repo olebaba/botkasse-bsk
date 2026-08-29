@@ -1,5 +1,6 @@
 import { sql } from '@vercel/postgres'
 import { NextResponse } from 'next/server'
+import { krevInnlogget } from '@/lib/auth/apiAuth.ts'
 
 export interface BrukerInfo {
     brukernavn: string
@@ -13,6 +14,9 @@ type Params = {
 }
 
 export async function GET(_request: Request, props: { params: Promise<Params> }) {
+    const auth = await krevInnlogget()
+    if ('error' in auth) return auth.error
+
     const params = await props.params
     const brukernavn = params.brukernavn
 
