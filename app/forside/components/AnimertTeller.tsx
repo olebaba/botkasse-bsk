@@ -10,7 +10,10 @@ const AnimertTeller = ({ målVerdi, laster }: AnimertTellerProps) => {
     const [jsVerdi, setJsVerdi] = useState(0)
 
     useEffect(() => {
-        if (!laster && !visJavaScriptTeller) {
+        if (laster || visJavaScriptTeller) return
+
+        // Start på neste animasjonsramme - unngår synkron setState direkte i effekten
+        requestAnimationFrame(() => {
             // Data er lastet - estimér hvor CSS-animasjonen er nå og fortsett med JS
             const tidSidenStart = Date.now() - performance.timeOrigin
             const cssProgress = Math.min(tidSidenStart / 4000, 1)
@@ -40,8 +43,8 @@ const AnimertTeller = ({ målVerdi, laster }: AnimertTellerProps) => {
             }
 
             requestAnimationFrame(animasjon)
-        }
-    }, [laster, målVerdi])
+        })
+    }, [laster, målVerdi, visJavaScriptTeller])
 
     if (laster) {
         // CSS-animasjon som starter umiddelbart
