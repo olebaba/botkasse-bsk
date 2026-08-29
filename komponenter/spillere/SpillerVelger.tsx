@@ -16,7 +16,7 @@ export default function SpillerVelger({
     onSpillerToggleAction,
     onFjernAlleAction,
 }: SpillerVelgerProps) {
-    const [søkeTerm, setSøkeTerm] = useState('')
+    const [søkeTerm] = useState('')
 
     const filtrerteSpillere = spillere.filter(
         (spiller) =>
