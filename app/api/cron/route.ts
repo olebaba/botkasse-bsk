@@ -22,6 +22,7 @@ export async function GET(req: Request) {
     const alleSpillereQuery = await sql`
         SELECT id, navn
         from spillere
+        WHERE vis_navn = true
     `
     const alleSpillere = alleSpillereQuery.rows.map((rad) => {
         return {
