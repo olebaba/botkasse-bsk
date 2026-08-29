@@ -39,7 +39,7 @@ const Forside = ({ bruker, gjestebrukerAction }: ForsideProps) => {
     const egenSpiller = useMemo(() => {
         if (!bruker?.spiller_id || spillere.length === 0) return null
         return spillere.find((spiller) => spiller.id === String(bruker.spiller_id)) || null
-    }, [spillere, bruker?.spiller_id])
+    }, [spillere, bruker])
 
     const prioritertSpiller = useMemo(() => {
         if (bruker && bruker.type !== 'gjest') {
