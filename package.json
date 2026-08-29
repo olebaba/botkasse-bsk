@@ -2,6 +2,9 @@
     "name": "nextjs",
     "version": "0.1.0",
     "private": true,
+    "engines": {
+        "node": "24.x"
+    },
     "scripts": {
         "dev": "next dev --turbopack",
         "build": "next build",
@@ -27,7 +30,7 @@
         "ts-node": "^10.9.2"
     },
     "devDependencies": {
-        "@types/node": "^26",
+        "@types/node": "^24",
         "@types/react": "^19",
         "@types/react-dom": "^19",
         "@vitest/ui": "^4.1.11",
