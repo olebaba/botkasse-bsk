@@ -30,6 +30,7 @@
         "ts-node": "^10.9.2"
     },
     "devDependencies": {
+        "@tailwindcss/postcss": "^4.3.3",
         "@types/node": "^24",
         "@types/react": "^19",
         "@types/react-dom": "^19",
