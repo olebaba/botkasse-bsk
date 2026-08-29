@@ -1,10 +1,13 @@
-import { useRef, useCallback } from 'react'
+import { useRef, useCallback, useEffect } from 'react'
 import type { Spiller } from '@/lib/spillereService'
 
 export const useScrollToCard = (spillere: Spiller[], navbarHeight: number) => {
     const cardRefs = useRef<(HTMLDivElement | null)[]>([])
     const spillereRef = useRef(spillere)
-    spillereRef.current = spillere
+
+    useEffect(() => {
+        spillereRef.current = spillere
+    }, [spillere])
 
     const scrollToSpiller = useCallback(
         (spiller: Spiller) => {
