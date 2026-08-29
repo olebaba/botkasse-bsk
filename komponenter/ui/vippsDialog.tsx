@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { generateVippsUrl } from '@/lib/vipps'
 import type { Spiller } from '@/lib/spillereService'
@@ -26,18 +26,12 @@ const VippsDialog = ({
     valgtSesong = '',
 }: DialogProps) => {
     const router = useRouter()
-    const [isModalOpen, setIsModalOpen] = useState(false)
     const [kopiert, setKopiert] = useState(false)
     const [visBelop, setVisBelop] = useState(true)
 
     const handleCloseModal = () => {
-        setIsModalOpen(false)
         setSpiller(undefined)
     }
-
-    useEffect(() => {
-        setIsModalOpen(!!spiller)
-    }, [spiller])
 
     if (!spiller) return null
 
@@ -74,7 +68,7 @@ const VippsDialog = ({
     const belopKr = beregnBelopForSesongvalg(spiller.boter || [], visAlleSesonger, valgtSesong)
 
     return (
-        <EnkelModal apen={isModalOpen} onClose={handleCloseModal} tittel={tittel} innhold={innhold}>
+        <EnkelModal apen={!!spiller} onClose={handleCloseModal} tittel={tittel} innhold={innhold}>
             <div className="text-center">
                 <p className="mb-4">{!innhold && `Vipps botsjef følgende beløp:`}</p>
                 <div
