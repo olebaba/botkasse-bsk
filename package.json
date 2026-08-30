@@ -30,6 +30,7 @@
         "ts-node": "^10.9.2"
     },
     "devDependencies": {
+        "@tailwindcss/postcss": "^4.3.3",
         "@types/node": "^24",
         "@types/react": "^19",
         "@types/react-dom": "^19",
@@ -38,7 +39,7 @@
         "eslint-config-next": "^16.3.3",
         "postcss": "^8",
         "prettier": "^3.9.6",
-        "tailwindcss": "^3.4.13",
+        "tailwindcss": "^4.3.3",
         "typescript": "6.0.3",
         "vitest": "^4.1.11"
     },
