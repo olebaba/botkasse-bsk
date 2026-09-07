@@ -17,7 +17,7 @@
     },
     "dependencies": {
         "@lucia-auth/adapter-postgresql": "^3.1.2",
-        "@node-rs/argon2": "^2.1.0",
+        "@node-rs/argon2": "^2.2.0",
         "@vercel/analytics": "^2.0.1",
         "@vercel/postgres": "^0.10.0",
         "@vercel/speed-insights": "^2.0.0",
@@ -36,7 +36,7 @@
         "@types/react-dom": "^19",
         "@vitest/ui": "^4.1.11",
         "eslint": "^9.39.0",
-        "eslint-config-next": "^16.3.3",
+        "eslint-config-next": "^16.3.4",
         "postcss": "^8",
         "prettier": "^3.9.6",
         "tailwindcss": "^4.3.3",
