@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import { sql } from '@vercel/postgres'
-import type { BrukerInfo } from '@/app/api/bruker/route.ts'
+import type { BrukerInfo } from '@/app/api/bruker/[brukernavn]/route.ts'
 import { krevEierEllerAdmin } from '@/lib/auth/apiAuth.ts'
 
 export type SpillerInfo = {
@@ -12,7 +12,6 @@ export type SpillerInfo = {
 
 type Params = {
     id: string
-    navn: string
 }
 
 export async function GET(_request: Request, props: { params: Promise<Params> }) {

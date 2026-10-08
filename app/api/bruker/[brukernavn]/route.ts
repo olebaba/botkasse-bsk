@@ -10,7 +10,6 @@ export interface BrukerInfo {
 
 type Params = {
     brukernavn: string
-    navn: string
 }
 
 export async function GET(_request: Request, props: { params: Promise<Params> }) {
