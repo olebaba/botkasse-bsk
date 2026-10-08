@@ -28,8 +28,8 @@ export const BoterSide = () => {
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
                 <ul className="space-y-2 text-blue-800">
                     <li className="flex items-start gap-2">
-                        <span className="text-blue-600">✍️</span>
-                        <span>Gjelder alle spillere med kontrakt</span>
+                        <span className="text-blue-600">🏃🏻‍♂️‍➡️</span>
+                        <span>Gjelder alle spillere som er med på treninger og kamper i løpet av sesongen</span>
                     </li>
                     <li className="flex items-start gap-2">
                         <span className="text-blue-600">🏑</span>
@@ -38,13 +38,13 @@ export const BoterSide = () => {
                     <li className="flex items-start gap-2">
                         <span className="text-blue-600">🧑‍⚖️</span>
                         <span>
-                            Ved uenigheter avgjøres saken i en rettssak der botsjefen, kaptein (Erlend) og en utnevnt av
-                            spilleren som vil ta opp en sak er dommere
+                            Ved uenigheter avgjøres saken i en rettssak der botsjefen, en fra kapteinsteamet og en
+                            utnevnt av spilleren som vil ta opp en sak er dommere
                         </span>
                     </li>
                     <li className="flex items-start gap-2">
                         <span className="text-blue-600">🗓️</span>
-                        <span>Bøtene betales via Vipps til botsjefen innen utgangen av neste måned</span>
+                        <span>Bøtene betales via Vipps til botsjefen innen den 15. måneden etter boten ble gitt</span>
                     </li>
                     <li className="flex items-start gap-2">
                         <span className="text-blue-600">🍻</span>
