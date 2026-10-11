@@ -13,6 +13,7 @@ import {
 } from './spillerValidering'
 
 const DRAKTNUMMER_FEIL = 'Draktnummer må være et positivt heltall.'
+const NYTT_DRAKTNUMMER_FEIL = 'Nytt draktnummer må være et positivt heltall.'
 const UGYLDIG_FORESPORSEL = 'Ugyldig forespørsel.'
 
 describe('Konstanter', () => {
@@ -190,6 +191,66 @@ describe('validerSpillerOppdatering', () => {
         expect(validerSpillerOppdatering({ spiller_id: 7, navn: '', visNavn: 'x' })).toEqual({
             ok: false,
             feil: 'Navn må fylles ut.',
+        })
+    })
+
+    describe('nyttDraktnummer', () => {
+        const gyldig = { spiller_id: 7, navn: 'Ola', visNavn: true }
+
+        it('beholder nyttDraktnummer når det er et annet tall enn spiller_id', () => {
+            expect(validerSpillerOppdatering({ ...gyldig, nyttDraktnummer: 70 })).toStrictEqual({
+                ok: true,
+                verdi: { spillerId: 7, navn: 'Ola', visNavn: true, nyttDraktnummer: 70 },
+            })
+        })
+
+        it('utelater nyttDraktnummer når det er likt spiller_id', () => {
+            expect(validerSpillerOppdatering({ ...gyldig, nyttDraktnummer: 7 })).toStrictEqual({
+                ok: true,
+                verdi: { spillerId: 7, navn: 'Ola', visNavn: true },
+            })
+        })
+
+        it('utelater nyttDraktnummer når det ikke er oppgitt', () => {
+            expect(validerSpillerOppdatering(gyldig)).toStrictEqual({
+                ok: true,
+                verdi: { spillerId: 7, navn: 'Ola', visNavn: true },
+            })
+        })
+
+        it('godtar høyeste tillatte draktnummer', () => {
+            expect(validerSpillerOppdatering({ ...gyldig, nyttDraktnummer: MAKS_DRAKTNUMMER })).toStrictEqual({
+                ok: true,
+                verdi: { spillerId: 7, navn: 'Ola', visNavn: true, nyttDraktnummer: MAKS_DRAKTNUMMER },
+            })
+        })
+
+        it.each([
+            ['0', 0],
+            ['-1', -1],
+            ['1.5', 1.5],
+            ["'70' (tekst)", '70'],
+            ['NaN', NaN],
+            ['2147483648', 2147483648],
+            ['null', null],
+            ['Infinity', Infinity],
+            ['objekt', {}],
+        ])('avviser nyttDraktnummer %s', (_beskrivelse, verdi) => {
+            expect(validerSpillerOppdatering({ ...gyldig, nyttDraktnummer: verdi })).toEqual({
+                ok: false,
+                feil: NYTT_DRAKTNUMMER_FEIL,
+            })
+        })
+
+        it('returnerer feil for nyttDraktnummer etter spiller_id, navn og visNavn', () => {
+            expect(validerSpillerOppdatering({ spiller_id: 7, navn: '', visNavn: true, nyttDraktnummer: 0 })).toEqual({
+                ok: false,
+                feil: 'Navn må fylles ut.',
+            })
+            expect(validerSpillerOppdatering({ spiller_id: 7, navn: 'Ola', nyttDraktnummer: 0 })).toEqual({
+                ok: false,
+                feil: 'Vis spiller må være sann eller usann.',
+            })
         })
     })
 })

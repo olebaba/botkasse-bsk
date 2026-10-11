@@ -66,11 +66,34 @@ describe('spillereService', () => {
             })
         })
 
+        it('sender nyttDraktnummer i PUT-body når draktnummeret endres', async () => {
+            const spiller = { id: '70', draktnummer: 70, navn: 'Kari Nordmann', boter: [], visNavn: true }
+            fetchMock.mockResolvedValue(jsonRespons({ spiller }, 200))
+
+            const resultat = await oppdaterSpiller(7, { navn: 'Kari Nordmann', visNavn: true, nyttDraktnummer: 70 })
+
+            expect(resultat).toEqual(spiller)
+            expect(fetchMock).toHaveBeenCalledTimes(1)
+            expect(fetchMock).toHaveBeenCalledWith('/api/spillere', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ spiller_id: 7, navn: 'Kari Nordmann', visNavn: true, nyttDraktnummer: 70 }),
+            })
+        })
+
         it('kaster serverens feilmelding ved 404', async () => {
             fetchMock.mockResolvedValue(jsonRespons({ error: 'Fant ikke spilleren.' }, 404))
 
             await expect(oppdaterSpiller(7, { navn: 'Kari', visNavn: true })).rejects.toThrow(
                 new Error('Fant ikke spilleren.'),
+            )
+        })
+
+        it('kaster serverens feilmelding ved 409 når nytt draktnummer er i bruk', async () => {
+            fetchMock.mockResolvedValue(jsonRespons({ error: 'Draktnummer 70 er allerede i bruk.' }, 409))
+
+            await expect(oppdaterSpiller(7, { navn: 'Kari', visNavn: true, nyttDraktnummer: 70 })).rejects.toThrow(
+                new Error('Draktnummer 70 er allerede i bruk.'),
             )
         })
 

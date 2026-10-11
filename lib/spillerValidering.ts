@@ -4,6 +4,7 @@ export const MAKS_NAVN_LENGDE = 100
 export type Valideringsresultat<T> = { ok: true; verdi: T } | { ok: false; feil: string }
 
 const DRAKTNUMMER_FEIL = 'Draktnummer må være et positivt heltall.'
+const NYTT_DRAKTNUMMER_FEIL = 'Nytt draktnummer må være et positivt heltall.'
 const UGYLDIG_FORESPORSEL = 'Ugyldig forespørsel.'
 
 const lesObjekt = (data: unknown): Record<string, unknown> | null =>
@@ -47,7 +48,7 @@ export const validerNySpiller = (data: unknown): Valideringsresultat<NySpiller> 
     return { ok: true, verdi: { draktnummer: draktnummer.verdi, navn: navn.verdi } }
 }
 
-export type SpillerOppdatering = { spillerId: number; navn: string; visNavn: boolean }
+export type SpillerOppdatering = { spillerId: number; navn: string; visNavn: boolean; nyttDraktnummer?: number }
 
 export const validerSpillerOppdatering = (data: unknown): Valideringsresultat<SpillerOppdatering> => {
     const objekt = lesObjekt(data)
@@ -64,7 +65,19 @@ export const validerSpillerOppdatering = (data: unknown): Valideringsresultat<Sp
     const visNavn = validerVisNavn(objekt.visNavn)
     if (!visNavn.ok) return visNavn
 
-    return { ok: true, verdi: { spillerId: spillerId.verdi, navn: navn.verdi, visNavn: visNavn.verdi } }
+    const oppdatering = { spillerId: spillerId.verdi, navn: navn.verdi, visNavn: visNavn.verdi }
+    if (objekt.nyttDraktnummer === undefined) {
+        return { ok: true, verdi: oppdatering }
+    }
+
+    const nyttDraktnummer = validerDraktnummer(objekt.nyttDraktnummer)
+    if (!nyttDraktnummer.ok) return { ok: false, feil: NYTT_DRAKTNUMMER_FEIL }
+
+    // Uendret draktnummer skal ikke trigge flytting av bøter, så da brukes den enkle oppdateringen.
+    if (nyttDraktnummer.verdi === spillerId.verdi) {
+        return { ok: true, verdi: oppdatering }
+    }
+    return { ok: true, verdi: { ...oppdatering, nyttDraktnummer: nyttDraktnummer.verdi } }
 }
 
 export const parseDraktnummerParam = (verdi: string | null): Valideringsresultat<number> => {

@@ -18,11 +18,13 @@ const AdministrerSpillere = ({ spillere, onSpillerOppdatert, onSpillerSlettet }:
     const {
         valgtSpiller,
         navn,
+        draktnummer,
         visNavn,
         melding,
         lagrer,
         visSlettBekreftelse,
         setNavn,
+        setDraktnummer,
         setVisNavn,
         velgSpiller,
         handleLagre,
@@ -63,7 +65,25 @@ const AdministrerSpillere = ({ spillere, onSpillerOppdatert, onSpillerSlettet }:
                                 />
                             </div>
 
-                            <p className="text-gray-600">Draktnummer: #{valgtSpiller.draktnummer}</p>
+                            <div>
+                                <label className="block text-gray-700 font-semibold mb-2" htmlFor="rediger-draktnummer">
+                                    Draktnummer
+                                </label>
+                                <input
+                                    type="number"
+                                    id="rediger-draktnummer"
+                                    value={draktnummer}
+                                    onChange={(e) => setDraktnummer(e.target.value)}
+                                    className="w-full border border-gray-300 rounded-lg px-4 py-3 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-colors"
+                                    min="1"
+                                    step="1"
+                                    inputMode="numeric"
+                                />
+                            </div>
+                            <p className="text-sm text-gray-500">
+                                Endrer du draktnummeret, flyttes alle bøter og eventuell brukerkobling til det nye
+                                nummeret.
+                            </p>
 
                             <div className="flex items-center space-x-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
                                 <input

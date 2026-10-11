@@ -82,7 +82,7 @@ export async function lagSpiller(draktnummer: number, navn: string): Promise<Spi
     return (await res.json()).spiller
 }
 
-export type SpillerEndringer = { navn: string; visNavn: boolean }
+export type SpillerEndringer = { navn: string; visNavn: boolean; nyttDraktnummer?: number }
 
 export async function oppdaterSpiller(spillerId: number, endringer: SpillerEndringer): Promise<Spiller> {
     const res = await fetch('/api/spillere', {
