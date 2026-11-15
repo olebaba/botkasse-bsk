@@ -1,4 +1,4 @@
-import { db, sql, type VercelPoolClient } from '@vercel/postgres'
+import { sql } from '@vercel/postgres'
 import { NextRequest, NextResponse } from 'next/server'
 import type { Spiller } from '@/lib/spillereService'
 import type { Bot } from '@/app/api/boter/[spiller_id]/route.ts'
@@ -10,7 +10,6 @@ import {
     sletteBlokkeringMelding,
     validerNySpiller,
     validerSpillerOppdatering,
-    type SpillerOppdatering,
 } from '@/lib/spillerValidering.ts'
 
 interface SpillerRow {
@@ -132,40 +131,6 @@ export async function POST(request: Request) {
     }
 }
 
-// Draktnummer er primærnøkkel og bøter har FK uten CASCADE, så raden flyttes i én transaksjon.
-const endreDraktnummer = async ({ spillerId, navn, visNavn, nyttDraktnummer }: Required<SpillerOppdatering>) => {
-    let klient: VercelPoolClient | undefined
-    try {
-        klient = await db.connect()
-        await klient.sql`BEGIN`
-        const gammel = await klient.sql`SELECT id FROM spillere WHERE id = ${spillerId} FOR UPDATE`
-        if (gammel.rowCount === 0) {
-            await klient.sql`ROLLBACK`
-            return ikkeFunnet(spillerId)
-        }
-
-        const { rows } = await klient.sql<SpillerRow>`
-            INSERT INTO spillere (id, navn, vis_navn, total_sum)
-            SELECT ${nyttDraktnummer}::int, ${navn}::text, ${visNavn}::boolean, total_sum FROM spillere WHERE id = ${spillerId}
-            RETURNING id, navn, vis_navn
-        `
-        await klient.sql`UPDATE bøter SET spiller_id = ${nyttDraktnummer} WHERE spiller_id = ${spillerId}`
-        await klient.sql`UPDATE brukere SET spiller_id = ${nyttDraktnummer} WHERE spiller_id = ${spillerId}`
-        await klient.sql`DELETE FROM spillere WHERE id = ${spillerId}`
-        await klient.sql`COMMIT`
-        return NextResponse.json({ spiller: tilSpiller(rows[0]) }, { status: 200 })
-    } catch (error) {
-        if (klient) await klient.sql`ROLLBACK`.catch(() => undefined)
-        if (pgFeilkode(error) === PG_UNIK_BRUDD) {
-            return NextResponse.json({ error: `Draktnummer ${nyttDraktnummer} er allerede i bruk.` }, { status: 409 })
-        }
-        console.error('Feil ved endring av draktnummer', pgFeilkode(error))
-        return NextResponse.json({ error: 'Kunne ikke endre draktnummer.' }, { status: 500 })
-    } finally {
-        klient?.release()
-    }
-}
-
 export async function PUT(request: Request) {
     const auth = await krevAdmin()
     if ('error' in auth) return auth.error
@@ -180,15 +145,12 @@ export async function PUT(request: Request) {
         return NextResponse.json({ error: resultat.feil }, { status: 400 })
     }
 
-    const { spillerId, navn, visNavn, nyttDraktnummer } = resultat.verdi
-    if (nyttDraktnummer !== undefined) {
-        return endreDraktnummer({ spillerId, navn, visNavn, nyttDraktnummer })
-    }
+    const { spillerId, navn, visNavn, nyttDraktnummer = spillerId } = resultat.verdi
 
     try {
         const { rows, rowCount } = await sql<SpillerRow>`
             UPDATE spillere
-            SET navn = ${navn}, vis_navn = ${visNavn}
+            SET id = ${nyttDraktnummer}, navn = ${navn}, vis_navn = ${visNavn}
             WHERE id = ${spillerId}
             RETURNING id, navn, vis_navn
         `
@@ -197,6 +159,9 @@ export async function PUT(request: Request) {
         }
         return NextResponse.json({ spiller: tilSpiller(rows[0]) }, { status: 200 })
     } catch (error) {
+        if (pgFeilkode(error) === PG_UNIK_BRUDD) {
+            return NextResponse.json({ error: `Draktnummer ${nyttDraktnummer} er allerede i bruk.` }, { status: 409 })
+        }
         console.error('Feil ved oppdatering av spiller', pgFeilkode(error))
         return NextResponse.json({ error: 'Kunne ikke oppdatere spiller.' }, { status: 500 })
     }

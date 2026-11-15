@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { NextRequest } from 'next/server'
 
-vi.mock('@vercel/postgres', () => ({ sql: vi.fn(), db: { connect: vi.fn() } }))
+vi.mock('@vercel/postgres', () => ({ sql: vi.fn() }))
 vi.mock('@/lib/auth/apiAuth.ts', () => ({ krevAdmin: vi.fn(), krevInnlogget: vi.fn() }))
 
 import { sql } from '@vercel/postgres'
@@ -257,10 +257,44 @@ describe('PUT /api/spillere', () => {
             spiller: { id: '7', navn: 'Ola', visNavn: false, draktnummer: 7, boter: [] },
         })
         expect(sql).toHaveBeenCalledTimes(1)
-        expect(vi.mocked(sql).mock.calls[0].slice(1)).toEqual(['Ola', false, 7])
+        expect(vi.mocked(sql).mock.calls[0].slice(1)).toEqual([7, 'Ola', false, 7])
         expect(sqlTekst(vi.mocked(sql).mock.calls[0])).toBe(
-            'UPDATE spillere SET navn = ?, vis_navn = ? WHERE id = ? RETURNING id, navn, vis_navn',
+            'UPDATE spillere SET id = ?, navn = ?, vis_navn = ? WHERE id = ? RETURNING id, navn, vis_navn',
         )
+    })
+
+    it('PUT endrer draktnummer i samme UPDATE og returnerer spilleren med nytt nummer', async () => {
+        somAdmin()
+        vi.mocked(sql).mockResolvedValueOnce({ rows: [{ id: 70, navn: 'Ola', vis_navn: false }], rowCount: 1 } as never)
+
+        const respons = await PUT(lagRequest('PUT', { ...gyldigBody, nyttDraktnummer: 70 }))
+
+        expect(respons.status).toBe(200)
+        expect(await respons.json()).toEqual({
+            spiller: { id: '70', navn: 'Ola', visNavn: false, draktnummer: 70, boter: [] },
+        })
+        expect(sql).toHaveBeenCalledTimes(1)
+        expect(vi.mocked(sql).mock.calls[0].slice(1)).toEqual([70, 'Ola', false, 7])
+    })
+
+    it('PUT returnerer 400 for ugyldig nyttDraktnummer uten å spørre databasen', async () => {
+        somAdmin()
+
+        const respons = await PUT(lagRequest('PUT', { ...gyldigBody, nyttDraktnummer: 0 }))
+
+        expect(respons.status).toBe(400)
+        expect(await respons.json()).toEqual({ error: 'Nytt draktnummer må være et positivt heltall.' })
+        expect(sql).not.toHaveBeenCalled()
+    })
+
+    it('PUT returnerer 409 når det nye draktnummeret allerede er i bruk', async () => {
+        somAdmin()
+        vi.mocked(sql).mockRejectedValueOnce(pgFeil('23505'))
+
+        const respons = await PUT(lagRequest('PUT', { ...gyldigBody, nyttDraktnummer: 70 }))
+
+        expect(respons.status).toBe(409)
+        expect(await respons.json()).toEqual({ error: 'Draktnummer 70 er allerede i bruk.' })
     })
 
     it('PUT returnerer 500 ved ukjent feil', async () => {
