@@ -1,90 +1,72 @@
 # AGENTS.md - `botkasse-bsk`
 
-Repoet `botkasse-bsk` er et verktøy for å hente og vise data fra Botkassen til Bækkelaget bsk innebandy.
-Det tilbyr API-endepunkter for å hente, opprette og oppdatere saker i Botkasse.
+Botkassen til Bækkelaget bsk innebandy: oversikt over spillere, bøter og lagkassen, med egne sider for botsjefen.
 
-## 1) Kommandoer
+Stack: Next.js (App Router), TypeScript, Tailwind CSS og Postgres (Neon via `@vercel/postgres`), med **bun** som pakkehåndterer.
 
-Bruk IntelliJ MCP (`execute_run_configuration`) for scripts — se **`AGENTS-intellij.md`**.
+## Kommandoer
 
-### Før commit (obligatorisk)
+Bruk IntelliJ MCP (`execute_run_configuration`) når det er tilgjengelig, se **`AGENTS-intellij.md`**. Ellers bun:
 
-Kjør i rekkefølge via `execute_run_configuration`:
+| Oppgave | Kommando           |
+| ------- | ------------------ |
+| Format  | `bun run format`   |
+| Lint    | `bun run lint`     |
+| Tester  | `bun run test:run` |
+| Bygg    | `bun run build`    |
 
-1. `format`
-2. `test`
-3. `build`
+- Før commit må `format`, `lint`, `test:run` og `build` være grønne (CI kjører lint, test:run og build)
+- Bruk `test:run`, ikke `test`. `test` starter Vitest i watch-modus og blir aldri ferdig
+- `format` kjører Prettier på hele repoet. Sjekk `git status` etterpå og tilbakestill filer du ikke jobber med
 
-## 2) Testing
+## Testing
 
-- Enhet/integrasjon: **Vitest** (`.test.ts` / `.test.tsx`) plassert sammen med koden den tester (f.eks. i `lib/`)
-- E2E: Ikke satt opp som standard script i dette repoet per nå
-- «Kjør tester» betyr `bun run test` med mindre noe annet er eksplisitt avtalt
-- Prioriter tester for endret domenelogikk
+- Vitest (`*.test.ts`) ligger sammen med koden den tester. E2E og UI-tester er ikke satt opp
+- Legg til eller oppdater tester når domenelogikk eller API-ruter endres
+- Mocking av database, autentisering og `fetch`: se **`AGENTS-testing.md`**
 
-## 3) Prosjektstruktur
+## Struktur og mønstre
 
-- Sider: `app/` (Next.js App Router, `app/**/page.tsx`, layout i `app/layout.tsx`)
-- API-ruter: `app/api/**/route.ts` (route handlers, f.eks. `app/api/boter/[spiller_id]/route.ts`)
-- UI: `komponenter/` (`komponenter/ui/`, `komponenter/tabeller/`, `komponenter/boter/`, `komponenter/spillere/`, `komponenter/navigasjon/`)
-- Datahenting på klient: `hooks/` (egne React-hooks med `useState`/`useEffect` + `fetch`)
-- Domenelogikk og tjenester: `lib/` (f.eks. `lib/botBeregning.ts`, `lib/spillereService.ts`, `lib/queries.ts`)
-- Autentisering: `lib/auth/` (Lucia-basert, f.eks. `krevInnlogget()`, `krevAdmin()`, `krevEierEllerAdmin()`)
+- `app/`: sider og API-ruter (`app/api/**/route.ts`)
+- `komponenter/`: UI. `hooks/`: datahenting og skjemalogikk. `lib/`: domenelogikk, tjenester og validering. `lib/auth/`: Lucia-autentisering
 
-Ved nytt API-endepunkt:
+Nytt API-endepunkt (se `app/api/spillere/route.ts`):
 
-1. Opprett `app/api/{ressurs}/route.ts` (bruk `[id]/route.ts` for dynamiske path-segmenter)
-2. Beskytt ruten med `krevInnlogget()` / `krevAdmin()` / `krevEierEllerAdmin()` fra `lib/auth/apiAuth.ts`
-3. Spør/skriv direkte mot Postgres med `sql` fra `@vercel/postgres` (se `lib/queries.ts` for delte hjelpefunksjoner)
-4. Eksponer endepunktet via en tjenestefunksjon i `lib/{ressurs}Service.ts`, konsumert av en hook i `hooks/`
+1. Første linje i handleren er `krevInnlogget()`, `krevAdmin()` eller `krevEierEllerAdmin()` fra `lib/auth/apiAuth.ts`
+2. Valider input med rene funksjoner i `lib/{ressurs}Validering.ts` som returnerer `{ ok: true, verdi } | { ok: false, feil }`
+3. Spør Postgres direkte med `sql` fra `@vercel/postgres`
+4. Feil svares med `{ error: string }` på norsk: 400 ugyldig input, 404 ikke funnet, 409 konflikt (Postgres `23505`/`23503`). Logg bare feilkoden
+5. Klienten kaller ruten via en tjenestefunksjon i `lib/{ressurs}Service.ts`, som kaster serverens feilmelding, brukt fra en hook i `hooks/`
 
-## 4) Kodestil
+Hooks viser tilbakemelding med `melding` og `AlertTypes` (se `hooks/useBotSkjema.ts`). Oppdater lokale lister med rene hjelpefunksjoner (f.eks. `lib/spillerListe.ts`) i stedet for å hente på nytt.
+
+## Database
+
+- Det finnes bare én database, og det er **produksjon**
+- `spillere.id` er draktnummeret. `bøter.spiller_id` og `brukere.spiller_id` har fremmednøkkel med `ON UPDATE CASCADE`
+- `spillere.vis_navn` styrer både visning og den månedlige boten i `app/api/cron/route.ts`
+- `app/api/spillere/[id]` tar **bruker-id**, ikke draktnummer
+- Ingen migreringsverktøy: skjemaendringer kjøres manuelt. Ta en Neon-branch først, og kjør endringen i prod før koden som trenger den merges
+
+## Kodestil
 
 - All kode, kommentarer og UI-tekst på **norsk bokmål**
-- Bruk eksisterende mønstre i koden fremfor nye varianter
-- Bruk props-basert dataflyt og hooks (ingen Redux/Zustand)
-- Dato og tid skal håndteres via `lib/dayjs.ts` (ferdigkonfigurert dayjs med norsk locale), ikke importer `dayjs` direkte andre steder
-- Klient-fetching skal gå via tjenestefunksjoner i `lib/*Service.ts`, ikke direkte `fetch()` i komponenter
+- React-komponenter som `const` med arrow function
+- Minst mulig kommentarer. Kommenter bare _hvorfor_ der det ikke er åpenbart
+- Følg eksisterende mønstre fremfor nye varianter
+- Props og hooks for dataflyt, ingen global state (Redux/Zustand)
+- Dato og tid via `lib/dayjs.ts`, aldri `dayjs` direkte
+- Ingen `fetch()` i komponenter, bruk tjenestefunksjonene i `lib/*Service.ts`
 
-## 5) Git-workflow
+## Git og PR
 
-- Egen branch per feature/fix, aldri direkte på `main`
-- Hold commit-meldinger korte, beskrivende, én linje, uten punktum
-- Ingen conventional commit-prefix og ingen issue-nummer påkrevd
+- Egen branch per endring, aldri direkte på `main`
+- Commit-meldinger: én kort linje på norsk, uten punktum, prefiks eller issue-nummer
+- Opprett PR med `gh pr create` (GitHub MCP kan bare lese)
 
-Standard flyt:
+## Sikkerhet
 
-```sh
-git checkout -b kort-beskrivende-navn
-# kjør format, test og build via IntelliJ MCP (se «Før commit» i seksjon 1)
-git commit -m "Kort beskrivelse på norsk"
-git push origin <branch>
-```
-
-Opprett PR via GitHub MCP (`create_pull_request`) eller `gh pr create --fill`.
-
-## 6) Grenser (aldri gjør dette)
-
-- Aldri lekke eller logge sensitiv informasjon (fnr, tokens, session-data)
-- Aldri hardkode hemmeligheter eller credentials
-- Aldri bytt ut datohåndtering i `lib/dayjs.ts` med tilfeldige ad hoc-varianter
-- Aldri innfør ny global state-løsning uten eksplisitt beskjed
-- Aldri kall backend direkte fra tilfeldige komponenter når hook/tjeneste-mønsteret finnes
-- Aldri fjern sikkerhetsmekanismer i API-ruter (`krevInnlogget()`, `krevAdmin()`, `krevEierEllerAdmin()`)
-- Aldri commit med rød format/test/build
-
-## Når du trenger mer kontekst
-
-- `README.md` - prosjektformål og lokal kjøring
-- `package.json` - scripts og verktøy som faktisk brukes
-- `lib/auth/apiAuth.ts` - tilgangskontroll for API-ruter (`krevInnlogget()`, `krevAdmin()`, `krevEierEllerAdmin()`)
-- `app/api/**/route.ts` - API-ruter, autorisasjon og Postgres-kall
-- `hooks/` - anbefalt mønster for datahenting på klient
-- `lib/dayjs.ts` - korrekt håndtering av dato og tid
-- `lib/queries.ts` - delte Postgres-hjelpefunksjoner
-
-## Hurtigsjekk før levering
-
-- [ ] Endringen følger eksisterende mønster i berørte filer
-- [ ] Tester er oppdatert der domenelogikk er endret
-- [ ] Format, tester og bygg er grønn (se «Før commit» i seksjon 1)
+- Aldri logg eller lekk sensitiv informasjon (fnr, tokens, session-data, request-body)
+- Aldri hardkod eller commit hemmeligheter. Lokale verdier hører hjemme i `.env.local` (ignorert av git)
+- Aldri fjern tilgangskontrollen i API-ruter
+- Aldri skriv til produksjonsdatabasen uten eksplisitt beskjed. Tester skal aldri koble til databasen

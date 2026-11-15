@@ -6,26 +6,29 @@ Bruk alltid IntelliJ MCP-verktøy (`com-jetbrains-intellij-*`) fremfor bash/grep
 
 Bruk `execute_run_configuration` med `configurationName` lik script-navnet fra `package.json`:
 
-| Oppgave           | configurationName |
-| ----------------- | ----------------- |
-| Enhetstester      | `test`            |
-| Enhetstester (CI) | `test:run`        |
-| Format            | `format`          |
-| Lint              | `lint`            |
-| Bygg              | `build`           |
+| Oppgave      | configurationName |
+| ------------ | ----------------- |
+| Enhetstester | `test:run`        |
+| Format       | `format`          |
+| Lint         | `lint`            |
+| Bygg         | `build`           |
 
 Eksempel:
 
 ```
 execute_run_configuration(
-  configurationName: "test",
-  projectPath: "/Users/.../botkasse-bsk",
+  configurationName: "test:run",
+  projectPath: "<prosjektsti>",
   waitForExit: true,
   timeout: 120000
 )
 ```
 
-> **Merk:** Playwright/E2E er ikke satt opp i dette prosjektet. Bruk Vitest for alle tester.
+> **Merk:** Ikke bruk `test`. Den starter Vitest i watch-modus og blir aldri ferdig.
+
+## Database
+
+IntelliJ har tilkoblingen `botkass-bsk-neon` mot **produksjonsdatabasen** (Neon). Bruk `execute_sql_query` for lesespørringer og skjemasjekker (f.eks. `pg_constraint`, `information_schema.columns`).
 
 ## Opprette ny run-konfigurasjon
 
