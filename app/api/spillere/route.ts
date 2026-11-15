@@ -1,4 +1,3 @@
-// Opprett/endre/slett spiller ligger her (ikke i [id]) fordi [id]-ruten bruker bruker-id, ikke draktnummer.
 import { db, sql, type VercelPoolClient } from '@vercel/postgres'
 import { NextRequest, NextResponse } from 'next/server'
 import type { Spiller } from '@/lib/spillereService'
@@ -49,6 +48,11 @@ const tilSpiller = (row: SpillerRow): Spiller => ({
     draktnummer: row.id, // ID er draktnummeret
     boter: [],
 })
+
+const ugyldigForesporsel = () => NextResponse.json({ error: 'Ugyldig forespørsel.' }, { status: 400 })
+
+const ikkeFunnet = (spillerId: number) =>
+    NextResponse.json({ error: `Fant ikke spiller med draktnummer ${spillerId}.` }, { status: 404 })
 
 const lesJson = async (request: Request): Promise<unknown | undefined> => {
     try {
@@ -103,7 +107,7 @@ export async function POST(request: Request) {
 
     const body = await lesJson(request)
     if (body === undefined) {
-        return NextResponse.json({ error: 'Ugyldig forespørsel.' }, { status: 400 })
+        return ugyldigForesporsel()
     }
 
     const resultat = validerNySpiller(body)
@@ -137,7 +141,7 @@ const endreDraktnummer = async ({ spillerId, navn, visNavn, nyttDraktnummer }: R
         const gammel = await klient.sql`SELECT id FROM spillere WHERE id = ${spillerId} FOR UPDATE`
         if (gammel.rowCount === 0) {
             await klient.sql`ROLLBACK`
-            return NextResponse.json({ error: `Fant ikke spiller med draktnummer ${spillerId}.` }, { status: 404 })
+            return ikkeFunnet(spillerId)
         }
 
         const { rows } = await klient.sql<SpillerRow>`
@@ -152,17 +156,10 @@ const endreDraktnummer = async ({ spillerId, navn, visNavn, nyttDraktnummer }: R
         return NextResponse.json({ spiller: tilSpiller(rows[0]) }, { status: 200 })
     } catch (error) {
         if (klient) await klient.sql`ROLLBACK`.catch(() => undefined)
-        const feilkode = pgFeilkode(error)
-        if (feilkode === PG_UNIK_BRUDD) {
+        if (pgFeilkode(error) === PG_UNIK_BRUDD) {
             return NextResponse.json({ error: `Draktnummer ${nyttDraktnummer} er allerede i bruk.` }, { status: 409 })
         }
-        if (feilkode === PG_FREMMEDNOKKEL_BRUDD) {
-            return NextResponse.json(
-                { error: 'Spilleren fikk nye bøter under endringen, prøv igjen.' },
-                { status: 409 },
-            )
-        }
-        console.error('Feil ved endring av draktnummer', feilkode)
+        console.error('Feil ved endring av draktnummer', pgFeilkode(error))
         return NextResponse.json({ error: 'Kunne ikke endre draktnummer.' }, { status: 500 })
     } finally {
         klient?.release()
@@ -175,7 +172,7 @@ export async function PUT(request: Request) {
 
     const body = await lesJson(request)
     if (body === undefined) {
-        return NextResponse.json({ error: 'Ugyldig forespørsel.' }, { status: 400 })
+        return ugyldigForesporsel()
     }
 
     const resultat = validerSpillerOppdatering(body)
@@ -196,7 +193,7 @@ export async function PUT(request: Request) {
             RETURNING id, navn, vis_navn
         `
         if (rowCount === 0) {
-            return NextResponse.json({ error: `Fant ikke spiller med draktnummer ${spillerId}.` }, { status: 404 })
+            return ikkeFunnet(spillerId)
         }
         return NextResponse.json({ spiller: tilSpiller(rows[0]) }, { status: 200 })
     } catch (error) {
@@ -260,7 +257,7 @@ export async function DELETE(request: NextRequest) {
         `
         const { finnes, antall_boter: antallBoter, har_bruker: harBruker } = rows[0]
         if (!finnes) {
-            return NextResponse.json({ error: `Fant ikke spiller med draktnummer ${spillerId}.` }, { status: 404 })
+            return ikkeFunnet(spillerId)
         }
 
         const blokkering = finnSletteBlokkering(antallBoter, harBruker)

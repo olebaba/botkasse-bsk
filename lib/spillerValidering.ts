@@ -73,7 +73,6 @@ export const validerSpillerOppdatering = (data: unknown): Valideringsresultat<Sp
     const nyttDraktnummer = validerDraktnummer(objekt.nyttDraktnummer)
     if (!nyttDraktnummer.ok) return { ok: false, feil: NYTT_DRAKTNUMMER_FEIL }
 
-    // Uendret draktnummer skal ikke trigge flytting av bøter, så da brukes den enkle oppdateringen.
     if (nyttDraktnummer.verdi === spillerId.verdi) {
         return { ok: true, verdi: oppdatering }
     }
