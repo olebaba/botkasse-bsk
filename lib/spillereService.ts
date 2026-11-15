@@ -60,3 +60,45 @@ export async function hentBoterForAlleSpillere(spillere: Spiller[]): Promise<Spi
         }),
     )
 }
+
+const hentFeilmelding = async (res: Response, standard: string): Promise<string> => {
+    try {
+        const data = await res.json()
+        return typeof data?.error === 'string' ? data.error : standard
+    } catch {
+        return standard
+    }
+}
+
+export async function lagSpiller(draktnummer: number, navn: string): Promise<Spiller> {
+    const res = await fetch('/api/spillere', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ draktnummer, navn }),
+    })
+    if (!res.ok) {
+        throw new Error(await hentFeilmelding(res, 'Kunne ikke legge til spiller.'))
+    }
+    return (await res.json()).spiller
+}
+
+export type SpillerEndringer = { navn: string; visNavn: boolean; nyttDraktnummer?: number }
+
+export async function oppdaterSpiller(spillerId: number, endringer: SpillerEndringer): Promise<Spiller> {
+    const res = await fetch('/api/spillere', {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ spiller_id: spillerId, ...endringer }),
+    })
+    if (!res.ok) {
+        throw new Error(await hentFeilmelding(res, 'Kunne ikke oppdatere spiller.'))
+    }
+    return (await res.json()).spiller
+}
+
+export async function slettSpiller(spillerId: number): Promise<void> {
+    const res = await fetch(`/api/spillere?spiller_id=${spillerId}`, { method: 'DELETE' })
+    if (!res.ok) {
+        throw new Error(await hentFeilmelding(res, 'Kunne ikke slette spiller.'))
+    }
+}
