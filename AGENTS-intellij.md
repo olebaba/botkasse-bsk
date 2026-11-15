@@ -18,17 +18,17 @@ Eksempel:
 ```
 execute_run_configuration(
   configurationName: "test:run",
-  projectPath: "/Users/.../botkasse-bsk",
+  projectPath: "<prosjektsti>",
   waitForExit: true,
   timeout: 120000
 )
 ```
 
-> **Merk:** Ikke bruk `test`. Den starter Vitest i watch-modus og blir aldri ferdig. Playwright/E2E er ikke satt opp.
+> **Merk:** Ikke bruk `test`. Den starter Vitest i watch-modus og blir aldri ferdig.
 
 ## Database
 
-IntelliJ har tilkoblingen `botkass-bsk-neon` mot **produksjonsdatabasen** (Neon). Bruk `execute_sql_query` for lesespørringer og skjemasjekker (f.eks. `pg_constraint`, `information_schema.columns`). Skriv bare til databasen når brukeren eksplisitt ber om det.
+IntelliJ har tilkoblingen `botkass-bsk-neon` mot **produksjonsdatabasen** (Neon). Bruk `execute_sql_query` for lesespørringer og skjemasjekker (f.eks. `pg_constraint`, `information_schema.columns`).
 
 ## Opprette ny run-konfigurasjon
 
