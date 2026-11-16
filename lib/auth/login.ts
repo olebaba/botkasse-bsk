@@ -4,6 +4,9 @@ import { cookies } from 'next/headers'
 import { redirect } from 'next/navigation'
 import { type Bruker, lucia } from '@/lib/auth/authConfig.ts'
 
+const feiltype = (error: unknown) =>
+    (error as { code?: string })?.code ?? (error instanceof Error ? error.name : 'ukjent')
+
 export async function login(formData: FormData): Promise<void> {
     'use server'
 
@@ -47,7 +50,7 @@ export async function login(formData: FormData): Promise<void> {
         const cookieStore = await cookies()
         cookieStore.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes)
     } catch (e) {
-        console.error('Login feil:', e)
+        console.error('Login feil', feiltype(e))
         throw new Error('Pålogging feilet')
     }
 
