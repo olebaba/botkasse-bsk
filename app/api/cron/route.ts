@@ -2,10 +2,13 @@ import { NextResponse } from 'next/server'
 import { sql } from '@vercel/postgres'
 import { bulkInsert } from '@/lib/queries.ts'
 import dayjs from '@/lib/dayjs.ts'
+import { erLikHemmelighet } from '@/lib/sammenlignHemmelighet.ts'
 
 export async function GET(req: Request) {
-    if (req.headers.get('Authorization') !== `Bearer ${process.env.CRON_SECRET}`) {
-        return NextResponse.json({ error: 'Unauthorized', status: 401 })
+    const cronSecret = process.env.CRON_SECRET
+    const forventet = cronSecret ? `Bearer ${cronSecret}` : null
+    if (!erLikHemmelighet(req.headers.get('Authorization'), forventet)) {
+        return NextResponse.json({ error: 'Ikke autorisert' }, { status: 401 })
     }
 
     if (dayjs().date() != 1) {
