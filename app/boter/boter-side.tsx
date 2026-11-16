@@ -6,9 +6,13 @@ import Header from '@/komponenter/ui/Header.tsx'
 import type { Forseelse } from '@/app/api/boter/typer/route.ts'
 import { fetchForseelser } from '@/lib/forseelseService.ts'
 import { hentSesongTekst } from '@/lib/botBeregning.ts'
+import { useUtgifter } from '@/hooks/useUtgifter.ts'
+import UtgifterModal from '@/komponenter/boter/UtgifterModal.tsx'
 
 export const BoterSide = () => {
     const [forseelser, setForseelser] = useState<Forseelse[]>([])
+    const { utgifter, laster: lasterUtgifter, error: utgiftFeil } = useUtgifter()
+    const [visUtgifter, setVisUtgifter] = useState(false)
 
     useEffect(() => {
         const hentForseelser = async () => {
@@ -25,7 +29,7 @@ export const BoterSide = () => {
         <div className="container mx-auto p-4 mt-28">
             <Header size="large" text={`Bøtesatser for ${gjeldendeSesong}`} className="mb-6" />
 
-            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-6">
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mb-4">
                 <ul className="space-y-2 text-blue-800">
                     <li className="flex items-start gap-2">
                         <span className="text-blue-600">🏃🏻‍♂️‍➡️</span>
@@ -52,6 +56,22 @@ export const BoterSide = () => {
                     </li>
                 </ul>
             </div>
+
+            <button
+                type="button"
+                onClick={() => setVisUtgifter(true)}
+                className="inline-flex items-center gap-2 text-blue-600 hover:text-blue-800 font-medium mb-6"
+            >
+                🍻 Se hva botkassen er brukt til
+            </button>
+
+            <UtgifterModal
+                apen={visUtgifter}
+                onClose={() => setVisUtgifter(false)}
+                utgifter={utgifter}
+                laster={lasterUtgifter}
+                error={utgiftFeil}
+            />
 
             <BotListe forseelser={forseelser} />
             <Kontakter />

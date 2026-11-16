@@ -27,6 +27,7 @@ dist-ssr
 *.sw?
 .vercel
 .env*.local
+.opencode/
 
 Funksjonelt:
 /public/spillernavn.json
