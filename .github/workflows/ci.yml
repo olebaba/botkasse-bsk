@@ -6,13 +6,16 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+
 jobs:
   lint:
     name: Lint
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: oven-sh/setup-bun@v2
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
       - run: bun install --frozen-lockfile
       - run: bun lint
 
@@ -21,7 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: oven-sh/setup-bun@v2
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
       - run: bun install --frozen-lockfile
       - run: bun run build
 
@@ -30,9 +33,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v7
-      - uses: oven-sh/setup-bun@v2
+      - uses: oven-sh/setup-bun@0c5077e51419868618aeaa5fe8019c62421857d6 # v2
       - run: bun install --frozen-lockfile
-      - run: bun test:run
+      - run: bun run test:run
 
   # Auto-merge Dependabot PRs that pass all checks
   auto-merge:
@@ -46,11 +49,15 @@ jobs:
     steps:
       - name: Dependabot metadata
         id: metadata
-        uses: dependabot/fetch-metadata@v2
+        uses: dependabot/fetch-metadata@21025c705c08248db411dc16f3619e6b5f9ea21a # v2
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
 
+      # Kun minor og patch; major-oppdateringer må gjennomgås manuelt
       - name: Enable auto-merge for Dependabot PRs
+        if: |
+          steps.metadata.outputs.update-type == 'version-update:semver-minor' ||
+          steps.metadata.outputs.update-type == 'version-update:semver-patch'
         run: gh pr merge --auto --squash "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
