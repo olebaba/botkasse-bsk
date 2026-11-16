@@ -12,6 +12,8 @@ interface UtgifterModalProps {
     error: string | null
 }
 
+const beløpKlasse = (beløp: number) => (beløp < 0 ? 'text-green-600' : 'text-gray-900')
+
 const UtgifterModal = ({ apen, onClose, utgifter, laster, error }: UtgifterModalProps) => {
     const innhold = () => {
         if (laster) {
@@ -42,7 +44,7 @@ const UtgifterModal = ({ apen, onClose, utgifter, laster, error }: UtgifterModal
                                 <p className="text-gray-900">{utgift.utgift}</p>
                                 <p className="text-sm text-gray-500">{dayjs(utgift.dato).format('D. MMMM YYYY')}</p>
                             </div>
-                            <span className="text-gray-900 whitespace-nowrap">
+                            <span className={`${beløpKlasse(utgift.beløp)} whitespace-nowrap`}>
                                 {utgift.beløp.toLocaleString('nb-NO')} kr
                             </span>
                         </li>
@@ -50,7 +52,7 @@ const UtgifterModal = ({ apen, onClose, utgifter, laster, error }: UtgifterModal
                 </ul>
                 <div className="flex justify-between gap-4 border-t border-gray-200 pt-3 mt-1">
                     <span className="font-bold text-gray-900">Totalt brukt</span>
-                    <span className="font-bold text-gray-900 whitespace-nowrap">
+                    <span className={`font-bold ${beløpKlasse(summerUtgifter(utgifter))} whitespace-nowrap`}>
                         {summerUtgifter(utgifter).toLocaleString('nb-NO')} kr
                     </span>
                 </div>
