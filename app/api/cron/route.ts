@@ -6,8 +6,8 @@ import { erLikHemmelighet } from '@/lib/sammenlignHemmelighet.ts'
 
 export async function GET(req: Request) {
     const cronSecret = process.env.CRON_SECRET
-    const authorization = req.headers.get('Authorization') ?? ''
-    if (!cronSecret || !erLikHemmelighet(authorization, `Bearer ${cronSecret}`)) {
+    const forventet = cronSecret ? `Bearer ${cronSecret}` : null
+    if (!erLikHemmelighet(req.headers.get('Authorization'), forventet)) {
         return NextResponse.json({ error: 'Ikke autorisert' }, { status: 401 })
     }
 
