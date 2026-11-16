@@ -47,5 +47,8 @@
     "type": "module",
     "trustedDependencies": [
         "@vercel/speed-insights"
-    ]
+    ],
+    "overrides": {
+        "minimatch@^10": "^11.0.1"
+    }
 }
