@@ -1,7 +1,7 @@
 'use client'
 
 import type { Spiller } from '@/lib/spillereService.ts'
-import { toggleBoterBetalt } from '@/lib/botService.ts'
+import { settBoterBetalt } from '@/lib/botService.ts'
 import React, { useState } from 'react'
 import dayjs from '@/lib/dayjs.ts'
 import type { Forseelse } from '@/app/api/boter/typer/route.ts'
@@ -54,7 +54,7 @@ export const ListBoter = ({
             }
             const oppdaterteBoter = boterForSpiller.map((b) => (b.id === bot.id ? oppdatertBot : b))
             setBoterForSpiller(oppdaterteBoter)
-            await toggleBoterBetalt([bot.id])
+            await settBoterBetalt([bot.id], !bot.erBetalt)
             visResultatAction(
                 !bot.erBetalt ? 'Markerte bot som betalt' : 'Markerte som ikke betalt',
                 AlertTypes.SUCCESS,
