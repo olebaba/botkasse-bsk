@@ -1,10 +1,5 @@
 import { useState, useEffect } from 'react'
-
-interface Utgift {
-    utgift: string
-    beløp: number
-    dato: string
-}
+import { hentUtgifter, type Utgift } from '@/lib/utgiftService.ts'
 
 export const useUtgifter = () => {
     const [utgifter, setUtgifter] = useState<Utgift[]>([])
@@ -12,15 +7,10 @@ export const useUtgifter = () => {
     const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
-        const hentUtgifter = async () => {
+        const hent = async () => {
             try {
                 setLaster(true)
-                const response = await fetch('/api/utgifter', { next: { revalidate: 86400 } })
-                if (!response.ok) {
-                    throw new Error('Kunne ikke hente utgifter')
-                }
-                const data = await response.json()
-                setUtgifter(data)
+                setUtgifter(await hentUtgifter())
             } catch (error) {
                 setError('Feil ved henting av utgifter')
                 console.error('Feil ved henting av utgifter:', error)
@@ -29,7 +19,7 @@ export const useUtgifter = () => {
             }
         }
 
-        hentUtgifter()
+        hent()
     }, [])
 
     return { utgifter, laster, error }

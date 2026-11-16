@@ -12,7 +12,9 @@ import { useForseelser } from '@/hooks/useForseelser.ts'
 import { useUtgifter } from '@/hooks/useUtgifter.ts'
 import { useFavorittSpiller } from '@/hooks/useFavorittSpiller'
 import Header from '@/komponenter/ui/Header.tsx'
+import UtgifterModal from '@/komponenter/boter/UtgifterModal.tsx'
 import { beregnSum } from '@/lib/botBeregning.ts'
+import { summerUtgifter } from '@/lib/utgiftService.ts'
 import new_release from '@/ikoner/new-release.svg'
 import type { User } from 'lucia'
 import type { ActionResult } from '@/lib/auth/authConfig.ts'
@@ -26,7 +28,8 @@ interface ForsideProps {
 const Forside = ({ bruker, gjestebrukerAction }: ForsideProps) => {
     const { spillere, loading: lasterSpillere } = useSpillere(true)
     const { forseelser } = useForseelser()
-    const { utgifter, laster: lasterUtgifter } = useUtgifter()
+    const { utgifter, laster: lasterUtgifter, error: utgiftFeil } = useUtgifter()
+    const [visUtgifter, setVisUtgifter] = useState(false)
     const { favorittSpillerId, settFavorittSpiller, erFavoritt } = useFavorittSpiller()
     const [prioritertSpillerMerInfo, setPrioritertSpillerMerInfo] = useState(false)
     const [vippsDialog, setVippsDialog] = useState<{ spiller: Spiller; valgtSesong: string } | undefined>(undefined)
@@ -51,7 +54,7 @@ const Forside = ({ bruker, gjestebrukerAction }: ForsideProps) => {
     const kasseBeregning = useMemo(() => {
         const alleBetalteBoter = spillere.flatMap((s) => s.boter).filter((b) => b.erBetalt)
         const sumBetalteBoter = beregnSum(alleBetalteBoter)
-        const totalUtgifter = utgifter.reduce((sum, u) => sum + u.beløp, 0)
+        const totalUtgifter = summerUtgifter(utgifter)
         return sumBetalteBoter - totalUtgifter
     }, [spillere, utgifter])
 
@@ -83,7 +86,24 @@ const Forside = ({ bruker, gjestebrukerAction }: ForsideProps) => {
                         <AnimertTeller målVerdi={kasseBeregning} laster={lasterKasseBeregning} />
                     </div>
                 </div>
+                <div className="mt-1 text-right">
+                    <button
+                        type="button"
+                        onClick={() => setVisUtgifter(true)}
+                        className="text-sm text-blue-600 hover:text-blue-800 hover:underline"
+                    >
+                        Se utgifter
+                    </button>
+                </div>
             </div>
+
+            <UtgifterModal
+                apen={visUtgifter}
+                onClose={() => setVisUtgifter(false)}
+                utgifter={utgifter}
+                laster={lasterUtgifter}
+                error={utgiftFeil}
+            />
 
             <div className="mb-6">
                 <Link
