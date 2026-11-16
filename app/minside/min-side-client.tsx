@@ -4,7 +4,6 @@ import { MinSideInfo } from '@/app/minside/min-side-info.tsx'
 import { Knapp } from '@/komponenter/ui/Knapp.tsx'
 import { useSpillerInfo } from '@/hooks/useSpillerInfo.ts'
 import Loading from '@/app/loading.tsx'
-import type { User } from 'lucia'
 import ios_share from '@/ikoner/ios-share.svg'
 import add_to_home_chrome from '@/ikoner/add-to-home-screen-chrome.svg'
 import Image from 'next/image'
@@ -22,7 +21,9 @@ const hentInitialer = (spillerNavn?: string) => {
 }
 
 export interface MinSideClientProps {
-    user: User
+    brukerId: string
+    brukernavn: string
+    erGjest: boolean
     logoutAction: () => Promise<void>
 }
 
@@ -59,9 +60,8 @@ const OpprettBrukerSeksjon = () => (
     </div>
 )
 
-export const MinSideClient = ({ user, logoutAction }: MinSideClientProps) => {
-    const erGjest = user?.type === 'gjest'
-    const { spillerInfo, loading } = useSpillerInfo(!erGjest ? (user?.id ?? '') : '')
+export const MinSideClient = ({ brukerId, brukernavn, erGjest, logoutAction }: MinSideClientProps) => {
+    const { spillerInfo, loading } = useSpillerInfo(!erGjest ? brukerId : '')
 
     if (loading && !erGjest) {
         return (
@@ -90,7 +90,7 @@ export const MinSideClient = ({ user, logoutAction }: MinSideClientProps) => {
                                 <LagreSomAppSeksjon />
                             </>
                         ) : (
-                            <MinSideInfo bruker={user} spillerInfo={spillerInfo} />
+                            <MinSideInfo brukerId={brukerId} brukernavn={brukernavn} spillerInfo={spillerInfo} />
                         )}
                     </div>
                     {!erGjest && <div className="w-full border-t border-gray-200 dark:border-gray-700 my-6" />}

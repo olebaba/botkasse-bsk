@@ -17,7 +17,5 @@ export const oppdaterSpillerInfo = async (brukerId: string, formData: FormData) 
     if (!response.ok) {
         throw new Error('Feil ved henting av spillerinfo')
     }
-    const res = await response.json()
-    console.log(res)
-    return res
+    return await response.json()
 }

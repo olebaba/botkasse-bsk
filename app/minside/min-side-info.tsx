@@ -7,14 +7,14 @@ import { Knapp } from '@/komponenter/ui/Knapp.tsx'
 import { Input } from '@/komponenter/ui/Input.tsx'
 import { type FormEvent, useState } from 'react'
 import { oppdaterSpillerInfo } from '@/lib/brukerService.ts'
-import type { Bruker } from '@/lib/auth/authConfig.ts'
 
 interface MinSideInfoProps {
-    bruker: Bruker
+    brukerId: string
+    brukernavn: string
     spillerInfo?: { id: string; navn: string } | null
 }
 
-export const MinSideInfo = ({ bruker, spillerInfo }: MinSideInfoProps) => {
+export const MinSideInfo = ({ brukerId, brukernavn, spillerInfo }: MinSideInfoProps) => {
     const [rediger, setRediger] = useState(false)
 
     const oppdaterInfo = (event: FormEvent<HTMLFormElement>) => {
@@ -22,7 +22,7 @@ export const MinSideInfo = ({ bruker, spillerInfo }: MinSideInfoProps) => {
         const formData = new FormData(event.currentTarget)
 
         const setOppdatertInfo = async () => {
-            await oppdaterSpillerInfo(bruker.id, formData)
+            await oppdaterSpillerInfo(brukerId, formData)
         }
         setOppdatertInfo().then(() => {
             setRediger(false)
@@ -37,7 +37,7 @@ export const MinSideInfo = ({ bruker, spillerInfo }: MinSideInfoProps) => {
                     <form onSubmit={oppdaterInfo} className="space-y-4">
                         <Input tittel="Draktnummer" placeholder={spillerInfo.id} rediger={false} />
                         <Input tittel="Navn" placeholder={spillerInfo.navn} rediger={rediger} />
-                        <Input tittel="Mobilnummer" placeholder={bruker.brukernavn} type="number" rediger={rediger} />
+                        <Input tittel="Mobilnummer" placeholder={brukernavn} type="number" rediger={rediger} />
                         <div className="flex flex-wrap gap-2 mt-2">
                             {!rediger && <Knapp tekst="Endre info" onClick={() => setRediger(true)} />}
                             {rediger && <Knapp tekst="Lagre endringer" />}
