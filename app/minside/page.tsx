@@ -9,7 +9,14 @@ const MinSide = async () => {
         return redirect('/login')
     }
 
-    return <MinSideClient user={user} logoutAction={logout} />
+    return (
+        <MinSideClient
+            brukerId={user.id}
+            brukernavn={user.brukernavn}
+            erGjest={user.type === 'gjest'}
+            logoutAction={logout}
+        />
+    )
 }
 
 export default MinSide

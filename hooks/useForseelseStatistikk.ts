@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import type { ForseelseStatistikk } from '@/app/api/statistikk/[forseelse_id]/route'
+import { hentForseelseStatistikk } from '@/lib/statistikkService.ts'
 
 export const useForseelseStatistikk = (forseelseId: string | null) => {
     const [statistikk, setStatistikk] = useState<ForseelseStatistikk | null>(null)
@@ -14,15 +15,7 @@ export const useForseelseStatistikk = (forseelseId: string | null) => {
         const hentStatistikk = async () => {
             try {
                 setLaster(true)
-                const response = await fetch(`/api/statistikk/${forseelseId}`)
-
-                if (!response.ok) {
-                    setFeil('Kunne ikke hente statistikk')
-                    setStatistikk(null)
-                    return
-                }
-
-                const data = await response.json()
+                const data = await hentForseelseStatistikk(forseelseId)
                 setStatistikk(data)
                 setFeil(null)
             } catch (error) {
