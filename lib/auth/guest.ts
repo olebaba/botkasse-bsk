@@ -4,12 +4,14 @@ import { sql } from '@vercel/postgres'
 import { hash } from '@node-rs/argon2'
 import { randomUUID } from 'node:crypto'
 import { redirect } from 'next/navigation'
+import { erLikHemmelighet } from '@/lib/sammenlignHemmelighet.ts'
 
 export async function guest(formData: FormData): Promise<ActionResult> {
     'use server'
     try {
         const guestCode = formData.get('Skriv inn kode')
-        if (guestCode?.toString().toLowerCase() == process.env.GJESTEKODE?.toLowerCase()) {
+        const gjestekode = process.env.GJESTEKODE?.toLowerCase()
+        if (typeof guestCode === 'string' && erLikHemmelighet(guestCode.toLowerCase(), gjestekode)) {
             const passwordHash = await hash(randomUUID(), {
                 memoryCost: 19456,
                 timeCost: 2,
