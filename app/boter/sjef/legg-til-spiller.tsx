@@ -15,7 +15,7 @@ const LeggTilSpiller = ({ onSpillerLagtTil }: { onSpillerLagtTil: (spiller: Spil
             <Header size="medium" text="Legg til spiller" />
             <form
                 onSubmit={handleLeggTilSpiller}
-                className="space-y-6 bg-white p-6 rounded-lg shadow-sm border border-gray-200"
+                className="space-y-6 bg-white p-6 rounded-lg shadow-xs border border-gray-200"
             >
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>

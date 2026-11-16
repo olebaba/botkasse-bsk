@@ -21,7 +21,7 @@ export const BotListe = ({ forseelser }: BotListeProps) => {
 
     if (forseelser.length === 0) {
         return (
-            <div className="w-full mt-8 p-8 bg-white rounded-xl shadow-sm border border-gray-100 text-center">
+            <div className="w-full mt-8 p-8 bg-white rounded-xl shadow-xs border border-gray-100 text-center">
                 <Header size="medium" text="Ingen forseelser funnet" className="text-gray-500" />
             </div>
         )
@@ -79,17 +79,17 @@ const ForseelseKort = ({ forseelse }: ForseelseKortProps) => {
 
     return (
         <div
-            className={`rounded-lg shadow-sm border transition-all duration-200 overflow-hidden hover:shadow-md relative ${hentKortAnimasjonsklasser(erNy)}`}
+            className={`rounded-lg shadow-xs border transition-all duration-200 overflow-hidden hover:shadow-md relative ${hentKortAnimasjonsklasser(erNy)}`}
         >
             {erNy && (
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-400/20 via-transparent to-blue-400/20 animate-pulse pointer-events-none"></div>
+                <div className="absolute inset-0 bg-linear-to-r from-blue-400/20 via-transparent to-blue-400/20 animate-pulse pointer-events-none"></div>
             )}
             <div className="p-4 cursor-pointer relative z-10" onClick={() => setErUtvidet(!erUtvidet)}>
                 <div className="flex items-center justify-between">
                     <div className="flex-1 min-w-0 pr-3">
                         <div className="flex items-center gap-3 mb-1">
                             <div
-                                className={`text-2xl flex-shrink-0 relative ${hentEmojiAnimasjonsklasser(erNy, bounceAnimation)}`}
+                                className={`text-2xl shrink-0 relative ${hentEmojiAnimasjonsklasser(erNy, bounceAnimation)}`}
                             >
                                 {emoji}
                                 {erNy && (
@@ -102,8 +102,8 @@ const ForseelseKort = ({ forseelse }: ForseelseKortProps) => {
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-3 flex-shrink-0">
-                        <div className="bg-gradient-to-r from-red-50 to-red-100 rounded-lg px-3 py-2 border border-red-200">
+                    <div className="flex items-center gap-3 shrink-0">
+                        <div className="bg-linear-to-r from-red-50 to-red-100 rounded-lg px-3 py-2 border border-red-200">
                             <div className="flex items-baseline">
                                 <div className="text-xl font-bold text-red-800">
                                     {forseelse.beløp.toLocaleString('nb-NO')}
@@ -137,7 +137,7 @@ const ForseelseKort = ({ forseelse }: ForseelseKortProps) => {
                             Sist oppdatert: {dayjs(forseelse.oppdatert).format('DD.MM.YYYY')}
                         </div>
 
-                        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-200">
+                        <div className="bg-linear-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-200">
                             <Header size="small" text="Statistikk" className="text-gray-800 mb-3" as="h4" />
                             {forseelseStatistikk.laster ? (
                                 <div className="text-center text-gray-500 py-2">Laster statistikk...</div>

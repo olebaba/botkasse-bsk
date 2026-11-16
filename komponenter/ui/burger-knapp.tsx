@@ -8,7 +8,7 @@ export default function BurgerKnapp({ toggleMenu }: BurgerKnappProps) {
             onClick={toggleMenu}
             type="button"
             className="inline-flex items-center sm:hidden p-2 w-10 h-10 justify-center text-gray-800 bg-white
-                rounded px-3 py-2 hover:bg-blue-600 hover:text-white"
+                rounded-sm px-3 py-2 hover:bg-blue-600 hover:text-white"
             aria-controls="navbar-default"
             aria-expanded="false"
         >

@@ -33,7 +33,7 @@ export const MarkerBetalt = ({ spillere, forseelser }: { spillere: Spiller[]; fo
         <div className="container mx-auto p-4 space-y-6">
             <Header size="medium" text="Marker betalt bot" />
 
-            <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            <div className="bg-white p-6 rounded-lg shadow-xs border border-gray-200">
                 <EnkeltSpillerVelger
                     spillere={spillere}
                     valgtSpillerId={valgtSpiller?.id}

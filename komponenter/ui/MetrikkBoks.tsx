@@ -9,9 +9,9 @@ interface MetrikkBoksProps {
 
 const MetrikkBoks: React.FC<MetrikkBoksProps> = ({ verdi, tekst, farge, className = '' }) => {
     const fargeKlasser = {
-        red: 'bg-gradient-to-r from-red-50 to-orange-50 border-red-200',
-        blue: 'bg-gradient-to-r from-blue-50 to-indigo-50 border-blue-200',
-        green: 'bg-gradient-to-r from-green-50 to-emerald-50 border-green-200',
+        red: 'bg-linear-to-r from-red-50 to-orange-50 border-red-200',
+        blue: 'bg-linear-to-r from-blue-50 to-indigo-50 border-blue-200',
+        green: 'bg-linear-to-r from-green-50 to-emerald-50 border-green-200',
     }
 
     const tekstFarger = {

@@ -10,8 +10,8 @@ interface InputProps {
 export const Input = ({ tittel, placeholder, rediger, type }: InputProps) => {
     const inputStyling = () => {
         return rediger
-            ? 'border-blue-400 border-2 rounded placeholder-gray-400'
-            : 'placeholder-black focus:outline-none'
+            ? 'border-blue-400 border-2 rounded-sm placeholder-gray-400'
+            : 'placeholder-black focus:outline-hidden'
     }
     return (
         <div className="flex flex-row justify-between items-center max-w-full">

@@ -27,7 +27,7 @@ export interface MinSideClientProps {
 }
 
 const LagreSomAppSeksjon = () => (
-    <div className="bg-gray-50 dark:bg-gray-900 rounded-xl shadow p-6 border border-gray-200 dark:border-gray-700">
+    <div className="bg-gray-50 dark:bg-gray-900 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700">
         <Header size="medium" className="mb-2" text="Lagre siden som app!" />
         <Header size="small" className="mb-1" text="For iOS:" />
         <div className="flex items-center gap-2 mb-2">
@@ -45,7 +45,7 @@ const LagreSomAppSeksjon = () => (
 )
 
 const OpprettBrukerSeksjon = () => (
-    <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl shadow p-6 border border-blue-200 dark:border-blue-700">
+    <div className="bg-blue-50 dark:bg-blue-900/20 rounded-xl shadow-sm p-6 border border-blue-200 dark:border-blue-700">
         <Header size="medium" className="mb-3" text="Opprett bruker" />
         <p className="text-gray-700 dark:text-gray-300 mb-4 text-sm leading-relaxed">
             Som registrert bruker får du lettere tilgang til dine egne bøter og kan oppdatere informasjon din.

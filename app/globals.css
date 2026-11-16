@@ -1,5 +1,17 @@
 @import 'tailwindcss';
-@config '../tailwind.config.ts';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+    --color-background: var(--background);
+    --color-foreground: var(--foreground);
+    --color-vipps-orange: #ff5b24;
+    --color-vipps-orange-dark: #e14d20;
+    --color-vipps-dark-blue: #00315d;
+    --color-vipps-light-gray: #f2f2f2;
+    --color-vipps-dark-gray: #4a4a4a;
+    --animate-spin-cool: spin 1s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
+}
 
 @import './styles/variabler.css';
 @import './styles/animasjoner.css';

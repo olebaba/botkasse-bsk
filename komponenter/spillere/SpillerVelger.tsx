@@ -41,7 +41,7 @@ export default function SpillerVelger({
     const valgteSpillerObjekter = spillere.filter((spiller) => valgteSpillere.includes(spiller.id))
 
     return (
-        <div className="space-y-6 bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+        <div className="space-y-6 bg-white p-6 rounded-lg shadow-xs border border-gray-200">
             <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold text-gray-900">Velg spillere ({valgteSpillere.length} valgt)</h3>
             </div>

@@ -14,7 +14,7 @@ interface NavbarProps {
 const NavItem = ({ href, children, onClick }: NavbarProps) => (
     <Link
         href={href}
-        className="text-gray-800 bg-white rounded px-5 py-3 hover:bg-blue-600 hover:text-white"
+        className="text-gray-800 bg-white rounded-sm px-5 py-3 hover:bg-blue-600 hover:text-white"
         onClick={onClick}
     >
         {children}

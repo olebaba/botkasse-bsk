@@ -1,6 +1,6 @@
 export const hentKortAnimasjonsklasser = (erNy: boolean) => {
     return erNy
-        ? 'bg-gradient-to-br from-blue-50 via-white to-blue-50 border-2 border-blue-400 shadow-blue-200/50 shadow-lg'
+        ? 'bg-linear-to-br from-blue-50 via-white to-blue-50 border-2 border-blue-400 shadow-blue-200/50 shadow-lg'
         : 'bg-white border-gray-100'
 }
 

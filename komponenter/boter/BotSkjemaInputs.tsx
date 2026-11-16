@@ -33,7 +33,7 @@ export default function BotSkjemaInputs({
     onLeggTilBoter,
 }: BotSkjemaInputsProps) {
     return (
-        <div className="space-y-6 bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+        <div className="space-y-6 bg-white p-6 rounded-lg shadow-xs border border-gray-200">
             <div className="space-y-4">
                 <Dropdown
                     options={forseelser}
@@ -56,7 +56,7 @@ export default function BotSkjemaInputs({
                         id="kampdag"
                         checked={erKampdag}
                         onChange={(e) => onKampdagEndring(e.target.checked)}
-                        className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                        className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 focus:ring-2"
                     />
                     <label className="text-gray-700 font-medium cursor-pointer" htmlFor="kampdag">
                         Er kampdag <span className="text-blue-600 font-semibold">(x2 beløp)</span>

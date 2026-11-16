@@ -31,7 +31,7 @@ export const Knapp = ({
         }
     }
 
-    const defaultClassName = `px-4 py-2 rounded transition-colors focus:outline-none focus:ring-2 focus:ring-opacity-50 ${getVariantClassName()} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`
+    const defaultClassName = `px-4 py-2 rounded-sm transition-colors focus:outline-hidden focus:ring-2 ${getVariantClassName()} ${disabled ? 'opacity-50 cursor-not-allowed' : ''}`
 
     return (
         <button type={type} className={classNames(defaultClassName, className)} onClick={onClick} disabled={disabled}>

@@ -31,7 +31,7 @@ export const UbetalteBoterSeksjon = ({
     onMarkerBetalt,
 }: UbetalteBoterSeksjonProps) => {
     return (
-        <div className="bg-white p-6 rounded-lg shadow-sm border border-gray-200 space-y-4">
+        <div className="bg-white p-6 rounded-lg shadow-xs border border-gray-200 space-y-4">
             <div className="flex items-center justify-between">
                 <Header size="small" text={`Ubetalte bøter for ${valgtSpiller.navn}`} />
                 <button
