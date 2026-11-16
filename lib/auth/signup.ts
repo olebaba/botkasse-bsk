@@ -4,6 +4,16 @@ import { sql } from '@vercel/postgres'
 import { redirect } from 'next/navigation'
 import { type ActionResult, type Bruker, lucia } from '@/lib/auth/authConfig.ts'
 
+const PG_UNIK_BRUDD = '23505'
+const REGISTRERING_AVVIST = 'Kunne ikke registrere bruker. Ta kontakt med admin.'
+
+const pgFeilkode = (error: unknown) => (error as { code?: string })?.code
+
+const feilmeldingFra = (error: unknown) => {
+    const melding = (error as { error?: unknown } | null)?.error
+    return typeof melding === 'string' ? melding : undefined
+}
+
 export async function signup(formData: FormData): Promise<ActionResult> {
     'use server'
 
@@ -12,6 +22,7 @@ export async function signup(formData: FormData): Promise<ActionResult> {
 
         await sjekkBrukerFinnes(brukernavn)
         const spiller = await sjekkDraktnummer(formData)
+        await sjekkSpillerHarIkkeBruker(spiller.id)
 
         const passwordHash = await hash(passord, {
             memoryCost: 19456,
@@ -32,13 +43,15 @@ export async function signup(formData: FormData): Promise<ActionResult> {
         const cookieStore = await cookies()
         cookieStore.set(sessionCookie.name, sessionCookie.value, sessionCookie.attributes)
     } catch (e) {
-        console.error('Signup feil:', e)
-        if (e instanceof Error && e.message.includes('finnes allerede')) {
-            return { error: 'Bruker finnes allerede' }
+        if (pgFeilkode(e) === PG_UNIK_BRUDD) {
+            console.error('Signup feil:', PG_UNIK_BRUDD)
+            return { error: REGISTRERING_AVVIST }
         }
-        if (e instanceof Error && e.message.includes('Draktnummer')) {
-            return { error: e.message }
+        const melding = feilmeldingFra(e)
+        if (melding) {
+            return { error: melding }
         }
+        console.error('Signup feil:', pgFeilkode(e))
         return { error: 'Registrering feilet, prøv igjen senere' }
     }
 
@@ -53,6 +66,17 @@ async function sjekkBrukerFinnes(brukernavn: string) {
     `
     if (eksisterendeBruker.rows[0]) {
         throw { error: 'Bruker finnes allerede' }
+    }
+}
+
+async function sjekkSpillerHarIkkeBruker(spillerId: string) {
+    const eksisterendeBruker = await sql`
+        SELECT 1
+        FROM brukere
+        WHERE spiller_id = ${spillerId}
+    `
+    if (eksisterendeBruker.rows[0]) {
+        throw { error: REGISTRERING_AVVIST }
     }
 }
 
