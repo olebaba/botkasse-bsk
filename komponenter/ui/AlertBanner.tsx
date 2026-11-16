@@ -31,7 +31,7 @@ const AlertBanner = ({ message, type = AlertTypes.INFO, onClose, onClick }: Aler
         >
             <span>{message}</span>
             {onClose && (
-                <button onClick={onClose} className="text-lg font-bold ml-4 focus:outline-none">
+                <button onClick={onClose} className="text-lg font-bold ml-4 focus:outline-hidden">
                     &times;
                 </button>
             )}

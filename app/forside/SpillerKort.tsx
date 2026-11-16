@@ -103,7 +103,7 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
     }, [spiller.boter, valgtSesong, visAlleSesonger])
 
     const getKortKlasser = useCallback(() => {
-        const base = 'rounded shadow border p-4 flex flex-col gap-2 transition-all duration-600'
+        const base = 'rounded-sm shadow-sm border border-gray-200 p-4 flex flex-col gap-2 transition-all duration-600'
         const bakgrunn = botStatistikk.alleBetalt ? 'bg-green-100' : 'bg-red-200'
         const ring = merInfoOpen ? 'ring-2 ring-blue-500' : 'hover:ring-1 hover:ring-blue-300 cursor-pointer'
         const favorittBorder = erFavoritt ? 'ring-2 ring-yellow-400' : ''
@@ -172,7 +172,7 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
                                 ) : (
                                     <button
                                         onClick={handleToggleFavoritt}
-                                        className="hover:scale-110 transition-all duration-200 hover:bg-yellow-100 rounded-full p-1 border border-transparent hover:border-yellow-300 focus:outline-none focus:ring-2 focus:ring-yellow-300"
+                                        className="hover:scale-110 transition-all duration-200 hover:bg-yellow-100 rounded-full p-1 border border-transparent hover:border-yellow-300 focus:outline-hidden focus:ring-2 focus:ring-yellow-300"
                                         title={erFavoritt ? 'Fjern fra favoritter' : 'Legg til som favoritt'}
                                         aria-label={erFavoritt ? 'Fjern fra favoritter' : 'Legg til som favoritt'}
                                     >
@@ -205,7 +205,7 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
             </div>
 
             {merInfoOpen && (
-                <div className="mt-2 bg-yellow-50 rounded p-2" onClick={(e) => e.stopPropagation()}>
+                <div className="mt-2 bg-yellow-50 rounded-sm p-2" onClick={(e) => e.stopPropagation()}>
                     <div className="mb-2 space-y-3">
                         <div className="flex items-center gap-2">
                             <label htmlFor={`sesong-${spiller.id}`} className="font-medium text-sm">
@@ -226,7 +226,7 @@ const SpillerKort: React.FC<SpillerKortProps> = ({
                             </Select>
                         </div>
 
-                        <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-200">
+                        <div className="bg-linear-to-r from-blue-50 to-indigo-50 rounded-lg p-4 border border-blue-200">
                             <h4 className="font-semibold text-gray-800 mb-3 text-center">
                                 {valgtSesong === 'alle'
                                     ? 'Statistikk for alle sesonger'

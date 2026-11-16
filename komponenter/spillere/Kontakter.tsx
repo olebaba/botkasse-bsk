@@ -16,7 +16,7 @@ export const Kontakter = () => {
                 {personer.map((person, index) => (
                     <div
                         key={index}
-                        className="rounded shadow border p-4 bg-white hover:shadow-md transition-all duration-200 hover:ring-1 hover:ring-blue-300"
+                        className="rounded-sm shadow-sm border border-gray-200 p-4 bg-white hover:shadow-md transition-all duration-200 hover:ring-1 hover:ring-blue-300"
                     >
                         <div className="flex flex-col gap-3">
                             <div className="flex flex-col md:flex-row md:items-center md:justify-between">

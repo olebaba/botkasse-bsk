@@ -48,7 +48,7 @@ export default function SpillerBøter({
     }, [])
 
     const getKnappKlasser = useCallback((erAktiv: boolean) => {
-        const base = 'px-4 py-2 rounded whitespace-nowrap transition-colors'
+        const base = 'px-4 py-2 rounded-sm whitespace-nowrap transition-colors'
         const variant = erAktiv ? 'bg-blue-600 text-white' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
         return `${base} ${variant}`
     }, [])
@@ -109,7 +109,7 @@ export default function SpillerBøter({
                     </label>
                     <select
                         id="sortering"
-                        className="px-2 py-1 rounded border border-gray-300 text-sm"
+                        className="px-2 py-1 rounded-sm border border-gray-300 text-sm"
                         value={sortering}
                         onChange={(e) => handleSorteringChange(e.target.value as Sortering)}
                     >
@@ -121,7 +121,7 @@ export default function SpillerBøter({
                     </select>
                     <button
                         type="button"
-                        className="px-2 py-1 rounded border border-gray-300 text-sm"
+                        className="px-2 py-1 rounded-sm border border-gray-300 text-sm"
                         onClick={() => setRetning((r) => (r === 'stigende' ? 'synkende' : 'stigende'))}
                         title={retning === 'stigende' ? 'Sorter synkende' : 'Sorter stigende'}
                     >

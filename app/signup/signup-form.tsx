@@ -40,7 +40,7 @@ export default function SignupForm({ signupAction }: SignupFormProps) {
                 <input
                     name="draktnummer"
                     id="draktnummer"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-xs focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="Skriv inn draktnummer"
                 />
             </div>
@@ -52,7 +52,7 @@ export default function SignupForm({ signupAction }: SignupFormProps) {
                 <input
                     name="brukernavn"
                     id="brukernavn"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-xs focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="Skriv inn mobilnummer"
                 />
             </div>
@@ -64,7 +64,7 @@ export default function SignupForm({ signupAction }: SignupFormProps) {
                     type="password"
                     name="passord"
                     id="passord"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                    className="w-full px-3 py-2 border border-gray-300 rounded-lg shadow-xs focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     placeholder="Skriv inn passord"
                 />
             </div>

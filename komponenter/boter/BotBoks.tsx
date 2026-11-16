@@ -16,7 +16,7 @@ const BotBoks: React.FC<BotBoksProps> = ({ bot, forseelse, dato, erBetalt, kanEn
     const harKommentar = bot.kommentar && bot.kommentar.trim() !== ''
 
     return (
-        <div className="bg-white rounded-lg border shadow-sm p-4 flex flex-col gap-3">
+        <div className="bg-white rounded-lg border border-gray-200 shadow-xs p-4 flex flex-col gap-3">
             <div className="flex items-center justify-between">
                 <div className="font-semibold text-[20px] leading-tight text-slate-900">{forseelse?.navn}</div>
                 <div className="text-[14px] text-slate-600">{dato}</div>

@@ -10,7 +10,7 @@ interface SelectProps {
 }
 
 export const Select: React.FC<SelectProps> = ({ id, value, onChange, className, children }) => {
-    const defaultClassName = 'px-2 py-1 rounded border border-gray-300 text-sm'
+    const defaultClassName = 'px-2 py-1 rounded-sm border border-gray-300 text-sm'
 
     return (
         <select id={id} className={classNames(defaultClassName, className)} value={value} onChange={onChange}>

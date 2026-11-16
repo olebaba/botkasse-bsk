@@ -31,7 +31,7 @@ export const MinSideInfo = ({ bruker, spillerInfo }: MinSideInfoProps) => {
 
     return (
         <div className="w-full max-w-md mx-auto flex flex-col gap-8">
-            <div className="bg-gray-50 dark:bg-gray-900 rounded-xl shadow p-6 border border-gray-200 dark:border-gray-700">
+            <div className="bg-gray-50 dark:bg-gray-900 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700">
                 <Header size="medium" className="mb-4" text="Din info" />
                 {spillerInfo && (
                     <form onSubmit={oppdaterInfo} className="space-y-4">
@@ -48,7 +48,7 @@ export const MinSideInfo = ({ bruker, spillerInfo }: MinSideInfoProps) => {
                     </form>
                 )}
             </div>
-            <div className="bg-gray-50 dark:bg-gray-900 rounded-xl shadow p-6 border border-gray-200 dark:border-gray-700">
+            <div className="bg-gray-50 dark:bg-gray-900 rounded-xl shadow-sm p-6 border border-gray-200 dark:border-gray-700">
                 <Header size="medium" className="mb-2" text="Lagre siden som app!" />
                 <Header size="small" className="mb-1" text="For iOS:" />
                 <div className="flex items-center gap-2 mb-2">

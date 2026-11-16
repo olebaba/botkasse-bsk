@@ -36,7 +36,7 @@ const AdministrerSpillere = ({ spillere, onSpillerOppdatert, onSpillerSlettet }:
     return (
         <div className="container mx-auto p-4">
             <Header size="medium" text="Administrer spillere" />
-            <div className="space-y-6 bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            <div className="space-y-6 bg-white p-6 rounded-lg shadow-xs border border-gray-200">
                 <SpillerCombobox
                     spillere={spillere}
                     valgtSpiller={valgtSpiller}
@@ -91,7 +91,7 @@ const AdministrerSpillere = ({ spillere, onSpillerOppdatert, onSpillerSlettet }:
                                     id="vis-spiller"
                                     checked={visNavn}
                                     onChange={(e) => setVisNavn(e.target.checked)}
-                                    className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500 focus:ring-2"
+                                    className="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded-sm focus:ring-blue-500 focus:ring-2"
                                 />
                                 <label className="text-gray-700 font-medium cursor-pointer" htmlFor="vis-spiller">
                                     Vis spiller (med i lister og månedlig bot)
