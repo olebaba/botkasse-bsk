@@ -1,8 +1,13 @@
 import { NextResponse } from 'next/server'
 import { sql } from '@vercel/postgres'
-import type { BrukerInfo } from '@/app/api/bruker/[brukernavn]/route.ts'
 import { krevEierEllerAdmin } from '@/lib/auth/apiAuth.ts'
 import { validerProfilOppdatering } from '@/lib/brukerValidering.ts'
+
+type BrukerInfo = {
+    id: string
+    brukernavn: string
+    spiller_id: string
+}
 
 export type SpillerInfo = {
     id: string
