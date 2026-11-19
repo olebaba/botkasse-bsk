@@ -6,7 +6,7 @@ vi.mock('@/lib/auth/apiAuth.ts', () => ({ krevAdmin: vi.fn(), krevInnlogget: vi.
 
 import { sql } from '@vercel/postgres'
 import { krevAdmin, krevInnlogget } from '@/lib/auth/apiAuth.ts'
-import { DELETE, GET, POST, PUT } from '@/app/api/spillere/route.ts'
+import { DELETE, GET, PATCH, POST, PUT } from '@/app/api/spillere/route.ts'
 import { lagRequest, pgFeil, somAdmin, sqlTekst, stilleFeillogg, uten } from '@/app/api/spillere/testHjelpere.ts'
 
 beforeEach(() => {
@@ -499,6 +499,80 @@ describe('DELETE /api/spillere', () => {
 
         expect(respons.status).toBe(500)
         expect(await respons.json()).toEqual({ error: 'Kunne ikke slette spiller.' })
+        feillogg.mockRestore()
+    })
+})
+
+describe('PATCH /api/spillere', () => {
+    const gyldigBody = { spiller_id: 7, totalSum: 150, erBetalt: false }
+
+    it('PATCH returnerer 401 og 403 uten admin', async () => {
+        for (const status of [401, 403]) {
+            uten(status)
+
+            const respons = await PATCH(lagRequest('PATCH', gyldigBody))
+
+            expect(respons.status).toBe(status)
+        }
+        expect(sql).not.toHaveBeenCalled()
+    })
+
+    it('PATCH returnerer 400 ved ugyldig JSON', async () => {
+        somAdmin()
+
+        const respons = await PATCH(lagRequest('PATCH', '{ikke json'))
+
+        expect(respons.status).toBe(400)
+        expect(await respons.json()).toEqual({ error: 'Ugyldig forespørsel.' })
+        expect(sql).not.toHaveBeenCalled()
+    })
+
+    it.each([
+        ['mangler draktnummer', { totalSum: 150, erBetalt: false }],
+        ['har ugyldig draktnummer', { ...gyldigBody, spiller_id: '7' }],
+        ['mangler totalsum', { spiller_id: 7, erBetalt: false }],
+        ['har totalsum som ikke er et tall', { ...gyldigBody, totalSum: '150' }],
+        ['mangler betalingsstatus', { spiller_id: 7, totalSum: 150 }],
+    ])('PATCH returnerer 400 når body %s', async (_navn, body) => {
+        somAdmin()
+
+        const respons = await PATCH(lagRequest('PATCH', body))
+
+        expect(respons.status).toBe(400)
+        expect(sql).not.toHaveBeenCalled()
+    })
+
+    it('PATCH oppdaterer totalsum og returnerer spilleren', async () => {
+        somAdmin()
+        vi.mocked(sql).mockResolvedValue({ rows: [{ id: 7, total_sum: 150 }], rowCount: 1 } as never)
+
+        const respons = await PATCH(lagRequest('PATCH', gyldigBody))
+
+        expect(respons.status).toBe(200)
+        expect(await respons.json()).toEqual({ spiller: { id: 7, total_sum: 150 } })
+        expect(vi.mocked(sql).mock.calls[0].slice(1)).toEqual([150, 7])
+    })
+
+    it('PATCH returnerer 404 når spilleren ikke finnes', async () => {
+        somAdmin()
+        vi.mocked(sql).mockResolvedValue({ rows: [], rowCount: 0 } as never)
+
+        const respons = await PATCH(lagRequest('PATCH', gyldigBody))
+
+        expect(respons.status).toBe(404)
+        expect(await respons.json()).toEqual({ error: 'Fant ikke spiller med draktnummer 7.' })
+    })
+
+    it('PATCH returnerer 500 og logger bare feilkoden ved databasefeil', async () => {
+        somAdmin()
+        vi.mocked(sql).mockRejectedValue(pgFeil('XX000'))
+        const feillogg = stilleFeillogg()
+
+        const respons = await PATCH(lagRequest('PATCH', gyldigBody))
+
+        expect(respons.status).toBe(500)
+        expect(await respons.json()).toEqual({ error: 'Feil ved oppdatering av spiller' })
+        expect(feillogg).toHaveBeenCalledWith('Feil ved oppdatering av totalsum', 'XX000')
         feillogg.mockRestore()
     })
 })

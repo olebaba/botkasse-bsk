@@ -9,6 +9,7 @@ import {
     validerNavn,
     validerNySpiller,
     validerSpillerOppdatering,
+    validerSumOppdatering,
     validerVisNavn,
 } from './spillerValidering'
 
@@ -297,5 +298,36 @@ describe('sletteBlokkeringMelding', () => {
             'Spilleren har bøter og kan ikke slettes. Skjul spilleren i stedet.',
         )
         expect(sletteBlokkeringMelding.har_bruker).toBe('Spilleren er koblet til en brukerkonto og kan ikke slettes.')
+    })
+})
+
+describe('validerSumOppdatering', () => {
+    const gyldig = { spiller_id: 7, totalSum: 150, erBetalt: false }
+
+    it('godtar gyldig input', () => {
+        expect(validerSumOppdatering(gyldig)).toEqual({
+            ok: true,
+            verdi: { spillerId: 7, totalSum: 150, erBetalt: false },
+        })
+    })
+
+    it('avviser det som ikke er et objekt', () => {
+        expect(validerSumOppdatering(null)).toEqual({ ok: false, feil: UGYLDIG_FORESPORSEL })
+        expect(validerSumOppdatering([])).toEqual({ ok: false, feil: UGYLDIG_FORESPORSEL })
+    })
+
+    it('avviser ugyldig draktnummer', () => {
+        expect(validerSumOppdatering({ ...gyldig, spiller_id: 0 })).toEqual({ ok: false, feil: DRAKTNUMMER_FEIL })
+    })
+
+    it.each([undefined, '150', NaN, Infinity])('avviser totalsum %s', (totalSum) => {
+        expect(validerSumOppdatering({ ...gyldig, totalSum })).toEqual({ ok: false, feil: 'Totalsum må være et tall.' })
+    })
+
+    it('avviser betalingsstatus som ikke er boolsk', () => {
+        expect(validerSumOppdatering({ ...gyldig, erBetalt: 'false' })).toEqual({
+            ok: false,
+            feil: 'Betalingsstatus må være sann eller usann.',
+        })
     })
 })

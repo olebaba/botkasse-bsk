@@ -1,11 +1,11 @@
-export async function toggleBoterBetalt(botIder: string[]) {
+export async function settBoterBetalt(botIder: string[], erBetalt: boolean) {
     try {
         const res = await fetch('/api/boter/betal', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ botIder }),
+            body: JSON.stringify({ botIder, erBetalt }),
         })
         if (!res.ok) {
             throw new Error('Feil ved markering av bøter som betalt')

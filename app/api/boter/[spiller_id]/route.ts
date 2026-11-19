@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server'
 import { sql } from '@vercel/postgres'
 import type { Dayjs } from 'dayjs'
 import { krevAdmin, krevInnlogget } from '@/lib/auth/apiAuth.ts'
+import { validerNyBot } from '@/lib/botValidering.ts'
+import { PG_FREMMEDNOKKEL_BRUDD, pgFeilkode } from '@/lib/pgFeil.ts'
 
 type Params = {
     spiller_id: string
@@ -12,32 +14,37 @@ export async function POST(request: Request, props: { params: Promise<Params> })
     if ('error' in auth) return auth.error
 
     const params = await props.params
-    const {
-        beløp,
-        dato,
-        forseelsesId,
-        kommentar,
-    }: { beløp: number; dato: string; forseelsesId: number; kommentar?: string } = await request.json()
-    const spiller_id = parseInt(params.spiller_id, 10)
-
-    if (!spiller_id || !beløp || !dato || !forseelsesId) {
-        return NextResponse.json({ error: 'Alle felter må fylles ut.' }, { status: 400 })
+    let body: unknown
+    try {
+        body = await request.json()
+    } catch {
+        return NextResponse.json({ error: 'Ugyldig forespørsel.' }, { status: 400 })
     }
 
-    try {
-        await sql`
-            INSERT INTO bøter (spiller_id, beløp, dato, forseelse_id, er_betalt, kommentar)
-            VALUES (${spiller_id}, ${beløp}, ${dato}, ${forseelsesId}, false, ${kommentar || null})
-        `
+    const resultat = validerNyBot(params.spiller_id, body)
+    if (!resultat.ok) {
+        return NextResponse.json({ error: resultat.feil }, { status: 400 })
+    }
 
+    const { spillerId, belop, dato, forseelsesId, kommentar } = resultat.verdi
+    try {
+        // Ett statement slik at boten og summen enten lagres sammen eller ikke i det hele tatt.
         await sql`
+            WITH ny_bot AS (
+                INSERT INTO bøter (spiller_id, beløp, dato, forseelse_id, er_betalt, kommentar)
+                VALUES (${spillerId}, ${belop}, ${dato}, ${forseelsesId}, false, ${kommentar})
+                RETURNING id
+            )
             UPDATE spillere
-            SET total_sum = total_sum + ${beløp}
-            WHERE id = ${spiller_id};
+            SET total_sum = total_sum + ${belop}
+            WHERE id = ${spillerId}
         `
         return NextResponse.json({ message: 'Bot lagt til' }, { status: 200 })
     } catch (error) {
-        console.error(error)
+        if (pgFeilkode(error) === PG_FREMMEDNOKKEL_BRUDD) {
+            return NextResponse.json({ error: 'Fant ikke spilleren eller forseelsen.' }, { status: 404 })
+        }
+        console.error('Feil ved oppretting av bot', pgFeilkode(error))
         return NextResponse.json({ error: 'Kunne ikke legge til bot.' }, { status: 500 })
     }
 }

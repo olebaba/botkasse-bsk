@@ -79,6 +79,28 @@ export const validerSpillerOppdatering = (data: unknown): Valideringsresultat<Sp
     return { ok: true, verdi: { ...oppdatering, nyttDraktnummer: nyttDraktnummer.verdi } }
 }
 
+export type SumOppdatering = { spillerId: number; totalSum: number; erBetalt: boolean }
+
+export const validerSumOppdatering = (data: unknown): Valideringsresultat<SumOppdatering> => {
+    const objekt = lesObjekt(data)
+    if (!objekt) {
+        return { ok: false, feil: UGYLDIG_FORESPORSEL }
+    }
+
+    const spillerId = validerDraktnummer(objekt.spiller_id)
+    if (!spillerId.ok) return spillerId
+
+    const { totalSum, erBetalt } = objekt
+    if (typeof totalSum !== 'number' || !Number.isFinite(totalSum)) {
+        return { ok: false, feil: 'Totalsum må være et tall.' }
+    }
+    if (typeof erBetalt !== 'boolean') {
+        return { ok: false, feil: 'Betalingsstatus må være sann eller usann.' }
+    }
+
+    return { ok: true, verdi: { spillerId: spillerId.verdi, totalSum, erBetalt } }
+}
+
 export const parseDraktnummerParam = (verdi: string | null): Valideringsresultat<number> => {
     if (verdi === null || !/^\d+$/.test(verdi)) {
         return { ok: false, feil: DRAKTNUMMER_FEIL }
