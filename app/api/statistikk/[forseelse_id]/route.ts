@@ -18,6 +18,8 @@ type Params = {
     forseelse_id: string
 }
 
+const pgFeilkode = (error: unknown) => (error as { code?: string })?.code
+
 export async function GET(_request: Request, props: { params: Promise<Params> }) {
     const auth = await krevInnlogget()
     if ('error' in auth) return auth.error
@@ -80,7 +82,7 @@ export async function GET(_request: Request, props: { params: Promise<Params> })
 
         return NextResponse.json(statistikk, { status: 200 })
     } catch (error) {
-        console.error('Feil ved henting av statistikk:', error)
+        console.error('Feil ved henting av statistikk', pgFeilkode(error))
         return NextResponse.json({ error: 'Kunne ikke hente statistikk' }, { status: 500 })
     }
 }

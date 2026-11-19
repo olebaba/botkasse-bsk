@@ -10,7 +10,5 @@ export async function bulkInsert<T extends Record<string, unknown>>(tableName: s
         FROM json_populate_recordset(NULL::${tableName}, $1)
     `
 
-    console.log(`Batch insert: ${JSON.stringify(records)}`)
-
     await sql.query(query, [JSON.stringify(records)])
 }
