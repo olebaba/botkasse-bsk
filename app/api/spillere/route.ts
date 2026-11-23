@@ -4,12 +4,14 @@ import type { Spiller } from '@/lib/spillereService'
 import type { Bot } from '@/app/api/boter/[spiller_id]/route.ts'
 import dayjs from '@/lib/dayjs'
 import { krevAdmin, krevInnlogget } from '@/lib/auth/apiAuth.ts'
+import { PG_FREMMEDNOKKEL_BRUDD, PG_UNIK_BRUDD, pgFeilkode } from '@/lib/pgFeil.ts'
 import {
     finnSletteBlokkering,
     parseDraktnummerParam,
     sletteBlokkeringMelding,
     validerNySpiller,
     validerSpillerOppdatering,
+    validerSumOppdatering,
 } from '@/lib/spillerValidering.ts'
 
 interface SpillerRow {
@@ -34,11 +36,6 @@ interface BotRow {
     er_betalt: boolean
     kommentar?: string
 }
-
-const PG_UNIK_BRUDD = '23505'
-const PG_FREMMEDNOKKEL_BRUDD = '23503'
-
-const pgFeilkode = (error: unknown) => (error as { code?: string })?.code
 
 const tilSpiller = (row: SpillerRow): Spiller => ({
     id: String(row.id),
@@ -171,23 +168,30 @@ export async function PATCH(request: Request) {
     const auth = await krevAdmin()
     if ('error' in auth) return auth.error
 
-    const { spiller_id, totalSum, erBetalt } = await request.json()
+    const body = await lesJson(request)
+    if (body === undefined) {
+        return ugyldigForesporsel()
+    }
 
+    const resultat = validerSumOppdatering(body)
+    if (!resultat.ok) {
+        return NextResponse.json({ error: resultat.feil }, { status: 400 })
+    }
+
+    const { spillerId, totalSum } = resultat.verdi
     try {
-        if (!spiller_id || totalSum === undefined || erBetalt === undefined) {
-            throw new Error('Draktnummer, totalsum og betalingsstatus kreves.')
-        }
-
-        // Oppdater spillerens totalSum og er_betalt felt
-        const oppdatertSpiller = await sql`
+        const { rows, rowCount } = await sql`
             UPDATE spillere
             SET total_sum = ${totalSum}
-            WHERE id = ${spiller_id}
-            RETURNING *;
+            WHERE id = ${spillerId}
+            RETURNING *
         `
-
-        return NextResponse.json({ spiller: oppdatertSpiller.rows[0] }, { status: 200 })
-    } catch {
+        if (rowCount === 0) {
+            return ikkeFunnet(spillerId)
+        }
+        return NextResponse.json({ spiller: rows[0] }, { status: 200 })
+    } catch (error) {
+        console.error('Feil ved oppdatering av totalsum', pgFeilkode(error))
         return NextResponse.json({ error: 'Feil ved oppdatering av spiller' }, { status: 500 })
     }
 }

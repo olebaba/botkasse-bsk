@@ -1,5 +1,5 @@
 import { useState, useMemo } from 'react'
-import { toggleBoterBetalt } from '@/lib/botService.ts'
+import { settBoterBetalt } from '@/lib/botService.ts'
 import { AlertTypes } from '@/komponenter/ui/AlertBanner.tsx'
 import dayjs from '@/lib/dayjs.ts'
 import type { Spiller } from '@/lib/spillereService.ts'
@@ -65,7 +65,7 @@ export const useBoterBehandling = () => {
         }
 
         try {
-            await toggleBoterBetalt(Array.from(valgteBoter))
+            await settBoterBetalt(Array.from(valgteBoter), true)
 
             if (valgtSpiller) {
                 const oppdatertSpiller = {
@@ -90,7 +90,7 @@ export const useBoterBehandling = () => {
 
     const handleMarkerUbetalt = async (botId: string) => {
         try {
-            await toggleBoterBetalt([botId])
+            await settBoterBetalt([botId], false)
 
             if (valgtSpiller) {
                 const oppdatertSpiller = {
